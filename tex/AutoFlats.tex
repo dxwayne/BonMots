@@ -1,0 +1,523 @@
+\documentclass[letter,11pt,oneside]{article}
+% /home/wayne/clones/git/ASTR3510_2019/doc/AutoFlats.tex
+%%% (occur "\\(\\\\[a-z]*section\\|appendix\\|input\\|\\<include\\>\\)")
+
+%%\documentclass[11pt,twocolumn]{article}
+%%\usepackage[inline]{asymptote}   %% Inline asymptote diagrams
+%%\usepackage{wglatex}             %% Use this one and kill others.
+\usepackage{color}               %% colored letters {\color{red}{{text}}
+\usepackage{fancyhdr}            %% headers/footers
+%%\usepackage{fancyvrb}            %% headers/footers
+\usepackage{datetime}            %% pick up tex date time 
+\usepackage{lastpage}            %% support page of ...lastpage
+\usepackage{times}               %% native times roman fonts
+\usepackage{textcomp}            %% trademark
+\usepackage{amssymb,amsmath}     %% greek alphabet
+\usepackage{parskip}             %% blank lines between paragraphs, no indent
+\usepackage{shortvrb}            %% short verb use for tables
+\usepackage{lscape}              %% landscape for tables.
+\usepackage{longtable}           %% permit tables to span pages wg-longtable
+\usepackage{url}                 %% Make URLs uniform and links in PDFs
+\usepackage{enumerate}           %% Allow letters/decorations for enumerations
+\usepackage{endnotes}            %% Enhance footnotes/endnotes
+\usepackage{listings}            %% Make URLs uniform and links in PDFs
+\pdfadjustspacing=1                %% force LaTeX-like character spacing
+\usepackage{geometry}            %% allow margins to be relaxed
+%%\usepackage{wrapfig}             %% permit wrapping figures.
+%%\usepackage{subfigure}              %% images side by side.
+\geometry{margin=1in}            %% Allow narrower margins etc.
+\usepackage[T1]{fontenc}         %% Better Verbatim Font.
+\renewcommand*\ttdefault{txtt}   %% 
+%%\usepackage{natbib}   %% bibitems
+
+%% include background image (wg-document-page-background) 
+
+\usepackage{graphicx}            %% Include pictures into a document
+%% (wg-texdoc-inserttikz)
+
+
+\def\documentisdraft{NOTDRAFT}
+
+%% (wg-texdoc-isdraft)
+%% (wg-texdoc-insert-fancy-headers)
+
+%%\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
+%%\usepackage{makeidx}             %% Make an index uncomment following line
+%%\makeindex                       %%.. yeah this one, too. index{key} in text
+%%
+
+
+
+\definecolor{verbcolor}{rgb}{0.6,0,0}
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\newcommand\debate[1]{\textcolor{darkgreen}{DEBATE: #1} \marginpar{\textcolor{red}{DEBATE} }}
+\newcommand{\ltodo}[2]{\marginpar{\textcolor{red}{ACTION: #1}\endnote{#2}}}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
+\newcommand{\menu}{\ensuremath{\;\rightarrow\;}}
+%%(wg-add-inline-images)  %% add inline images to the mix
+
+
+
+
+
+%%Begin User Definitions: Hint: ~/.latex.defs and  latex.defs  
+%%End User Definitions:
+%%(wg-texdoc-adjust-paper-width)
+%% (wg-texdoc-insert-hypersetup)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+%% (wg-latex-pretty-title-page)
+%% (wg-texdoc-titleblock)
+
+\setcounter{section}{0}
+\pagenumbering{arabic}
+
+\ifx\documentisdraft\drafttest
+\linenumbers    %%%%%%%%%%%%% DRAFT
+\fi
+
+
+
+\begin{landscape}
+\section*{PyRAF Code} \label{sec:pyrafcode}
+
+See below for a detailed description of the small details and tricks \\
+employed. Here is a snippet to cosmic ray correct zero files.
+
+Things should be as simple as they need to be and no simpler!\\
+Paraphrase of Einstin with respect to using Bash in PyRAF.
+
+IRAF {\color{verbcolor}{\verb#chpixtype#}} command:
+
+{\color{verbcolor}{\verb#chpixtype myushort.fits myreal.fits real#}}
+
+Works. Converted back to ushort and subtracted from original = 0 everywhere.
+
+
+\section*{Fix Filenames}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+#
+# The bash =~ operator requires the [[ ]] test format and it matches
+# patterns that have a space as a sub-string.
+#
+# shopt -s nullglob; makes the *.*fts test fail without whining about it.
+
+print "Fix the filename and two-dots problem."
+!for f in *.fts ; do if [[ "$f" =~ " " ]] ; then  mv "$f" ${f// /_}  ; fi ; done 
+!(shopt -s nullglob; for f in *.*.*fts ; do mv  $f  ${f//./_}             ; done)  # change one or more dots to '_'
+!(shopt -s nullglob; for f in *-*fts   ; do mv  $f  ${f//-/_}             ; done)  # '-' to '_' ...
+!(shopt -s nullglob; for f in *_fts    ; do mv  $f  ${f/%_fts/.fits}      ; done)  # _fts  renamed to .fits
+!(shopt -s nullglob; for f in *.fts    ; do mv  $f  ${f//.fts/.fits}      ; done)  # make file a .fits
+\end{verbatim}                                                            
+\endgroup
+%% \end{Verbatim}
+
+
+\section*{Cosmic Ray Correction.}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+cat l.l
+# stop silly questions with crmedian startup.
+!echo "unlearn crmedian" > crall.cl  # (erases) and hacks a script called "crall.cl"
+!echo "crmedian.crmask    = ''" >> crall.cl
+!echo "crmedian.median    = ''" >> crall.cl
+!echo "crmedian.residual  = ''" >> crall.cl
+!echo "crmedian.sigma     = ''" >> crall.cl
+!cat l.l | sed -e 's/\(^.*$\)/crmedian \1 c_\1 /' >> crall.cl
+
+cat crall.cl | less                                 # check and put the script to the log.
+cl < crall.cl
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{landscape}
+
+\clearpage
+
+\begin{landscape}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+#############################################################################
+# Make the master SII twilight flat
+#############################################################################
+# handy boolean expressions:
+#
+# IMAGETYP "matches" Flat; filter matches SII and binning the same
+#    "(IMAGETYP ?= 'Flat' && Filter ?= 'SII' && XBINNING ?= '2')"
+#
+# Zero files, don't care about binning
+#    "(IMAGETYP ?= 'Bias')"
+#
+# Zero files, we do care about binning!
+#    "(IMAGETYP ?= 'Bias' && XBINNING ?= '2')"
+#
+# Darks: Imagetyp matches Dark and binning is 2 and exposure times same = 1800s
+#    "(IMAGETYP ?= 'Dark && XBINNING ?= '2' && EXPTIME = 1800)"
+#
+# Finally! qualify every file in the list everything hselect 
+# Make a handy summary to print for the logbook.
+#    hselect *fits DATE-OBS,IMAGETYP,FILTER,EXPTIME,$I yes
+#    yes
+#
+hselect z_c_//@ml.l $I "(Filter ?= 'SII' && IMAGETYP ?= 'Flat')" > l.l   # for zero and cr corrected files...
+cat l.l
+!rm flat_SII_master.fits
+imcombine @l.l flat_SII_master.fits combine=median scale=exposure
+#!ds9 flat_SII_master.fits
+
+# hack up our PyRAFic way to normalize a flat using the 100x100 center section.
+tmp             = iraf.hselect(Stdout=1,images='flat_SII_master.fits',fields='NAXIS1,NAXIS2',expr=iraf.yes)
+(naxis1,naxis2) = map(int,map(int,tmp[0].strip().split()))
+section         = '[%d:%d,%d:%d]' % (naxis1//2-50,naxis1//2+50,naxis2//2-50,naxis2//2+50)
+mode            = iraf.imstatistics(Stdout=1,images='flat_SII_master.fits'+section,fields='mode',format=iraf.no)
+
+!if test -e n_flat_SII_master.fits; then rm n_flat_SII_master.fits; fi
+iraf.imarith(operand1 = 'flat_SII_master.fits',
+             op       ='/',
+             operand2 = float(mode[0]),
+             result   = 'n_flat_SII_master.fits')
+!ds9 n_flat_SII_master.fits
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{landscape}
+
+\clearpage
+
+\begin{landscape}
+\section*{Clean up headers}
+
+This is the type of script that the observatory should supply for\\
+a telescope/instrument combination. Some software uses .fits \\
+sime .fit and some .fts.
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+print "Strip wcs from non-science images."
+# files *fits > l.l # from all images
+# strip Pinpoint WCS from all files... use astrometry.net
+hedit @l.l CTYPE1,CRVAL1,CRPIX1,CDELT1,CROTA1               del+ update+ show- ver-
+hedit @l.l CTYPE2,CRVAL2,CRPIX2,CDELT2,CROTA2               del+ update+ show- ver-
+hedit @l.l CD1_1,CD1_2,CD2_1,CD2_2                          del+ update+ show- ver-
+hedit @l.l TR1_0,TR1_1,TR1_2,TR1_3,TR1_4,TR1_5,TR1_6,TR1_7  del+ update+ show- ver-
+hedit @l.l TR1_8,TR1_9,TR1_10,TR1_11,TR1_12,TR1_13,TR1_14   del+ update+ show- ver-
+hedit @l.l TR2_0,TR2_1,TR2_2,TR2_3,TR2_4,TR2_5,TR2_6,TR2_7  del+ update+ show- ver-
+hedit @l.l TR2_8,TR2_9,TR2_10,TR2_11,TR2_12,TR2_13,TR2_14   del+ update+ show- ver-
+
+print "Put science iamge headers into the log."
+#hedit *fits OBSERVER 'teamme                               add+ ver- show- update+
+hedit *fits OBSERV01 'Grand Fromage'                        add+ ver- show- update+
+hedit *fits OBSERV02 'Petite Fromage'                       add+ ver- show- update+
+#hedit *fits OBSERV03 'Some Body-Else'                      add+ ver- show- update+
+
+# the IMAGETYP is case sensitive in IRAF
+hselect *fits $I "(IMAGETYP == 'Bias Frame')" > l.l
+cat l.l
+hedit @l.l IMAGETYP zero                                    add+ ver- show- update+
+
+hselect *fits $I "(IMAGETYP ?= 'Dark')" > l.l
+cat l.l
+hedit @l.l IMAGETYP dark                                    add+ ver- show- update+
+
+hselect *fits $I "(IMAGETYP == 'Flat Field')" > l.l
+cat l.l
+hedit @l.l IMAGETYP flat                                    add+ ver- show- update+
+
+hselect *fits $I "(IMAGETYP == 'Light Field')" > l.l
+cat l.l
+hedit @l.l IMAGETYP object                                  add+ ver- show- update+
+
+# Assume SITELAT SITELONG in degrees.
+# hselect *fits $I "(SITELAT  ''") > l.l
+hedit   *fits OBSGEO-B '(@"SITELAT")'                       add+ ver- show- update+
+hedit   *fits OBSGEO-L '(@"SITELONG")'                      add+ ver- show- update+
+hedit   *fits OBSGEO-H 366                                  add+ ver- show- update+
+
+# hard way, thanks vendors!
+hselect *fits sitelat,sitelong,$I "(SITELAT != '')" 
+lattuple = map(float,iraf.hselect(Stdout=1,images='a.fits',
+     fields='sitelat',expr=iraf.yes)[0].replace('"','').split())
+if(lattuple[0] < 0.0):
+   newlat = lattuple[0] - lattuple[1]/60.0 - lattuple[2]/3600.0
+else:
+   newlat = lattuple[0] + lattuple[1]/60.0 + lattuple[2]/3600.0
+
+iraf.hedit(images='@l.l',fields='OBSGEO-B',value=newlat,
+    addonly=iraf.yes,
+    verify=iraf.no,
+    show=iraf.no,
+    update=iraf.yes)
+
+longtuple = map(float,iraf.hselect(Stdout=1,images='a.fits',
+   fields='sitelong',expr=iraf.yes)[0].replace('"','').split())
+
+if(longtuple[0] < 0.0):
+   newlong = longtuple[0] - longtuple[1]/60.0 - longtuple[2]/3600.0
+else:
+   newlong = longtuple[0] + longtuple[1]/60.0 + longtuple[2]/3600.0
+
+iraf.hedit(images='@l.l',fields='OBSGEO-L',value=newlong,
+    addonly=iraf.yes,
+    verify=iraf.no,
+    show=iraf.no,
+    update=iraf.yes)
+# fix altitude
+hedit   *fits OBSGEO-H 366                                  add+ ver- show- update+
+hselect @l.l  OBSGEO-B,OBSGEO-L,OBSGEO-H,$I yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{landscape}
+
+
+\appendix
+\renewcommand \thesection{\Alph{section}}
+
+\section*{Automatic Cosmic Ray repair and Flat Production}
+
+Some background:
+
+\textbf{\emph{Goal:}} No human interventions -- past setup -- required
+for cosmic ray removal (crmedian only works on one file at a time) and
+creation of flats (how do divide by mode without interactive action).
+
+Modern cameras with HAD\texttrademark\; and TrueSense \texttrademark\;
+technology tend to produce single pixels (Single Pixel Errors or SPEs)
+that are essentially ``loud'' noise. The IRAF task
+{\color{verbcolor}{\verb#noao.crutil.crmedian#}} will remove SPEs as
+well as the occasional cosmic ray -- and may optionally produce
+residual files for tracking statistical error-bars.
+
+\textbf{\emph{Action Item:}} The Observatory's engineering staff should make available
+a suite of IRAF cl files to fix images from the telescope. For example put
+them in a standard location:
+
+{\color{verbcolor}{\verb#/opt/WhatsamattaU/iraf/DasFernrohrZwi/fixum.cl#}}
+
+The steps of observing are 1) Observe 2) Process and 3) Analyze and Publish.
+
+This article looks at the directory structure as starting at a top level
+directory called {\color{verbcolor}{\verb#Observations/<date>#}}.
+Under this you will have 4 directories: {\color{verbcolor}{\verb#usw#}},
+{\color{verbcolor}{\verb#Raw#}}, {\color{verbcolor}{\verb#PreAnalysis#}}
+and {\color{verbcolor}{\verb#Analysis#}}. 
+
+The usw directory holds the planning data like DSS images for all
+the targets, any UCAC4 ds9 catalog files, other catalog files,
+maybe a sub-directory for papers etc. It should hold any ds9
+region files, and other configuration files as needed. 
+
+Copy any template {\color{verbcolor}{\verb#cl#}} file to the
+{\color{verbcolor}{\verb#usw#}} directory -- and create the very
+specific reduce {\color{verbcolor}{\verb#cl#}} (usw/reduce.cl) file(s)
+to convert the Raw to the PreAnalysis state. It may take a little
+while to get the first reduce.cl file made.
+
+The steps are:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   convert all the filenames to proper IRAF filenames, no spaces, no
+minus signs (use m or p for plus), no long strings of meaningless
+zeros and only one dot for the extension.
+   \item   Change the keywords, edit out bad header keywords etc.
+   \item   Optionally, trim the images for cameras with overscan regions.
+   \item   Cosmic ray reduce ALL the files. Might as well do that first.
+   \item   Create all masters zeros, darks, flats.
+   \item   Apply the masters to the science images.
+   \item   WCS solve any images.
+   \item   Add the images together for better SNR.
+\end{enumerate}
+
+First the Raw images are copied exactly into a permanent location
+(Raw). 2) make a copy of these data into a PreAnalysis directory to
+process (basic reduction) them to the point of analysis. Copy these
+process images into an  Analysis directory -- and use 
+reference stars, catalog sources and astrophysics to make publication
+ready results.
+
+Once the PreAnalysis directory copy is in place start an empty
+cl file located -- copy the
+necessary templates for reduction. Start PyRAF and cut and paste
+lines from the templates into your reduce.cl script
+
+Flats require zero (bias) subtraction, possibly a scaled
+dark correction, and above all cosmic ray correction.
+The cosmic ray (CR) correction removes single pixel errors (SPEs).
+
+The master zero requires cosmic ray correction before
+combining -- again to address the stuck pixels.
+
+This article contains PyRAF (Python and IRAF) code snippet to create
+flat file from twilight flats.
+
+Previously: We cosmic ray corrected ALL the images. Zeros, Flats,
+Science Images. 
+
+In the processing steps: 
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Necessary files are trimmed with a {\color{verbcolor}{\verb#_t#}}
+   prepended to the filename.
+   \item   All raw images are cleaned with
+{\color{verbcolor}{\verb#noao.imred.crutil.crmedian#}} and a
+{\color{verbcolor}{\verb#c_#}} prepended to produce filenames as
+{\color{verbcolor}{\verb#c_filename.fits#}}
+   \item   All master files are created (watch binning)
+   \item   All files are then zero subtracted and the filenames have
+a {\color{verbcolor}{\verb#z_#}} prepended: {\color{verbcolor}{\verb#z_c_filename.fits#}}
+   \item   As processing proceeds the following characters may be used:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   {\color{verbcolor}{\verb#d_#}} prepended for dark subtraction
+   \item   {\color{verbcolor}{\verb#f_#}} prepended for flat division
+   \item   {\color{verbcolor}{\verb#n_#}} prepended for normalized flats (usually renamed
+{\color{verbcolor}{\verb#flat_band_bin_master.fits#}}.
+   \item   All of these intermediate files are cleaned out with:\\
+{\color{verbcolor}{\verb#! (export LC_ALL=C; rm [a-z]_*fits 2> /dev/null;)#}}
+\end{enumerate}
+   \item   Files may be WCS solved as needed.
+\end{enumerate}
+
+\textbf{\emph{Example:}} A completely ready file, filename.fits might look like
+{\color{verbcolor}{\verb#f_d_c_z_c_t_filename.fits#}}. Reading backwards,
+it was trimmed, CR corrected, zero subtracted, dark subtracted, flat
+corrected. The summed file is from a collection. With the base file
+names in {\color{verbcolor}{\verb#l.l#}}
+\begin{quote}
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+hselect *fits $I "(IMAGETYP ?= 'light')" > l.l
+cat l.l
+cl << crall.cl  # Force CR correction to all files up front.
+imarith c_//@l.l - zeromaster.fits z_c_//@l.l
+imarith z_c_//@l.l - darkmaster.fits d_z_c_//@l.l
+imarith d_z_c_//@l.l / flat_vband_2x2.fits  f_d_z_c_//@l.l
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+\end{quote}
+
+\textbf{\emph{General rule:}} The {\color{verbcolor}{\verb#l.l#}} file
+is used over and over again for a small extent of the processing. It
+is a ``list.list'', and should be considered un-trustworthy for any
+long period (use {\color{verbcolor}{\verb#cat l.l#}} to peek --- because ``I
+always check my work''). Just make a new one if in doubt.
+
+In the above example: IRAF allows ``list of files'' or ``'at' files''. By prepending the
+``at cost'' sign ({\color{verbcolor}{\verb#@#}}) to the filename
+IRAF will peek inside that file and use each of the files -- one
+filename per line, as operands. The {\color{verbcolor}{\verb#@#}}
+trick only works with IRAF commands.
+
+You can use bash:
+
+{\color{verbcolor}{\verb#!(cat l.l | xargs ds9 ) &#}}
+
+to read the lines one-at-a-time from l.l and send to a special Unix
+{\color{verbcolor}{\verb#xargs#}} command. Xargs makes a long command
+line phrase and adds it to rest of its command line before executing.
+In this example, ds9 will show all the files in l.l. Hundreds of them
+if you have a length l.l file!
+
+IRAF allows you to ``string concatenate'' characters to the beginning
+of a file \footnote{end doesn't work so well with extensions in some cases.}
+using the {\color{verbcolor}{\verb#//#}} ``concatenation operator''.
+The list above has some examples.
+
+
+\subsection{Using Bash and IRAF to remove cosmic rays and SPEs}
+
+Here we use the Unix output redirection tricks: {\color{verbcolor}{\verb#> l.l#}}
+to send output to a new file (will remove old one and make a new one if needed);
+then {\color{verbcolor}{\verb#>> l.l#}} to append new output from a task
+to the end of this fresh file. This allows several commands to 
+``build up'' an new file. 
+
+So, we build a righteous cl script -- here called {\color{verbcolor}{\verb#crall.cl#}}.
+Then we use the {\color{verbcolor}{\verb#< crall.cl#}} to input that file
+to the IRAF interpreter program {\color{verbcolor}{\verb#cl#}}:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+ls -1 *fits > l.l                    # Get all the files
+# stop silly questions with crmedian startup.
+!echo "unlearn crmedian" > crall.cl  # (erases) and hacks a script called "crall.cl"
+!echo "crmedian.crmask    = ''" >> crall.cl
+!echo "crmedian.median    = ''" >> crall.cl
+!echo "crmedian.residual  = ''" >> crall.cl
+!echo "crmedian.sigma     = ''" >> crall.cl
+!cat l.l | sed -e 's/\(^.*$\)/crmedian \1 c_\1 /' >> crall.cl
+cat crall.cl                         # I always check my work
+cl << crall.cl                       # Force CR correction to all files up front.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+The {\color{verbcolor}{\verb#sed -e 's/\(^.*$\)/crmedian \1 c_\1 /'#}} is
+a special Unix editor (string ed) to pick up each filename once
+and use it twice: once as input file for the crmedian task, and
+then with a {\color{verbcolor}{\verb#c_#}} added for the output name!
+Crmedian itself does not use the at-files. 
+
+
+Now:
+
+{\color{verbcolor}{\verb#hselect c_//@l.l $I "(IMAGETYP ?= 'Flat' && FILTER ?= 'alpha' && XBINNING ?= 2)"#}}
+
+shows Flat files binned by 2 for the H$\alpha$ filter -- for all
+raw files with cosmic rays fixed.
+
+Here are a few snippets of PyRAF for various steps.
+
+
+
+
+%% use a bibitem approach to the references publications etc.
+%% (wg-bibitem)
+
+%%\clearpage
+%%\addcontentsline{toc}{section}{References}
+%%\renewcommand*{\refname}{My Bibliography and References}
+%%\bibliographystyle{plain}	% bibliographystyle{apalike} and \usepackage{natbib}
+%%\bibliography{MasterBib}	% expects file "MasterBib.bib"
+
+
+%%\clearpage
+%%\addcontentsline{toc}{section}{Index}
+%%\printindex %% www.cs.usask.ca/resources/tutorials/latex/notes/toc-index.pdf
+
+%%\begin{thebibliography}{80}
+%%\usepackage{natbib}   %% bibitems
+%%\end{thebibliography}
+
+% /home/wayne/clones/git/ASTR3510_2019/doc/AutoFlats.tex
+
+%% (wg-texdoc-endnotes)
+\end{document}

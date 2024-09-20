@@ -1,0 +1,76 @@
+\subsection{IRAF apall task}  \label{sec:apall}
+
+\example For a \dhl{comparison}, \dhl{flat} and \dhl{science} image set you
+want to develop the database using the trace(s) of stars/regions from
+the science image. Then apply that trace to the comparison and flat
+images.
+
+The apall task requires a few things:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   hedit *fits DISPAXIS 1 add+ update+ ver- show-
+   \item   trim the files to tight red/blue fits. 
+   \item   given the pixel size:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   lower and upper to fit seeing size of the trace. This may be changed
+   using interactive=yes.
+   \item   line needs to be the physical (or image) location of a bright piece of
+   the trace. This starts the process of finding the trace.
+   \item   backgrouind b\_sample = "-20:-15,15,20" sets the little background
+   ``segments'' \llbox{s}-\llbox{s} key sequence
+\end{enumerate}
+   \item   format = "onedspec"
+   \item   extras = yes -- this provides 4 bands with quality information for
+           extracted spectra.
+   \item   function chebyshev (avoid Runge phenomena)
+   \item   order 5 to, say, 15
+   \item   background = "average"
+   \item   weights = "variance"
+\end{enumerate}
+
+
+and perhaps a few special to your needs.
+
+\subsection{Aperture Marking}
+
+You can use \llbox{w}-\llbox{e}-\llbox{e} to set the extent of a ``window''.
+The first \llbox{e} at the lower left and the second \llbox{e} at the upper right.
+
+The \llbox{l} and \llbox{u} set the lower/upper (left/right) edges of
+the area to sample.  Set this according to the wide part of the trace
+near the bottom.
+
+Then use \llbox{b} to enter background area definition. Use \llbox{z} \llbox{z}
+to clear out the lower and upper regions. Then set the first area by putting
+the cross-cursor at the bluest side and \llbox{s} move over a small distance
+and \llbox{s} again -- this sets the first region. The region should be close
+to the spectrum to avoid cross-contamination because of tilt and smile. Repeat
+on the red side of the spectrum. Next use \llbox{f} to fit the results. A residuals
+will be reported in the banner, and a curve is drawn. The flatter the curve the better.
+Now \llbox{q} to quit background fitting.
+
+\llbox{q} to end the aperture fitting.
+
+\dhl{Trace apertures for Vega\_Light\_006?} is the next question. yes \\
+\dhl{Fit traced positions for Vega\_Light\_006 interactively?} yes \\
+\dhl{Fit curve to aperture 1 of Vega\_Light\_006 interactively} yes \\
+
+\textbf{\emph{Trick}} Use the  \llbox{s}- \llbox{s} trick to set extents 
+to where the trace is well represented (brighter and not noisy).
+
+Use the \llbox{k} key to change the display. Then \llbox{w}-\llbox{e}-\llbox{e}
+to zoom into the straight part; and \llbox{d} to delete errant points. (hot
+pixels or cosmic rays). Then \llbox{f} to do another fit -- check the residuals
+in the banner. Repeat until your are satisfied, then \llbox{q} to end the fit
+curve portion.
+
+\dhl{Write apertures for Vega\_Light\_006 to database}  yes\\
+\dhl{Extract aperture spectra for Vega\_Light\_006?} yes\\
+\dhl{Review extracted spectra from Vega\_Light\_006?} yes
+
+The spectrum is plotted, but this is not the splot task. If it
+looks decent, then jump into splot and really take a close look
+to make sure the extractions is correct.

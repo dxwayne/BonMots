@@ -1,0 +1,327 @@
+\section{Ds9 Analysis Features}
+
+Mindnumbing cryptic details can be had at:
+
+\url{http://ds9.si.edu/doc/ref/analysis.html}
+
+Our goals are to pass an image, with a region for our own obscure analysis
+tasks and display some results.
+
+Some handy things to add to the \dhl{Analysis} menu:
+
+- Fake a wcs given the Ra/Dec from the header. This is extremely
+crude -- but helps to make sure you are on the right field.
+-- Have an idea the platescale: FOCALLEN keyword.
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+#
+# Analysis command descriptions:
+#       menu label
+#       file templates
+#    menu/bind
+#       analysis command line
+
+param foo
+    var1 entry entry 40 {this is a entry}
+    var2 checkbox checkbox 1 {this is a checkbox}
+    var3 menu menu AAA|BBB|CCC {this is a menu}
+endparam
+
+param bar
+    @analysis.par
+endparam
+
+param foobar
+    @tvdisply.par
+endparam
+
+param ltc
+    bins entry "Enter number of [t1:t2:]bins" 0 "('0' for default number of bins)"
+endparam
+
+# Help Main Help
+
+help Main Help
+These menus contain a test for each possible feature
+
+supported by the ds9 (blank line above)
+endhelp
+---
+
+hmenu Test Web
+    help Web Help
+    Help for web features
+    endhelp
+
+    Web Test url
+    *
+    web
+    http://hea-www.harvard.edu/RD/ds9/
+
+    Web Test file
+    *
+    web
+    file:/home/joye/saods9/ds9/tests/hv.html
+endhmenu
+
+hmenu Test Basics
+    help Basic Help
+    Help for basic features
+    endhelp
+    ---
+    Test escape char # this is a comment
+    *
+    menu
+    echo "this is not a macro $$xpa" | $text
+
+    Test pass thru # this is a comment
+    *
+    menu
+    echo "this is not a macro $foo" | $text
+
+    Test $xpa # this is a comment
+    *
+    menu
+    echo $xpa | $text
+
+    Test $xpa_method
+    *
+    menu
+    echo $xpa_method | $text
+
+    Test $vo_method
+    *
+    menu
+    echo $vo_method | $text
+
+    Test $filename
+    *.fits
+    menu
+    echo $filename | $text
+
+    Test $filename(root)
+    *.fits
+    menu
+    echo $filename(root) | $text
+
+    Test $xdim $ydim $bitpix
+    *.fits
+    menu
+    echo "$xdim $ydim $bitpix" | $text
+
+    Test $xcen $ycen
+    *.fits
+    menu
+    echo "$xcen $ycen" | $text
+
+    Test $env
+    *
+    menu
+    echo $env(PATH) | $text
+endhmenu
+
+hmenu Test Regions
+    help Regions Help
+    Help for regions features
+    endhelp
+    ---
+    Test $regions
+    *.fits
+    menu
+    echo "$regions ds9_s:$regions(ds9,source,image) ciao_b:$regions(ciao,background) saotng_i:$regions(saotng,include,wcs,fk5) pros_e:$regions(pros,exclude,wcs,fk5,sexagesimal) xy_be:$regions(xy,background,exclude,wcs,fk4,hms)" | $text
+
+    Test $regions wcs
+    *.fits
+    menu
+    echo "$regions(ds9,wcs) $regions(ds9,wcs,fk5,sexagesimal) $regions(ds9,wcsa) " | $text
+
+    Test $include_regions_pixels
+    *.fits
+    menu
+    echo "ds9_s: $source_regions ds9_b: $background_regions_pixels ds9_i: $include_regions_degrees ds9_e: $exclude_regions_hms" | $text
+
+    Test $filename $regions
+    *.fits
+    menu
+    echo "$filename[$regions]" | $text
+
+    Test $filename $regions()
+    *.fits
+    menu
+    echo "$filename[$regions()]" | $text
+endhmenu
+
+hmenu Test Output
+    help Output Help
+    Help for output features
+    endhelp
+    ---
+    Test $null
+    *
+    menu
+    echo "This is Text" > /dev/null | $null
+
+    Test $text
+    *
+    menu
+    echo "This is Text" | $text
+
+    Test $text stderr
+    *
+    menu
+    ls foofoofoo | $text
+
+    Test $plot
+    *
+    menu
+    cat xy.dat | $plot
+
+    Test $plot(title,x,y,xyey)
+    *
+    menu
+    cat xye.dat | $plot(Title,X Axis,Y Axis,xyey)
+
+    Test $plot(title,x,y,xyexey)
+    *
+    menu
+    cat xyee.dat | $plot(Title,X Axis,Y Axis,xyexey)
+
+    Test $plot(title,x,y,4)
+    *
+    menu
+    cat xyey.dat | $plot(Title,X Axis,Y Axis,4)
+
+    Test $plot(title,x,y,5)
+    *
+    menu
+    cat xyeye.dat | $plot(Title,X Axis,Y Axis,5)
+
+    Test $plot(stdin)
+    *
+    menu
+    cat xye.stdin.dat | $plot(stdin)
+
+    Test $plot(stdin) text
+    *
+    menu
+    cat xye.stdin.text.dat | $plot(stdin)
+
+    Test $plot(stdin) error
+    *
+    menu
+    cat xy.stdin.error.dat | $plot(stdin)
+
+    Test $data
+    *.fits
+    menu
+    $data | $image(new)
+
+    Test $image
+    *
+    menu
+    cat img16.fits | $image
+endhmenu
+
+hmenu Test Dialogs
+    help Dialogs Help
+    Help for dialog features
+    endhelp
+    ---
+    Test $message(message)
+    *
+    menu
+    $message(ok,This is a Message) | echo "hello" | $text
+
+    Test $message(ok,message)
+    *
+    menu
+    $message(ok,This is a Message) | echo "World" | $text
+
+    Test $entry(message)
+    *
+    menu
+    echo "$entry(Enter Something)" | $text
+endhmenu
+
+hmenu Test Params
+    help Param Help
+    Help for param features
+    endhelp
+    ---
+    Test $param
+    *
+    menu
+    $param(foo); echo "$var1 $var2 $var3" | $text
+
+    Test $param @file
+    *
+    menu
+    $param(bar); echo "$var1 $var2 $var3" | $text
+endhmenu
+
+hmenu Test Network
+    help Network Help
+    Help for network features
+    endhelp
+    ---
+    Test $url(http://)
+    *
+    menu
+    $url(http://legacy.gsfc.nasa.gov/FTP/rosat/data/cdrom/vol1/IMAGES/00h/p000s26b.img.Z) | gunzip | $image
+
+    Test $url(ftp://)
+    *
+    menu
+    $url(ftp://legacy.gsfc.nasa.gov/rosat/data/hri/images/fits/rh100193_img.fits) | $image
+
+    Test $geturl $text
+    *
+    menu
+    $geturl(http://hea-www.harvard.edu/RD/saord-cgi/funtools?funcnts+$filename+$regions(source,,)+$regions(background,,))|$text
+
+    Test $geturl $plotstd
+    *
+    menu
+    $param(ltc); $geturl(http://hea-www.harvard.edu/RD/saord-cgi/funtools?funhist_plot+$filename[$regions]+time+$bins)|$plot(stdin)
+endhmenu
+
+hmenu Test Other
+    help Other Help
+    Help for other features
+    endhelp
+    ---
+    Test $param @tvdisply
+    *
+    menu
+    $param(foobar); echo "$frame $erase" | $text
+
+    hmenu Test MultiLevel
+        test
+        *
+        menu
+        echo "Hello World" | $text
+    endhmenu
+endhmenu
+
+$x $y
+*.fits
+bind x
+echo "$x $y" | $text
+
+$x(fk5,hms) $y(fk5,hms)
+*.fits
+bind y
+echo "$x(fk5,hms) $y(fk5,hms)" | $text
+
+$x(wcs,fk5,hms) $y(wcs,fk5,hms)
+*.fits
+bind z
+echo "$x(wcs,fk5,hms) $y(wcs,fk5,hms)" | $text
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

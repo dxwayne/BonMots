@@ -1,0 +1,211 @@
+\section{IRAF Overview} \label{sec:IRAFOverview}
+
+\subsection*{Quick Notes for IRAF 2.18}
+
+The program may be installed in various ways. For Ubuntu 22.04, the 
+apt library version is the old 2.17 code. It is easy to download and
+build the source code. See section{sec:InstallFeatherNest} for details.
+
+IRAF now installs in a different way. There is a program called \dhl{mkiraf}
+that will create a \$HOME/.iraf directory. 
+
+There are principle files: \dhl{/etc/iraf/login.cl} and \dhl{\$HOME/.iraf/loginuser.cl}
+that come into play. The first, login.cl, should never be edited. If the file
+\$HOME/.iraf/loginuser.cl exists it will be loaded. It is \$HOME/.iraf/loginuser.cl
+where a user configures the startup environment's packages and user specific
+tasks etc to be used. It is not uncommon to have a few of these files, say
+one for photometry and the other for spectroscopy. A few variations that
+handle different observatory's data. 
+
+Details of these files will be dealt with later in Section \ref{sec:LoginScriptsInFull}.
+
+IRAF \dhl{(Image Reduction and Analysis Framework)} is a collection of
+'packages', each with a handful of 'tasks'. Each task has its own
+parameter lists (.par and param files). IRAF is from the age of the
+command-line-interface, and uses the approach identical to an modern
+bash shell. The initial 'command-language' (cl), was extended to ecl
+based on experience and needs. The desire to add functionality
+resulted in PyRAF -- the adoption of Python 2.x environment. The
+Python readline function was changed; syntax that matched that of ecl
+was adapted to more than 95 percent of needs. All of the features of
+Python were then available in the same way as using Python
+interactivly.  This makes PyRAF the environment to use. Knowledge and
+use of 'cl' directly is still needed.
+
+Python is NOT a programming language, it is an ``environment''. With key
+specifications included in the moving parts, it is impossible to distribute
+a ``Python'' program -- one has the build the Python project into or
+alongside any other environments on their platform. \index{Python!not program.}
+
+There are a great many variances between individual instruments. A GUI
+can only encapsulate settings with little ability to make the
+necessary changes required between datasets to meet changing
+conditions during a night.\dhl{[ Managing these differences are covered in
+Section \ref{sec:IRAFGUINotes}}.
+
+IRAF/PyRAF is based on physics from the 1980's and
+90's \cite{1973asqu.book.....A}. Use of the Analysis facilities require
+careful attention or should be avoided in lieu of modern algorithms
+such as those that are emerging with Astropy. The analysis facilities
+are reasonable for small-telescope, low resolution spectroscopy.
+
+The IRAF/PyRAF interface uses the dated XWindows X11/R6 system. Most
+of the desired GUI like features are provided by the X11 interface.
+\index{X11}
+
+The SAOImage/DS9 (ds9) \cite{1990BAAS...22..935V}
+\cite{2019zndo...2530958J} program replaces XImtool, providing the
+external task for image viewing and task interaction management. Ds9
+uses both the XPA and SAMP protocols to facilitate interprocess
+communications between the IRAF tasks, PyRAF interfaces, and the
+images. SAMP provides tie-ins to Aladin and TOPCAT. This suite of
+tools greatly assists in areas of photometry.  Python supports XPA
+directly.
+
+Once an instrument's configuration is well in hand, many of the interactive
+steps may be skipped, expediting data reduction. A ``cl'' or PyRAF script
+may be used to perform these tasks.
+
+IRAF's main scripting started with the ``command line'' or \dhl{cl} script
+engine. This was replaced with ``extended command line'' or \dhl{ecl}.
+The desire for more power with scripting lead to the development
+of PyRAF \cite{2006hstc.conf..437G,PyrafProgrammersGuide}. 
+
+Under CL it is possible to write packages and tasks. A project is underway
+to write cmosproc -- a basic reduction step sequence for cmos camera's.
+The amount of things to learn with menu systems. pulldowns, and text
+entry boxes is about as complex as simply typing a number of commands
+into a script.
+
+IRAF works with several image formats, principally the Flexible Image
+Transport System or ``FITS'' A concise history may be found in \cite{FITSBirthday}.
+
+
+IRAF/PyRAF3 may be run naively under Microsoft Windows, using the
+professional or better versions of Win10/Win11. The professional OS
+versions are needed for Microsoft's Hyper-V environment. For example
+installing Ubuntu 22.04 in the HyperV as a virtual machine and using XMing
+to handle the rendering of X11 windows.
+
+IRAF makes heavy use of X11 and Unix commands. It is not well suited
+for use with Windows. Currently IRAF/PyRAF3 runs quite well on a
+Raspberry Pi 4 B2. It runs well on Apple Mac/OS by installing XQuartz
+on the Macbooks. Success may be achieved using XMing or other
+X-Windows Server programs on Windows. It is possible to host the full
+IRAF/PyRAF system on a Raspberry Pi or other remote Linux machine and
+perform reductions and analysis on a Mac or Windows machine.
+
+From another Linux system simply create a terminal using \dhl{ssh -X
+  myuser@pi.local}.  Programs like \dhl{XQuartz} for Macs; or
+\dhl{Xming} and \dhl{PuTTY} for Win10 allow one to use the power of
+X11 via windows acting like an X-Terminal! IRAF/PyRAF3 has been ported
+to Apple OS both Intel and the new Mx processors as well as most
+robust mainstream Linux OSs.
+
+\section{Configuration loginuser and pyraflogin}
+
+There are some tasks and python scripts (2.7) that are used to make
+scripting easy.
+\begin{quote}
+{\color{red}
+\begingroup \fontsize{8pt}{8pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+task $ds9="$foreign"
+task $iraffind="$foreign"
+task $r = ("$(ls -lt * | grep -v '[ ][.]' | head -10 ;)")  # show 10 recent changed files
+task $ll = ("$(ls -1 $* | tee l.l; cat l.l)")
+task $fvl  = ("$(~/bin/fitsverify -l $* | less -i)")
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+\end{quote}
+
+These python functions are 'sourced' by importing the functions from
+the \$HOME/iraf/pyraflogin3.py file. The bash alias for pyraf
+sets the PYTHONPATH environment variable, or you can:
+
+\dhl{sys.path.append(getenv('HOME')+'/iraf')}
+
+Then simply:
+
+\dhl{from pyraflogin3 import *}
+
+and the functions are available.
+
+
+the iraf/pythonlogin3.py script
+by the alias for pyraf. Some are for writing a new file or cube;
+plotting; doing some helper tasks.
+
+\begin{quote}
+{\color{red}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+def newfits(filename,data,header=None)
+def newcube(filename,filelist,header=None)
+def shiftup(filename,count=1)
+def shiftside(filename,count=1)
+
+def our_figure()
+def our_histogram(mydata,title='Histogram')
+def our_simple_plot(aline,x=None,title='Linear Plot',degree=None)
+def our_plot(aline,x=None,degree=None,legend=None)
+def our_plot_show(title='Linear Plot',usegrid=True)
+def our_scatter_plot(x,y,title=None,spkeywords={})
+def our_plot3d(z)
+
+def pypar(task)
+def pyparload(task,filename)
+def pyfixbinning(imagename, newx,newy,xkwbin,ykwbin
+def r2s (pobjra)
+def d2s (pobjdec)
+def s2r(rastr)
+def s2d(decstr)
+def fixCCDSOFT(filename)
+def fakedispersion(filename,ypos=466,width=10)
+def pyhelp(func)
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+\end{quote}
+
+
+\subsection{pyraflogin} \label{sec:pyraflogin}
+
+This version of IRAF comes by way of a \dhl{conda channel} and requires
+a \dhl{source activate iraf27} command to adjust the launch-point's terminal's
+environment. 
+
+The snap command requires these two directories:
+
+/home/wayne/anaconda3/bin \\
+/home/wayne/anaconda3/envs/iraf27/bin: \\
+/home/wayne/anaconda3/envs/iraf27/iraf/unix/bin.linux
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+os.environ["PATH"] = '/home/wayne/anaconda3/envs/iraf27/bin:/home/wayne/anaconda3/bin:\\
+   /home/wayne/anaconda3/envs/iraf27/iraf/unix/bin.linux'+os.environ["PATH"]
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+An alias is used to launch pyraf.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+alias pyraf="(export PYTHONSTARTUP=$HOME/iraf/pyraflogin.py; export PATH=$PATH:$HOME/iraf/smtsci/bin:$PATH; $HOME/anaconda3/envs/astrocondairaf/bin/pyraf -s; )"
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+

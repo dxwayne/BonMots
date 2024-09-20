@@ -1,0 +1,70 @@
+\subsection{XPA}  \label{sec:XPA}
+
+SAOImage/DS9 supports both SAMP and XPA connections. XPA is a
+superset of the ancient IIS protocol for sharing images within IRAF.
+SAMP (Simple Application Messaging Protocol) shares information
+between most of the important software packages, including Cartes
+du Ceil, Aladin, TOPCAT etc. Aladin can find a dataset, push the
+information to ds9, TOPCAT which may in turn save as a CSV or
+push into a local instance of several powerful databases (PostgreSQL
+and MySQL to name a few). 
+
+From within PyRAF, commands may be chained together to open fits files
+then overlay with a saved region file. This is handy for focusing
+using the cimexam and jimexam commands of IRAF.
+
+Details of the XPA services:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+sudo apt install xpa-tools
+
+ps aux | grep xpans to see if a server is running.
+In ds9, under File -> XPA ->Connect
+
+Then 
+xpaget xpans
+DS9 ds9 gs 7f000001:34293 wayne
+
+returns the instance of XPA program
+
+Now we can use xpaset and xpaget to get and set parameters, command
+ds9 to do things etc.
+
+keycode summary
+https://ds9.si.edu/doc/ref/keyboard.html
+
+7f000001: is local host! 128.0.0.1 sans dots and in hex
+
+basic things:
+
+xpaget does not use the -p switch.
+xpaset needs it, unless you are piping stdin to the program
+
+
+fun things:
+
+xpaget    ds9 7f000001:37311 
+xpaset -p ds9 7f000001:37311 colormap heat
+
+Send the file in pwd to ds9:
+
+xpaset -p ds9 file $(pwd)/Cal_15s_20240907_191138m3.fits
+
+xpaget ds9 regions > samples.ds9
+
+--- the file
+# Region file format: DS9 version 4.1
+global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman" select=1 highlite=1 dash=0 fixed=0 edit=1 move=1 delete=1 include=1 source=1
+physical
+box(4659.5315,2603.1663,59.719672,50.761724,0)
+---
+Then cat sample.ds9 | xpaset ds9 regions
+to force a region to that location. Decent when using imexame
+across images.
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

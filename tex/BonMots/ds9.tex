@@ -1,0 +1,220 @@
+\section{ds9}
+
+The SAOImage/ds9 package is a powerful and extensible tool for image
+viewing.  It integrates well with a host of other programs via the
+SAMP or XPA inter-process communications facilities. The programs
+include PyRAF/IRAF, TOPCAT, Aladin, Glue and various levels of Python
+programs.
+
+The basic usage is covered elsewhere. Here we explore a suite of extension
+examples offered via GitHUB\footnote{\url{https://github.com/dxwayne/sasiraf}}.
+SAOImage makes one critical mistake on *inx systems -- it uses 'hidden'
+files -- a trick best not used even by experts except when necessary.
+The key files:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+$HOME/.ds9         - special directory with ds9 related code
+$HOME/.ds9.X.y.prf - file carrying Edit -> Preferences values.
+$HOME/.ds9.ini     - the default file for initialization code.
+./.ds9.ini         - a local directory ds9.ini file.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\subsection{Extending ds9}
+
+Tcl/TK is the ``Tool command language'' and the ``toolkit'' for gui and
+other shared operations. The basic details are left to the Internet.
+The trick here:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+Download the source
+grep -Hins 'something' *tcl - return filename:lineno, stuff case insensitive
+See how ds9 does it
+Make your own function or override one already in use.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+The main problem is the ds9 maintainers are using too many 'cute'
+bits of the language -- namespaces, etc and adding too many knobs
+to make hacking it easy.
+
+\subsubsection{Basic Hacks}
+
+\textbf{\emph{Prose:}} Hey, ds9, when you wakeup from a GUI
+launch I want to get to my data fast -- and not wade through
+the moras of hidden system files. I'm making my own fake
+system file (BadThing\texttrademark) to get me there fast
+with a 'soft' link. \index{ds9!link/shortcut for data}.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+ln -s /Observations/4Jul2019/PreAnalysis .AAAAToday
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+Don't add your hack code directly to \dhl{ds9.ini} add it to a
+side file and then include that file in \dhl{ds9.ini} like
+\index{ds9!tcl!ds9.ini hack} this:
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+set ::wgdebug 0
+# user specific
+#source "$::env(HOME)/wgds9/lco.ds9.ini"
+#source "$::env(HOME)/wgds9/notes.ds9.ini"
+source "$::env(HOME)/wgds9/titan.ds9.ini"
+#source "$::env(HOME)/wgds9/ds9jfind.ini"
+source "$::env(HOME)/wgds9/hh212.ds9.ini"
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\textbf{\emph{Prose:}} Hey, make a special global variable called
+\dhl{wgdebug} to help me out later. The \dhl{\#} character is a
+commment -- drop all characters to the end of current line. My main
+machine is called \dhl{titan}. My special \dhl{location} for my hacks
+is \dhl{~/wgds9} (non-hidden) directory. When, not if, something steps
+on .ds9.ini then I don't lose my tricks. \textbf{\emph{Hint:}} create
+a special github account for yourself and keep this important info in
+the cloud.
+
+\subsubsection{Example Hacks}
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Extend Help. Complicated -- have to hack into menu system.
+
+   \item   JFind -- a Tcl/TK gui program that makes finding files on Unix easier.
+Architected so its main guts can be added to ds9 directly!
+
+   \item   Dialogs
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Simple: List the files in current frames
+   \item   Hard: tie to database for quality descriptions
+\end{enumerate}
+
+
+
+   \item   Tie to a database
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Easy way -- write SQL insert code!
+   \item   Hard way -- start a connection to the engine.
+\end{enumerate}
+
+\end{enumerate}
+
+
+
+\subsection{Database tie-in}
+
+\dhl{sudo apt-get install libsqlite3-tcl}
+\dhl{sudo apt-get install tcl tcl-dev }
+
+
+MySQL is not a very good database. The better one is PostgreSQL.
+However, Tcl does tie to the MySQL engine rather well.
+
+
+See the path's for ds9:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+join $::auto_path
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+/zvfsmntpt/tcl8.6
+./zvfsmntpt
+/home/wayne/lib
+/tmp/ubuntu18/SAOImageDS9/lib
+./zvfsmntpt/tk8.6
+./zvfsmntpt/tk8.6/ttk
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+lappend ${::auto_path} {/usr/share/doc/libsqlite3-tcl}
+
+# (iv (setq tmp (wg-sexa2dec "+40:05:26" )))   40.090437158469946
+
+# (iv (setq tmp (wg-sexa2dec "105:12:15" )))   105.20409836065573
+
+# use tcl associative array called hack: with (members):
+set ::hack(FOCALLEN) 988 ; # Explore Scientific FOCAL LENGTH
+set ::hack(OBSGEO-B) 105.20409
+set ::hack(OBSGEO-L) 40.09044
+set ::hack(OBSGEO-H) 1662.0
+set ::hack()
+
+proc wsplit {str sepStr} {
+    if {![regexp $sepStr $str]} {
+        return $str}
+    set strList {}
+    set pattern (.*?)$sepStr
+    while {[regexp $pattern $str match left]} {
+        if { "$left" != "" } {
+          lappend strList $left
+        }
+        regsub $pattern $str {} str
+    }
+    if { "$str" != "" } {
+      lappend strList $str
+    }
+    return $strList
+}; # set foo [wsplit "+40:30   20.5" {[: ]+}]
+
+proc d2s {arg} {
+  set parts [wsplit $arg {[: hmsd]}]
+  while {[string len $parts] < 3} {
+    lappend parts {0}
+  }
+  set ans [expr {[lindex $parts 0] + ([lindex $parts 1] / 60.0) * ([lindex $parts 1] / 3600.0)}]
+  return $ans
+}; # d2s "+40:30:20.5"
+
+
+proc r2s {arg} {
+  set parts [wsplit $arg {[: hmsd]}]
+  while {[string len $parts] < 3} {
+    lappend parts {0}
+  }
+  set ans [expr { 15.0 * ([lindex $parts 0] + ([lindex $parts 1] / 60.0) * ([lindex $parts 1] / 3600.0))}]
+  return $ans
+}; # r2s "+17:30:20.5"
+
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+%

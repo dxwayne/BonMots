@@ -1,0 +1,582 @@
+\documentclass[letter,11pt,oneside]{article}
+
+%%% (occur "\\(\\\\[a-z]*section\\|appendix\\|input\\|\\<include\\>\\)")
+
+%%\documentclass[11pt,twocolumn]{article}
+%%\usepackage[inline]{asymptote}   %% Inline asymptote diagrams
+%%\usepackage{wglatex}             %% Use this one and kill others.
+\usepackage{color}               %% colored letters {\color{red}{{text}}
+\usepackage{fancyhdr}            %% headers/footers
+%%\usepackage{fancyvrb}            %% headers/footers
+\usepackage{datetime}            %% pick up tex date time 
+\usepackage{lastpage}            %% support page of ...lastpage
+\usepackage{times}               %% native times roman fonts
+\usepackage{textcomp}            %% trademark
+\usepackage{amssymb,amsmath}     %% greek alphabet
+\usepackage{parskip}             %% blank lines between paragraphs, no indent
+\usepackage{shortvrb}            %% short verb use for tables
+\usepackage{lscape}              %% landscape for tables.
+\usepackage{longtable}           %% permit tables to span pages wg-longtable
+\usepackage{url}                 %% Make URLs uniform and links in PDFs
+\usepackage{enumerate}           %% Allow letters/decorations for enumerations
+\usepackage{endnotes}            %% Enhance footnotes/endnotes
+\usepackage{listings}            %% Make URLs uniform and links in PDFs
+\pdfadjustspacing=1                %% force LaTeX-like character spacing
+\usepackage{geometry}            %% allow margins to be relaxed
+%%\usepackage{wrapfig}             %% permit wrapping figures.
+%%\usepackage{subfigure}              %% images side by side.
+\geometry{margin=1in}            %% Allow narrower margins etc.
+\usepackage[T1]{fontenc}         %% Better Verbatim Font.
+\renewcommand*\ttdefault{txtt}   %% 
+%%\usepackage{natbib}   %% bibitems
+
+%% include background image (wg-document-page-background) 
+
+\usepackage{graphicx}            %% Include pictures into a document
+%% (wg-texdoc-inserttikz)
+
+
+\def\documentisdraft{NOTDRAFT}
+
+%% (wg-texdoc-isdraft)
+%% (wg-texdoc-insert-fancy-headers)
+
+%%\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
+%%\usepackage{makeidx}             %% Make an index uncomment following line
+%%\makeindex                       %%.. yeah this one, too. index{key} in text
+%%
+
+
+\definecolor{verbcolor}{rgb}{0.6,0,0}
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\newcommand\debate[1]{\textcolor{darkgreen}{DEBATE: #1} \marginpar{\textcolor{red}{DEBATE} }}
+\newcommand{\ltodo}[2]{\marginpar{\textcolor{red}{ACTION: #1}\endnote{#2}}}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
+\newcommand{\menu}{\ensuremath{\;\rightarrow\;}}
+\newcommand{\dhl}[1]{{\color{verbcolor}{\texttt#1}}}
+\definecolor{wglightgreen}{rgb}{0.88, 0.58, 0.88}
+\newcommand{\wgtextbox}[1]{\noindent\fcolorbox{darkgreen}{wglightgreen}{%
+    \minipage[t]{\dimexpr0.80\linewidth-2\fboxsep-2\fboxrule\relax}
+        {#1}
+    \endminipage}}
+
+%%(wg-add-inline-images)  %% add inline images to the mix
+
+
+%%(wg-texdoc%%Begin User Definitions: Hint: ~/.latex.defs and  latex.defs  
+%%End User Definitions:-adjust-paper-width)
+%% (wg-texdoc-insert-hypersetup)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+%% (wg-latex-pretty-title-page)
+%% (wg-texdoc-titleblock)
+
+\setcounter{section}{0}
+\pagenumbering{arabic}
+
+\ifx\documentisdraft\drafttest
+\linenumbers    %%%%%%%%%%%%% DRAFT
+\fi
+
+\begin{center}
+\wgtextbox{ Wayne Green 2019-04-17T14:08:33-0600\\
+The bottom goes into steps to 'rectify' a smiley image
+Note: This was typeset from 
+\url{http://www.astro.wisc.edu/~eigenbrot/SALT.html}
+based on the SALT instrument. Most of the saltxxx routines are
+handled by usual IRAF practice.
+For my personal use only.
+}
+\end{center}
+
+\section{A. Eigenbrot -- Useful things I have discovered when reducing SALT data with IRAF}
+
+Last updated 10.29.12 by A. Eigenbrot
+
+
+Useful resources
+
+UW Longslit Tutorial - How to reduce longslit data using
+PySALT. Especially useful for the "Basic Data Reductions" section.
+
+Phil Massey's slit spectra reduction guide using IRAF - This is a very
+useful reference when using IRAF tasks identify and
+reidentify. Appendix B is especially useful for SALT longslit data.
+
+\section{Basic reductions}
+
+(Re-running the SALT pipeline)
+
+The first thing you'll want to do with your SALT data is re-run the
+basic SALT pipeline. They theoretically do this for you (the "product"
+directory), but I think they do a lot of things wrong. Plus, it's
+always a good idea to make sure your mosaics were made with the most
+up-to-date geometry file.
+
+\section{Bias:}
+
+
+Probably one of the biggest omissions in the standard SALT pipeline is
+a full bias frame subtraction so we'll do that first. If you don't
+have any bias frames with your data then you should ask your SA for
+some frames taken at the same binning and readout settings as your
+data. Once you've got a bunch of raw bias frames I highly recommend
+checking out each amplifier on each image to make sure it's not crazy
+high or something. IRAF's imstat is useful here. Take all your good
+bias frames and do an overscan subtraction using saltbias (make sure
+you turn off trimming). I use a prefix of 'o' for this step:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltbias images=@goodbias.list outpref=o subover=yes trim=no
+   subbias=no median=no function=polynomial order=3 rej_lo=3.0 rej_hi=3.0
+   niter=10 plotover=no turbo=no clobber=no logfile=salt.log verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Now combine your overscan-subtracted biasi into a master bias frame
+with saltcombine:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltcombine images=@bias.list outimage=BIAS.fits method=average
+   reject=sigclip mask=no weight=no blank=0.0 scale=None statsec=
+   lthresh=3.0 hthresh=3.0 clobber=no logfile=salt.log verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Now you've got a master bias frame. Congratulations, now let's look at
+the actual data. If you haven't already done so, do an overscan
+subtraction on your data with saltbias just as above. Next you need to
+subtract off the master bias frame you worked so hard
+on. Theoretically saltbias can do this, but I have experienced some
+weirdness with this. To this end I wrote saltarith that lives in the
+saltred package if you're using my distribution of pysalt. I use 'b'
+as the prefix for this step:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltarith operand1=@biasin.list op=- operand2=BIAS.fits outpref=b
+   divzero=0.0 clobber=no logfile=salt.log verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+At this point you can jump into the pipeline described by the UW
+Longslit Tutorial with only a few (but important!) modifications. The
+steps are:
+
+\section{Prepare}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltprepare images=boP*.fits outimages= outpref=p createvar=no
+   clobber=no logfile=salt.log verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\section{Gain correction}
+
+For Gain correction make sure you don't use the gain database. It is WRONG!!:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltgain images=pboP*.fits outpref=g
+   gaindb=/usr/users/eigenbrot/SALT/pysalt/data/rss/RSSamps.dat usedb=no
+   mult=yes clobber=no logfile=salt.log verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\subsection{Cross-talk correction}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltxtalk images=gpboP*.fits outpref=x usedb=no clobber=no logfile=salt.log verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\section{Trim:}
+
+This is usually included as part of the saltbias step, but we did that
+in a different order so we still have to trim the data:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltbias images=xgpbo*.fits outpref=t subover=no trim=yes subbias=no
+   median=no function=polynomial order=3 rej_lo=3.0 rej_hi=3.0 niter=10
+   plotover=no turbo=no clobber=no logfile=salt.log verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\section{Cosmic ray cleaning:}
+
+The parameters below work pretty well on my data, but your mileage may
+vary. The flux\_ratio parameter seems to be particularly important to
+make sure you don't "clean" your actual data:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltcrclean images=txgp*.fits outpref=c crtype=fast thresh=5.0 mbox=5
+   bthresh=3.0 flux_ratio=0.03 bbox=11 gain=1.46 rdnoise=2.47 fthresh=5.0
+   bfactor=2 gbox=3 maxiter=15 multithread=no clobber=yes
+   logfile=salt.log verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\section{Flat-fielding:}
+
+If you're going to try to flat-field your data this would be the time
+to do it. We are currently doing a lot of tests as to how good the
+flat fields are and for now we do not use flats (we're looking at
+emission lines anyway). If you want to try flats there are a few
+things you should probably know:
+
+The way SALT tracks objects results in a time-dependent pupil, which,
+combined with non-uniformities in the VPH grating, causes an
+illumination function that changes with time. This means that flats
+not taken AT THE SAME TIME AS THE DATA will not have the same
+illumination as the data. Shitty.
+
+The routine saltflat does not normalize flats correctly. They should
+be normalized so the mean of the entire image (across all 6 amps) is
+1, but right now it normalizes each amp separately, which causes huge
+structure in the "flattened" images. I would highly recommend
+saltarith instead.
+
+\section{Mosaic:}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+saltmosaic images=ctxg*.fits outpref=m
+   geomfile=/usr/users/eigenbrot/SALT/pysalt/data/rss/RSSgeom.dat
+   interp=linear geotran=yes cleanup=yes clobber=no logfile=salt.log
+   verbose=yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Sweet! You've now got some good looking images that you can actually
+display in a not-stupid way (finally!). Now let's extract some
+spectra...
+
+\section{Rectification with IRAF}
+
+...unless you've got an extended object, in which case you should
+rectify your data so that the spatial axis is perpendicular to the
+spectral axis. The pysalt routine specrectify should theoretically do
+this in a very nice and easy way. I know some people who have had
+success with this routine so it might be worth it to try specrectify
+first diving into identify because if specrectify works it will
+certainly be faster than identify. More information on using
+specrectify can be found here. For my two cents I think that identify
+allows for much more powerful fine tuning of the fit and actually
+preforms the fit extremely fast.
+
+
+(A lot of this stuff comes from Phil Massey's document. 
+You should read Apendix B)
+
+\section{Identify}
+
+In this task all you need to do is identify some lines in your lamp
+image and tell IRAF what their wavelengths are. This can be
+surprisingly frustrating, but it is important to get it right. NOTE:
+before using and IRAF routines you should make your files into single
+extension FITS files (so they will play nice with transform). To do
+this, use imcopy (the inherit flag is very important to preserve
+header info):
+
+\dhl{imcopy mctxgpboP2012021500045.fits[SCI,inherit] ESO\_z0\_MgI.fits}
+
+Below are how I set the important parameters to identify (many of them
+can be changed interactively):
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+images  = iESO_z0_CaII_XeLamp_3s.fits  Images containing features to be identified
+(section=          middle line) Section to apply to two dimensional images
+(databas=                 soln) Database in which to record feature data
+(coordli= /usr/users/eigenbrot/SALT/pysalt/data/linelists/Xe.txt) User coordinate list
+(units  =                     ) Coordinate units
+(nsum   =                    1) Number of lines/columns/bands to sum in 2D images
+(match  =                  -3.) Coordinate list matching limit
+(maxfeat=                   50) Maximum number of features for automatic identification
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Right now the most important are probably "section" and "coordli". For
+the line list file you will have many options, some good and some
+not-so-good. If you can find a .salt version of your lamp in the
+pysalt data directory then use that, otherwise I'd suggest the .txt
+version.
+
+When you run identify you'll be presented a graphics window with your
+spectrum. Your first task is to mark a few known lines. If your lamp
+is ThAr, FeAr, HeNeAr, or CuAr I would strongly recommend the NOAO
+Line Atlas. You can enter the wavelength limits that correspond
+directly to your spectrograph setup (taken from the PIPT) and get the
+top 10 or so brightest lines. This way you can print out both the line
+atlas image and your spectrum (hit "=" in IRAF to print the current
+window) and they will be on identical scales which makes identifying
+lines much easier (note that the intensities will NOT be the same). If
+NOAO does not have your lamp then check out Ken Nordieck's Arc
+Gospel. This has the advantage of having (more or less) correct
+amplitudes, but you can't zoom in on a particular part of the spectrum
+(I mark the limits of my spectrograph setup with pencil so I don't get
+confused).
+
+Choose four or five lines that are well spaced across the entire
+spectral range and that are fairly obvious. It is crucially important
+to get these lines right, so take the time to make sure each line is
+the line you think it is. Place your cursor over each line and hit 'm'
+and enter its wavelength. The wavelength does not have to be super
+perfect because the program is going to query the line list. Once
+you've marked all the lines hit 'f' to do a fit. This will throw you
+into IRAF's interactive curve-fitting thingy (icfit). Here you can
+check the residuals with 'j', but since you've only got four or so
+points this won't be very useful. You'll probably want to hit 'q'
+right away to exit the curve fitting program and get back to line
+identification. Now that you have a preliminary fit hit 'l' (lower
+case 'L') and the program will try to fit lines from the line list (a
+bunch more yellow markers should show up). Go back into the curve
+fitting routine by hitting 'f' and check the residuals with 'j'. Now
+you can delete troublesome points with 'd' and do things like change
+the order of the fit (with :order N). When your satisfied with your
+fit (my RMS for the ThAr lamp is usually something like 0.14 or so)
+hit 'q' twice and make sure IRAF writes the fit to the database.
+
+\section{reidentify}
+
+reidentify takes the initial fit you just found with identify and
+tries to extend that fit over the entire spatial dimension of the
+image. The resulting file can then be used by fitcoords and transform
+to produce a rectified image. Below are the parameters to reidentify
+and how I usually set them:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+referenc= iESO_z0_CaII_XeLamp_3s.fits  Reference image
+images  = iESO_z0_CaII_XeLamp_3s.fits  Images to be reidentified
+(interac=                  yes) Interactive fitting?
+(section=          middle line) Section to apply to two dimensional images
+(newaps =                  yes) Reidentify apertures in images not in reference?
+(overrid=                   no) Override previous solutions?
+(refit  =                   no) Refit coordinate function?
+(trace  =                  yes) Trace reference image?
+(step   =                   20) Step in lines/columns/bands for tracing an image
+(nsum   =                    1) Number of lines/columns/bands to sum
+(shift  =                INDEF) Shift to add to reference features (INDEF to search)
+(search =                 100.) Search radius
+(nlost  =                   20) Maximum number of features which may be lost
+(cradius=                   5.) Centering radius
+(thresho=                   0.) Feature threshold for centering
+(addfeat=                  yes) Add features from a line list?
+(coordli= /usr/users/eigenbrot/SALT/pysalt/data/linelists/Xe.txt) User coordinate list
+(match  =                  -3.) Coordinate list matching limit
+(maxfeat=                   50) Maximum number of features for automatic identificatio
+(minsep =                   2.) Minimum pixel separation
+(databas=                 soln) Database
+(logfile=              logfile) List of log files
+(plotfil=                     ) Plot file for residuals
+(verbose=                  yes) Verbose output?
+(graphic=             stdgraph) Graphics output device
+(cursor =                     ) Graphics cursor input
+answer  =                  yes  Fit dispersion function interactively?
+crval   =                       Approximate coordinate (at reference pixel)
+cdelt   =                       Approximate dispersion
+(aidpars=                     ) Automatic identification algorithm parameters
+(mode   =                   al)
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Parameters like step and nsum should be fairly obvious, and can be
+changed depending on how much curvature is in your image and how much
+signal is in your spectrum, but there are a few settings you can make
+here to really make your life a lot easier. In particular, ALWAYS set
+refit = no and trace = yes.
+
+The method for using reidentify is extremely similar to that of
+identify; you get an initial fit, tweak it a little bit inside icfit
+and then write it to the database. The only differences are that you
+don't have to start from scratch because you are building off the
+database created by identify, and you have to do the fit, tweak, write
+procedure for allll of your rows. Depending on what you set step to,
+this could take a while. Fortunately, you can quit out of reidentify
+at any time (with 'I') and when you run it again you will start at the
+same row to stopped at. Thanks IRAF!
+
+Some specifics of how I do my reidentify run that might be useful:
+
+When I'm being really paranoid I go through each fit, line by line, to
+make sure there is actually some emission there. Use 'z' to zoom in to
+the first line and then 'n' to move the next line, etc.. 'p' will get
+you back to the full plot. Any bad lines can be deleted with 'd' just
+like in icfit.
+
+FUN NOTE: IRAF suggests that '+' will also move forward among the
+fitted lines but I strongly caution against using it as '=' prints out
+the current screen and sometimes that shift button doesn't quite get
+pushed in time.... Consequently, '=' prints out the screen, which is
+nice sometimes.
+
+Don't worry about lines that get lost in chip gaps, fitcoords can deal
+with this. If there is a nice big line right next to a chip gap go
+ahead and fit it. Just make sure to delete the line once the peak
+stops getting fit properly (i.e. a chip gap plus the side of a bright
+line can create artificial peaks).
+
+Sometimes there are lines that really throw off the fit but keep being
+fit for some reason. Because of this it is often quite dangerous to
+write out a fit with 'q' directly after adding lines with 'l'. I
+usually go through a few iterations of 'f' and 'l' to figure out which
+lines are legit but poorly fit and which lines are just plain
+bad. Keep the bad lines out of you fit with the 'd' key, but make sure
+you refit the lines with 'f' before you write out the fit.
+
+When you finally hit 'q' for the last time and get thrown back to the
+IRAF prompt you will have a file in you soln database that has fits
+for a well sampled subset of your entire image. Good job!
+
+\section{fitcoords}
+
+This routine is used to fit a 2D function to the image and write it
+out for future rectification. The parameters I use are as follows, but
+all of the important ones can be changed interactively:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+images  = iESO_z0_CaII_XeLamp_3s  Images whose coordinates are to be fit
+(fitname=                     ) Name for coordinate fit in the database
+(interac=                  yes) Fit coordinates interactively?
+(combine=                   no) Combine input coordinates for a single fit?
+(databas=                 soln) Database
+(deletio=                     ) Deletion list file (not used if null)
+(functio=             legendre) Type of fitting function
+(xorder =                    7) X order of fitting function
+(yorder =                    3) Y order of fitting function
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Please make sure to leave fitname blank or you will get some super
+fucked up file names. Also notice that the images parameter is missing
+its '.fits' extension. This is correct.
+
+When you run fitcoords you will see a plot that might not make any
+sense at all. The first thing to do is just plot the x and y
+coordinates of the line centers. To do this hit 'x x y y'. This will
+plot x values on the x-axis and y values on the y-axis. You should see
+a scatterplot of crosses that approximates the curve seen in your lamp
+image. If the rows at the top or bottom of the image look really bad
+just delete them by putting your mouse over one of them and hitting 'd
+y', which will delete all the points with the same y value as the one
+you selected (i.e. a row)
+
+
+Now take a look at the residuals by hitting either 'x x y r r' or 'x y
+y r r', which will plot the x or y residuals, respectively (the syntax
+is 'axis value', where 'r' is for residual and 'x' and 'y' are for the
+x and y values). Here you might want to do normal things like change
+the order or form of the fit or delete bad points. To change the fit
+order use ':[x|y]order N'. To change the functional form use ':func
+blah' (hint, it doesn't really matter). To delete a single point use
+the mouse and 'd p'. To delete an entire column or row use 'd x' or 'd
+y', respectively. As usual, liberal application of the 'f' key will
+keep your fits up to date.
+
+Once all wildly bad points have been killed and you are satisfied that
+there are no systematics in the residuals you can hit 'q' to write the
+fit to the soln database. Congratulations, you are now so close.
+
+\section{transform}
+
+The important parameters of this routine are:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+input   =        iESO_z0*.fits  Input images
+output  =     t//iESO_z0*.fits  Output images
+(minput =                     ) Input masks
+(moutput=                     ) Output masks
+fitnames=     iESO_z0_CaII_XeLamp_3s  Names of coordinate fits in the database
+(databas=      ../reduced/soln) Identify database
+(interpt=              spline3) Interpolation type
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Note that the fitnames parameter is, confusingly, the same as the
+images parameter from fitcoords.
+
+transfrom isn't complicated; you just run it and get nice images. If
+you are getting some error that you can't fix make sure you aren't
+trying to transform a multi-extension image like those produced by
+saltmosaic.
+
+%%\appendix
+%%\renewcommand \thesection{\Alph{section}}
+
+%% use a bibitem approach to the references publications etc.
+%% (wg-bibitem)
+
+%%\clearpage
+%%\addcontentsline{toc}{section}{References}
+%%\renewcommand*{\refname}{My Bibliography and References}
+%%\bibliographystyle{plain}	% bibliographystyle{apalike} and \usepackage{natbib}
+%%\bibliography{MasterBib}	% expects file "MasterBib.bib"
+
+
+%%\clearpage
+%%\addcontentsline{toc}{section}{Index}
+%%\printindex %% www.cs.usask.ca/resources/tutorials/latex/notes/toc-index.pdf
+
+%%\begin{thebibliography}{80}
+%%\usepackage{natbib}   %% bibitems
+%%\end{thebibliography}
+
+% /home/wayne/iraf/smtsci/doc/Saltrectification.tex
+
+%% (wg-texdoc-endnotes)
+\end{document}

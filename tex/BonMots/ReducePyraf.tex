@@ -1,0 +1,557 @@
+\section{Reduce.pyraf Control File} \label{sec:ReducePyrafControlFile}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+#############################################################################
+#  PyRAF/Unix reduction steps for 
+# 
+# Usual get the env in gear
+# Copy the RawData files in, move superflous files to ../attic
+# Fix the filenames
+# Add serial numbers to the files
+# Determine the trim section
+# Make the zeromaster.fits
+# Winnow out the low pixel values from zeromaster.fits
+# Fix the headers:
+#    hedit DISPAXIS 1
+#    Make sure the OBJECT and DATE-OBS are in place.
+#    OBJECT is critical
+# Determine the targets.
+#    Create target lists.
+# Set the RA DEC coordinates where missing
+# Reduce each target
+# 
+# 
+# /home/wayne/Observations/Chile/20Mar2024/usw
+# https://mthamilton.ucolick.org/techdocs/instruments/nickel_spect/arcSpectra/
+#############################################################################
+# get the env in gear. Install pyraflogin3 in ~/home/iraf.
+import numpy as np
+
+HOME=os.getenv('HOME')
+
+if(os.path.exists(f"{HOME}/iraf")):
+    print('loading pyraflogin3')
+    sys.path.insert(0, f"{HOME}/iraf")                    # put at start of path
+    from pyraflogin3 import *
+
+
+# for the data collection /home/me/Observations/Chile/20Mar2024
+#   The directory usw will hold this file
+#   The rawdata is /home/me/Observations/Chile/20Mar2024/RawData
+#   The working data will be /home/me/Observations/Chile/20Mar2024/PreAnalysis
+#   We want to be in /home/me/Observations/Chile/20Mar2024/PreAnalysis
+#      to run these commands.
+!printf "set OBSROOT=$(pwd)/..\n" "`pwd`/"    > setum.cl  # BASH trick
+!printf "set OBS=$(pwd)/../PreReduce\n"      >> setum.cl
+cl < setum.cl
+
+show OBSROOT                                              # check work
+show OBS
+
+# Use Python/PyRAF to set ENV variables for scripts etc.
+# Rough equivalent of export.
+os.environ['OBSROOT'] = iraf.osfn("OBSROOT$")             # share with external files
+os.environ['OBS']     = iraf.osfn("OBS$")
+
+OBSROOT               = os.getenv("OBSROOT")              # make some python variables
+OBS                   = os.getenv("OBS")
+
+trimsec = "[750:6318,1526:2626]"
+os.environ['TRIMSEC'] = trimsec
+
+
+#-----------------------------------------------------------------------------
+
+chdir OBSROOT$                                           # Use IRAF lingo to change dirs
+!shopt -s nullglob; cp $OBSROOT/RawData/*fit $OBSROOT/RawData/*fits   PreAnalysis  # reduce data
+for f in *zip; do mv "$f"  RawData/attic; done           # move pesky files out of way.
+
+chdir OBS$
+pwd
+
+!shopt -s nullglob; cp $OBSROOT/RawData/*fits $OBSROOT/RawData/*fit .  # reduce data
+
+ll *fits *fit
+!fixnames $(cat l.l)
+hedit *fits DISPAXIS 1                                    # can't hurt non-spectral files.
+
+############################### TRIM THE FILES ##############################
+!if [ "$TRIMSEC" != ' ' ; then trim -s $(TRIMSEC) $(cat l.l) ; fi  # trim makes t_//@l.l output!
+
+ll *fits
+!fitserial *fits
+!trim -s "$TRIMSEC" @l.l                                  # -s "[750:6318,1526:2626]"
+
+########################## Make the zeromaster.fits #########################
+
+ll t_*Bias*fits
+!rm rawzeromaster.fits zeromaster.fits
+zerocombine @l.l output=rawzeromaster.fits combine=average scale=none reject=minmax
+imsurfit input=rawzeromaster.fits output=zeromaster.fits
+
+####################### zero subtract all the other files ###################
+imarith @l.l - zeromaster.fits z_//@l.l
+!rm -f fixneg.cl n_*fits                                  # replace px < 0
+ll z_t_*fits
+!for ffile in $(cat l.l) ; do printf "imexpr 'a <= 0 ? 75.0 : a' n_%s  a=%s\n" "$ffile" "$ffile" >> fixneg.cl; done;
+cl < fixneg.cl
+
+# Guests for this reduction:
+targets = [ "AlfCentauri",
+            "HD104600",
+            "HD122980",
+            "HD127972",
+            "HD158408",
+            "Menkent",
+            "PNVJ17261813m3809354",
+            "Relco",
+            "tetMus"
+          ]
+
+# can use astropy.astroquery to get all the data we want.
+#    RA
+#    DEC
+#    MAG_V
+#    sp_type
+#    o_type
+# 
+####################### Collect the files into groups #######################
+
+!!ls -1 n_z_t_*fits | awk --field-separator="_" -e '/.*\.fits/ {print $5;}' | sort | uniq
+ls n_z_t*AlfCentauri*fits          >   AlfCentauri.l
+ls n_z_t*HD104600*fits             >   HD104600.l
+ls n_z_t*HD122980*fits             >   HD122980.l
+ls n_z_t*HD127972*fits             >   HD127972.l
+ls n_z_t*HD158408*fits             >   HD158408.l
+ls n_z_t*Menkent*fits              >   Menkent.l
+ls n_z_t*PNVJ17261813m3809354*fits >   PNVJ17261813m3809354.l
+ls n_z_t*Relco*fits                >   Relco.l
+ls n_z_t*tetMus*fits               >   tetMus.l
+
+# Update the headers
+
+hedit @AlfCentauri.l           OBJNAME AlfCentauri          add+ update+ show- ver- del-
+hedit @AlfCentauri.l           RA 219.9183                  add+ update+ show- ver- del-
+hedit @AlfCentauri.l           DEC -60.8389                 add+ update+ show- ver- del-
+hedit @AlfCentauri.l           IMAGETYP light               add+ update+ show- ver- del-
+
+hedit @HD104600.l              OBJNAME HD104600             add+ update+ show- ver- del-
+hedit @HD104600.l              RA 180.6570524708000         add+ update+ show- ver- del-
+hedit @HD104600.l              DEC -69.1922886170400        add+ update+ show- ver- del-
+hedit @HD104600.l              IMAGETYP light               add+ update+ show- ver- del-
+
+hedit @HD122980.l              OBJNAME HD122980             add+ update+ show- ver- del-
+hedit @HD122980.l              RA 211.5115343525            add+ update+ show- ver- del-
+hedit @HD122980.l              DEC -41.1796329944           add+ update+ show- ver- del-
+hedit @HD122980.l              IMAGETYP light               add+ update+ show- ver- del-
+
+hedit @HD127972.l              OBJNAME HD127972             add+ update+ show- ver- del-
+hedit @HD127972.l              RA 218.8767673375            add+ update+ show- ver- del-
+hedit @HD127972.l              DEC -42.1578252172           add+ update+ show- ver- del-
+hedit @HD127972.l              IMAGETYP light               add+ update+ show- ver- del-
+
+hedit @HD158408.l              OBJNAME HD158408             add+ update+ show- ver- del-
+hedit @HD158408.l              RA 262.6909880117            add+ update+ show- ver- del-
+hedit @HD158408.l              DEC -37.2958134753           add+ update+ show- ver- del-
+hedit @HD158408.l              IMAGETYP light               add+ update+ show- ver- del-
+
+hedit @Menkent.l               OBJNAME Menkent              add+ update+ show- ver- del- 
+hedit @Menkent.l               RA 211.67061468              add+ update+ show- ver- del-
+hedit @Menkent.l               DEC -36.36995474             add+ update+ show- ver- del-
+hedit @Menkent.l               IMAGETYP light               add+ update+ show- ver- del-
+
+hedit @PNVJ17261813m3809354.l  OBJNAME PNVJ17261813m3809354 add+ update+ show- ver- del- 
+hedit @PNVJ17261813m3809354.l  RA "17 26 18.13"             add+ update+ show- ver- del-
+hedit @PNVJ17261813m3809354.l  DEC "-38 09 35.4"            add+ update+ show- ver- del-
+hedit @PNVJ17261813m3809354.l  IMAGETYP light               add+ update+ show- ver- del-
+
+hedit @tetMus.l                OBJNAME tetMus               add+ update+ show- ver- del-
+hedit @tetMus.l                RA 197.0298048772700         add+ update+ show- ver- del-
+hedit @tetMus.l                DEC -65.3060220629300        add+ update+ show- ver- del-
+hedit @tetMus.l                IMAGETYP light               add+ update+ show- ver- del-
+
+hedit @Relco.l                 OBJNAME Relco                add+ update+ show- ver- del- 
+hedit @Relco.l                 IMAGETYP cal               add+ update+ show- ver- del-
+
+#############################################################################
+# For each group:
+#   apallinteractive nails in settings for an interactive fit, rewrites l.l
+#   iraf.apall does that fit (use your common sense here)
+#   apallauto nails in settings for using ref file, and non-interactive 
+# 
+# 
+!cp AlfCentauri.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+cp HD104600.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+HD122980 l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+HD127972 l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+HD158408.l
+ls n_z_t*Menkent*fits              >   Menkent.l
+ls n_z_t*PNVJ17261813m3809354*fits >   PNVJ17261813m3809354.l
+ls n_z_t*Relco*fits                >   Relco.l
+ls n_z_t*tetMus*fits               >   tetMus.l                
+
+hedit @AlfCentauri.l           OBJNAME AlfCentauri          add+ update+ show- ver- del-
+hedit @AlfCentauri.l           RA 219.9183                  add+ update+ show- ver- del-
+hedit @AlfCentauri.l           DEC -60.8389                 add+ update+ show- ver- del-
+
+hedit @HD104600.l              OBJNAME HD104600             add+ update+ show- ver- del-
+hedit @HD104600.l              RA 180.6570524708000         add+ update+ show- ver- del-
+hedit @HD104600.l              DEC -69.1922886170400        add+ update+ show- ver- del-
+
+hedit @HD122980.l              OBJNAME HD122980             add+ update+ show- ver- del-
+hedit @HD122980.l              RA 211.5115343525            add+ update+ show- ver- del-
+hedit @HD122980.l              DEC -41.1796329944           add+ update+ show- ver- del-
+
+hedit @HD127972.l              OBJNAME HD127972             add+ update+ show- ver- del-
+hedit @HD127972.l              RA 218.8767673375            add+ update+ show- ver- del-
+hedit @HD127972.l              DEC -42.1578252172           add+ update+ show- ver- del-
+
+hedit @HD158408.l              OBJNAME HD158408             add+ update+ show- ver- del-
+hedit @HD158408.l              RA 262.6909880117            add+ update+ show- ver- del-
+hedit @HD158408.l              DEC -37.2958134753           add+ update+ show- ver- del-
+
+hedit @Menkent.l               OBJNAME Menkent              add+ update+ show- ver- del- 
+hedit @Menkent.l               RA 211.67061468              add+ update+ show- ver- del-
+hedit @Menkent.l               DEC -36.36995474             add+ update+ show- ver- del-
+
+hedit @PNVJ17261813m3809354.l  OBJNAME PNVJ17261813m3809354 add+ update+ show- ver- del- 
+hedit @PNVJ17261813m3809354.l  RA "17 26 18.13"             add+ update+ show- ver- del-
+hedit @PNVJ17261813m3809354.l  DEC "-38 09 35.4"            add+ update+ show- ver- del-
+
+hedit @tetMus.l                OBJNAME tetMus               add+ update+ show- ver- del-
+hedit @tetMus.l                RA 197.0298048772700         add+ update+ show- ver- del-
+hedit @tetMus.l                DEC -65.3060220629300        add+ update+ show- ver- del-
+
+hedit @Relco.l                 OBJNAME Relco                add+ update+ show- ver- del- 
+
+!cp AlfCentauri.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+cp HD104600.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+HD122980 l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+HD127972 l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+Menkent.l
+ls n_z_t*PNVJ17261813m3809354*fits >   PNVJ17261813m3809354.l
+ls n_z_t*Relco*fits                >   Relco.l
+ls n_z_t*tetMus*fits               >   tetMus.l                
+
+hedit @AlfCentauri.l           OBJNAME AlfCentauri          add+ update+ show- ver- del-
+hedit @AlfCentauri.l           RA 219.9183                  add+ update+ show- ver- del-
+hedit @AlfCentauri.l           DEC -60.8389                 add+ update+ show- ver- del-
+
+hedit @HD104600.l              OBJNAME HD104600             add+ update+ show- ver- del-
+hedit @HD104600.l              RA 180.6570524708000         add+ update+ show- ver- del-
+hedit @HD104600.l              DEC -69.1922886170400        add+ update+ show- ver- del-
+
+hedit @HD122980.l              OBJNAME HD122980             add+ update+ show- ver- del-
+hedit @HD122980.l              RA 211.5115343525            add+ update+ show- ver- del-
+hedit @HD122980.l              DEC -41.1796329944           add+ update+ show- ver- del-
+
+hedit @HD127972.l              OBJNAME HD127972             add+ update+ show- ver- del-
+hedit @HD127972.l              RA 218.8767673375            add+ update+ show- ver- del-
+hedit @HD127972.l              DEC -42.1578252172           add+ update+ show- ver- del-
+
+hedit @HD158408.l              OBJNAME HD158408             add+ update+ show- ver- del-
+hedit @HD158408.l              RA 262.6909880117            add+ update+ show- ver- del-
+hedit @HD158408.l              DEC -37.2958134753           add+ update+ show- ver- del-
+
+hedit @Menkent.l               OBJNAME Menkent              add+ update+ show- ver- del- 
+hedit @Menkent.l               RA 211.67061468              add+ update+ show- ver- del-
+hedit @Menkent.l               DEC -36.36995474             add+ update+ show- ver- del-
+
+hedit @PNVJ17261813m3809354.l  OBJNAME PNVJ17261813m3809354 add+ update+ show- ver- del- 
+hedit @PNVJ17261813m3809354.l  RA "17 26 18.13"             add+ update+ show- ver- del-
+hedit @PNVJ17261813m3809354.l  DEC "-38 09 35.4"            add+ update+ show- ver- del-
+
+hedit @tetMus.l                OBJNAME tetMus               add+ update+ show- ver- del-
+hedit @tetMus.l                RA 197.0298048772700         add+ update+ show- ver- del-
+hedit @tetMus.l                DEC -65.3060220629300        add+ update+ show- ver- del-
+
+hedit @Relco.l                 OBJNAME Relco                add+ update+ show- ver- del- 
+
+!cp AlfCentauri.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+apall n_z_t_a11007_BL_Tel_180s_20240227_075038m10.fits
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+cp HD104600.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+apall n_z_t_a11007_BL_Tel_180s_20240227_075038m10.fits
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+HD122980 l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+apall n_z_t_a11007_BL_Tel_180s_20240227_075038m10.fits
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+HD127972 l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+apall n_z_t_a11007_BL_Tel_180s_20240227_075038m10.fits
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+HD158408.l
+ls n_z_t*Menkent*fits              >   Menkent.l
+ls n_z_t*PNVJ17261813m3809354*fits >   PNVJ17261813m3809354.l
+ls n_z_t*Relco*fits                >   Relco.l
+ls n_z_t*tetMus*fits               >   tetMus.l                
+
+hedit @AlfCentauri.l           OBJNAME AlfCentauri          add+ update+ show- ver- del-
+hedit @AlfCentauri.l           RA 219.9183                  add+ update+ show- ver- del-
+hedit @AlfCentauri.l           DEC -60.8389                 add+ update+ show- ver- del-
+
+hedit @HD104600.l              OBJNAME HD104600             add+ update+ show- ver- del-
+hedit @HD104600.l              RA 180.6570524708000         add+ update+ show- ver- del-
+hedit @HD104600.l              DEC -69.1922886170400        add+ update+ show- ver- del-
+
+hedit @HD122980.l              OBJNAME HD122980             add+ update+ show- ver- del-
+hedit @HD122980.l              RA 211.5115343525            add+ update+ show- ver- del-
+hedit @HD122980.l              DEC -41.1796329944           add+ update+ show- ver- del-
+
+hedit @HD127972.l              OBJNAME HD127972             add+ update+ show- ver- del-
+hedit @HD127972.l              RA 218.8767673375            add+ update+ show- ver- del-
+hedit @HD127972.l              DEC -42.1578252172           add+ update+ show- ver- del-
+
+hedit @HD158408.l              OBJNAME HD158408             add+ update+ show- ver- del-
+hedit @HD158408.l              RA 262.6909880117            add+ update+ show- ver- del-
+hedit @HD158408.l              DEC -37.2958134753           add+ update+ show- ver- del-
+
+hedit @Menkent.l               OBJNAME Menkent              add+ update+ show- ver- del- 
+hedit @Menkent.l               RA 211.67061468              add+ update+ show- ver- del-
+hedit @Menkent.l               DEC -36.36995474             add+ update+ show- ver- del-
+
+hedit @PNVJ17261813m3809354.l  OBJNAME PNVJ17261813m3809354 add+ update+ show- ver- del- 
+hedit @PNVJ17261813m3809354.l  RA "17 26 18.13"             add+ update+ show- ver- del-
+hedit @PNVJ17261813m3809354.l  DEC "-38 09 35.4"            add+ update+ show- ver- del-
+
+hedit @tetMus.l                OBJNAME tetMus               add+ update+ show- ver- del-
+hedit @tetMus.l                RA 197.0298048772700         add+ update+ show- ver- del-
+hedit @tetMus.l                DEC -65.3060220629300        add+ update+ show- ver- del-
+
+hedit @Relco.l                 OBJNAME Relco                add+ update+ show- ver- del- 
+
+
+#-----------------------------------------------------------------------------
+!cp AlfCentauri.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+scombineall('l.l',"AlfCentauri")
+!cat l.l | sed -e 's/.fits/[*,*,1]/' >b1.l
+scombine @b1.l AlfCentauri_band1.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,2]/' >b2.l
+scombine @b2.l AlfCentauri_band2.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,3]/' >b3.l
+scombine @b3.l AlfCentauri_band3.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,4]/' >b4.l
+scombine @b4.l AlfCentauri_band4.fits combine=median
+splot AlfCentauri_band1.fits,AlfCentauri_band2.fits,AlfCentauri_band3.fits,AlfCentauri_band4.fits
+
+
+#2   * alf Cen A     33.55   SB*     14 39 36.49400  -60 50 02.3737  219.90205833    -60.83399269    0.96    0.72    0.01            G2V     1274    1
+#3   * alf Cen B     39.31   PM*     14 39 35.06311  -60 50 15.0992  219.89609629    -60.83752757    2.89    2.21    1.33            K1V     1019    2
+#
+#
+#alf Cen A          14 39 36.49400   -60 50 02.3737   0.01 
+#alf Cen B          14 39 35.06311   -60 50 15.0992   1.33 
+#
+#14 39 36.49400  219.902058
+#-60 50 02.3737  -60.833992
+#
+#14 39 35.06311  219.896096
+#-60 50 15.0992  -60.837527
+#
+#% (iv (setq tmp (* 3600 (- -60.837527 -60.833992 ))))   -12.725999999997839  
+#% (iv (setq tmp (* 3600 (- 219.902058 219.896096 ))))   21.46320000003925  
+#
+
+#-----------------------------------------------------------------------------
+cp HD104600.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+scombineall('l.l',"HD104600")
+!cat l.l | sed -e 's/.fits/[*,*,1]/' >b1.l
+scombine @b1.l HD104600_band1.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,2]/' >b2.l
+scombine @b2.l HD104600_band2.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,3]/' >b3.l
+scombine @b3.l HD104600_band3.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,4]/' >b4.l
+scombine @b4.l HD104600_band4.fits combine=median
+splot HD104600_band1.fits,HD104600_band2.fits,HD104600_band3.fits,HD104600_band4.fits
+
+
+# MNRAS 515, 828–840 (2022) (Sharma Bedding + 2022)
+# Name HD  HIP         V    Sp. type log(Teff/K) log (L/L_sun) vsin i    f1    f2      f3     f4
+#                                                                       (km s-1 ) (d-1 ) (d-1 ) (d-1 ) (d-1 )
+# HR 4597 104600 58720 5.88 B9 V     4.03        1.75 +/- 0.01 214.0       3.33 3.38 - -
+
+
+#-----------------------------------------------------------------------------
+cp HD122980.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+cp HD122980.l l.l                          # get whole list ready for combine
+scombineall('l.l','HD122980')
+
+
+!cat l.l | sed -e 's/.fits/.ms[*,*,1]/' >b1.l
+scombine @b1.l HD122980_band1.fits combine=median
+!cat l.l | sed -e 's/.fits/.ms[*,*,2]/' >b2.l
+scombine @b2.l HD122980_band2.fits combine=median
+!cat l.l | sed -e 's/.fits/.ms[*,*,3]/' >b3.l
+scombine @b3.l HD122980_band3.fits combine=median
+!cat l.l | sed -e 's/.fits/.ms[*,*,4]/' >b4.l
+scombine @b4.l HD122980_band4.fits combine=median
+
+splot HD122980_band1.fits,HD122980_band2.fits,HD122980_band3.fits,HD122980_band4.fits
+
+#-----------------------------------------------------------------------------
+cp HD127972.l  l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+scombineall('l.l','HD127972')
+!cat l.l | sed -e 's/.fits/[*,*,1]/' >b1.l
+scombine @b1.l HD127972_band1.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,2]/' >b2.l
+scombine @b2.l HD127972_band2.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,3]/' >b3.l
+scombine @b3.l HD127972_band3.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,4]/' >b4.l
+scombine @b4.l HD127972_band4.fits combine=median
+
+splot HD127972_band1.fits,HD127972_band2.fits,HD127972_band3.fits,HD127972_band4.fits
+
+#-----------------------------------------------------------------------------
+cp PNVJ17261813m3809354.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+scombineall('l.l','PNVJ17261813m3809354')
+!cat l.l | sed -e 's/.fits/[*,*,1]/' >b1.l
+scombine @b1.l PNVJ17261813m3809354_band1.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,2]/' >b2.l
+scombine @b2.l PNVJ17261813m3809354_band2.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,3]/' >b3.l
+scombine @b3.l PNVJ17261813m3809354_band3.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,4]/' >b4.l
+scombine @b4.l PNVJ17261813m3809354_band4.fits combine=median
+splot PNVJ17261813m3809354_band1.fits,PNVJ17261813m3809354_band2.fits,PNVJ17261813m3809354_band3.fits,PNVJ17261813m3809354_band4.fits
+
+#-----------------------------------------------------------------------------
+
+cp tetMus.l l.l
+reffile=apallinteractive('l.l')
+iraf.apall(input=reffile,background="median",Stdout=1)
+cat l.l
+apallauto(reffile,background="median")
+apall input=@l.l
+
+# combine the 4 multispec bands! Have to use sections.
+ll n_*tetMus*ms*fits > l.l
+!cat l.l | sed -e 's/.fits/[*,*,1]/' >b1.l
+scombine @b1.l tetMus_band1.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,2]/' >b2.l
+scombine @b2.l tetMus_band2.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,3]/' >b3.l
+scombine @b3.l tetMus_band3.fits combine=median
+!cat l.l | sed -e 's/.fits/[*,*,4]/' >b4.l
+scombine @b4.l tetMus_band4.fits combine=median
+
+apall n_z_t_a11089_Relco_300s_20240320_095556m2.fits ref=apn_z_t_a11100_tetMus_120s_20240320_075421m7 recen- back- trace- intera-
+
+imcopy n_z_t_a11089_Relco_300s_20240320_095556m2.ms[*,*,1] comp.fits
+f = fits.open('comp.fits')
+h = f[0].header                  # h['NAXIS'],h['NAXIS1']  (2, 5530)
+d = f[0].data[0]                 # has NAXIS2  d.shape  d.min(),d.max() (33.641388, 382937.78)
+w = np.where(d > 1500)           # small lines  [ [ xvalues x > 1500] ]
+v = w[0]                         # notation handy
+d1 = v[1:] - v[0:-1]             # first forward differences = start of lines.
+m = np.where(v < 0)[0]
+
+dd1 = d[1:] - d[:-1]
+
+identify comp.fits
+  ftype emission
+  coordlist
+
+splot tetMus_band1.fits,tetMus_band2.fits,tetMus_band3.fits,tetMus_band4.fits
+
+#
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

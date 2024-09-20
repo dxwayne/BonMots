@@ -1,0 +1,36 @@
+\section{Git}
+
+Using a Git repo to manage observing files.
+
+Git is a 'source control management' (SCM) system. It treats a high
+level directory as the root of a repository. It adds a hidden directory
+\dhl{.git} to hold all its secret control mechanisms.
+
+Github is a web/cloud service that you MAY use to manage your data.
+(Dont store huge fits files!). 
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+cd ~/Observations
+mkdir -p 13May2022/{usw,RawData/attic,PreReduce/attic,Reduce/atttic}
+export OBSROOT=$HOME/Observations/13May2022
+export OBS=$HOME/Observations/13May2022/PreReduce
+cd $OBSROOT/RawData
+cp <the raw data here and unzip if needed>
+#etc...
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+So cd \dhl{$HOME/Observations/13May2022} and \dhl{git init}.
+Now that directory is your very own local git repository.
+
+Now echo \dhl{'[b-z]_*fits' .git/info/exclude}.
+
+This puts a wildcard that ignores all the temporary files
+that start with the letters b thru z followed by an
+underscore. 
+
+

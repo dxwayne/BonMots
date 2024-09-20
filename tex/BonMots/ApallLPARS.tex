@@ -1,0 +1,112 @@
+\subsection{Apall lpars} \label{sec:Apalllpars}
+
+\begin{figure}
+\index{lpars!apall}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+{\color{green}
+\begin{verbatim} 
+lpar apall
+        input = "t_xxx.fits"    List of input images
+        nfind = 1               Number of apertures to be found automatically
+      (output = "ap_sci.fits")  List of output spectra
+   (apertures = "")             Apertures
+      (format = "onedspec")     Extracted spectra format
+  (references = "")             List of aperture reference images
+    (profiles = "")             List of aperture profile images
+                                
+ (interactive = yes)            Run task interactively?
+        (find = yes)            Find apertures?
+    (recenter = yes)            Recenter apertures?
+      (resize = yes)            Resize apertures?
+        (edit = yes)            Edit apertures?
+       (trace = yes)            Trace apertures?
+    (fittrace = yes)            Fit the traced points interactively?
+     (extract = yes)            Extract spectra?
+      (extras = no)             Extract sky, sigma, etc.?
+      (review = yes)            Review extractions?
+                                
+        (line = 1000)            Dispersion line
+        (nsum = 20)             Number of dispersion lines to sum or median
+                                
+                                # DEFAULT APERTURE PARAMETERS
+                                
+       (lower = -7.0)           Lower aperture limit relative to center
+       (upper = 7.0)            Upper aperture limit relative to center
+   (apidtable = "")             Aperture ID table (optional)
+                                
+                                # DEFAULT BACKGROUND PARAMETERS
+                                
+  (b_function = "chebyshev")    Background function
+     (b_order = 5)              Background function order
+    (b_sample = "-20:-15,15,20") Background sample regions
+  (b_naverage = -3)             Background average or median
+  (b_niterate = 3)              Background rejection iterations
+(b_low_reject = 3.0)            Background lower rejection sigma
+(b_high_rejec = 3.0)            Background upper rejection sigma
+      (b_grow = 0.0)            Background rejection growing radius
+                                
+                                # APERTURE CENTERING PARAMETERS
+                                
+       (width = 5.0)            Profile centering width
+      (radius = 10.0)           Profile centering radius
+   (threshold = 0.0)            Detection threshold for profile centering
+                                
+                                # AUTOMATIC FINDING AND ORDERING PARAMETERS
+                                
+      (minsep = 5.0)            Minimum separation between spectra
+      (maxsep = 100000.0)       Maximum separation between spectra
+       (order = "increasing")   Order of apertures
+                                
+                                # RECENTERING PARAMETERS
+                                
+  (aprecenter = "")             Apertures for recentering calculation
+      (npeaks = INDEF)          Select brightest peaks
+       (shift = yes)            Use average shift instead of recentering?
+                                
+                                # RESIZING PARAMETERS
+                                
+      (llimit = INDEF)          Lower aperture limit relative to center
+      (ulimit = INDEF)          Upper aperture limit relative to center
+      (ylevel = 0.1)            Fraction of peak or intensity for automatic width
+        (peak = yes)            Is ylevel a fraction of the peak?
+         (bkg = yes)            Subtract background in automatic width?
+      (r_grow = 0.0)            Grow limits by this factor
+   (avglimits = no)             Average limits over all apertures?
+                                
+                                # TRACING PARAMETERS
+                                
+      (t_nsum = 10)             Number of dispersion lines to sum
+      (t_step = 10)             Tracing step
+     (t_nlost = 3)              Number of consecutive times profile is lost before quitting
+  (t_function = "chebyshev")    Trace fitting function
+     (t_order = 5)              Trace fitting function order
+    (t_sample = "*")            Trace sample regions
+  (t_naverage = 1)              Trace average or median
+  (t_niterate = 0)              Trace rejection iterations
+(t_low_reject = 3.0)            Trace lower rejection sigma
+(t_high_rejec = 3.0)            Trace upper rejection sigma
+      (t_grow = 0.0)            Trace rejection growing radius
+                                
+                                # EXTRACTION PARAMETERS
+                                
+  (background = "average")      Background to subtract
+      (skybox = 5)              Box car smoothing length for sky
+     (weights = "variance")     Extraction weights (none|variance)
+        (pfit = "fit1d")        Profile fitting type (fit1d|fit2d)
+       (clean = no)             Detect and replace bad pixels?
+  (saturation = INDEF)          Saturation level
+   (readnoise = "0.")           Read out noise sigma (photons)
+        (gain = ".3")           Photon gain (photons/data number)
+      (lsigma = 4.0)            Lower rejection threshold
+      (usigma = 4.0)            Upper rejection threshold
+     (nsubaps = 1)              Number of subapertures per aperture
+        (mode = "al")           
+\end{verbatim}
+}
+\endgroup
+%% \end{Verbatim}
+\caption[Apall parameters]{Apall parameters, note changes with}
+\label{fig:ApallParameters}
+\end{figure}

@@ -1,0 +1,99 @@
+\section{Pyraflogin.py}
+
+The file \dhl{$HOME/iraf/pyraflogin.py} has a 'kitchen sink' collection of
+extensions to PyRAF. It defines a few tasks and adds a set of functions
+to use matplotlib within pyraf sessions. It adds a few routines to make
+moving between sexigesimal and decimal representations. It might even
+type to \dhl{SQLite3} at some point. In short, it adds things to PyRAF
+for pipelines and to let you really dig into your data.
+
+It is part of the \dhl{github/.../smtsci} repository.
+
+\subsection{Plotting}
+
+There is no doubt a better way to handle this...
+
+Two global variables are declared:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+try:
+   from   mpl_toolkits.mplot3d import Axes3D
+   import matplotlib.pyplot as plt
+   from   matplotlib import cm
+except exception:
+   print("Could not find python matplotlib parts we wanted. Running under anaconda?")
+
+
+_fig     = None  # manage an internal figure, reset with our_figure
+_ax      = None
+
+def our_figure():
+   """Resset our global fig and ax instances. This allows overplotting."""
+   global _fig,_ax
+   _fig     = plt.figure(1,clear=True)
+   _ax      = plt.axes()
+
+# our_figure
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+that perform their usual roles.
+
+\Prose{Ohellium-i is in emission and I smell a Nobel!}:
+
+But, Wait! splot tells me the x column for this line is 123-133.
+So:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+impoort glob
+files = glob.glob('oh*fits')
+rawcube = []
+for fname in files:
+   with fits.open('dark.fits') as f:
+      d = f[0].data
+      h = f[0].header 
+      rawcube.append(d[122:133,:)
+cube = np.array(rawcube)
+rawcube = []           # del is overloaded, so keep symbol, just empty.
+newfits('darkcube.fits',cube,h)      # make ds9 viewable cube!
+our_figure()
+mean = cube(axis=0)    # mean into the x,y face
+diff = mean - mean.mean()
+our_surface(diff)      # surface plot
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+And,,, drat. There is a stuck pixel making that line stand above the others.
+
+
+
+\subsection{Making a special file for ds9.}
+
+So,,, here I am in a quandry with dark.fits and I want to see places
+on that image where the pixel values are 3 standard deviations above
+the mean. Some cheap sensors have issues in this regard.
+
+We did \dhl{from astropy.io import fits}, so
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+with fits.open('dark.fits') as f:
+   d = f[0].data
+   h = f[0].header 
+newd = np.zeros_like(d)
+newd[d >> d.mean() + d.std() * 3.0] = 1.0
+newfits('meandark.fits',newd,h) # et Viola! ones in the bad places.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

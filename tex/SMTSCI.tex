@@ -1,0 +1,307 @@
+\documentclass[letter,11pt,oneside]{article}
+
+%%% (occur "\\(\\\\[a-z]*section\\|appendix\\|input\\|\\<include\\>\\)")
+
+%%\documentclass[11pt,twocolumn]{article}
+%%\usepackage[inline]{asymptote}   %% Inline asymptote diagrams
+%%\usepackage{wglatex}             %% Use this one and kill others.
+\usepackage{color}               %% colored letters {\color{red}{{text}}
+\usepackage{fancyhdr}            %% headers/footers
+%%\usepackage{fancyvrb}            %% headers/footers
+\usepackage{datetime}            %% pick up tex date time 
+\usepackage{lastpage}            %% support page of ...lastpage
+\usepackage{times}               %% native times roman fonts
+\usepackage{textcomp}            %% trademark
+\usepackage{amssymb,amsmath}     %% greek alphabet
+\usepackage{parskip}             %% blank lines between paragraphs, no indent
+\usepackage{shortvrb}            %% short verb use for tables
+\usepackage{lscape}              %% landscape for tables.
+\usepackage{longtable}           %% permit tables to span pages wg-longtable
+\usepackage{url}                 %% Make URLs uniform and links in PDFs
+\usepackage{enumerate}           %% Allow letters/decorations for enumerations
+\usepackage{endnotes}            %% Enhance footnotes/endnotes
+\usepackage{listings}            %% Make URLs uniform and links in PDFs
+\pdfadjustspacing=1                %% force LaTeX-like character spacing
+\usepackage{geometry}            %% allow margins to be relaxed
+%%\usepackage{wrapfig}             %% permit wrapping figures.
+%%\usepackage{subfigure}              %% images side by side.
+%%\geometry{margin=1in}            %% Allow narrower margins etc.
+\usepackage[T1]{fontenc}         %% Better Verbatim Font.
+\renewcommand*\ttdefault{txtt}   %%
+\usepackage{mdframed}
+%%\usepackage{natbib}   %% bibitems
+
+% (wg-tutorial-support)
+\newcommand{\qa}[2]{%
+  \item {\textbf{Q:} #1}
+  \begin{enumerate}%\addtolength{\itemsep}{-0.8\pt}
+    \item[\textbf{A:}]{#2}
+  \end{enumerate}
+}
+
+\mdfdefinestyle{mdquotestyle}{innerleftmargin=-.5cm,
+innerrightmargin=-.5cm,
+linecolor=red,
+linewidth=2pt,
+skipabove=8pt,
+skipbelow=8pt}
+
+% support for tutorials
+\newcommand{\prose}{\textbf{\emph{Prose:}}}
+\newcommand{\prosemath}{\textbf{\emph{Math:}}}
+\newcommand{\takeaway}{\textbf{\emph{Takeaway Points:}}}
+\newcommand{\summary}{\textbf{\emph{Summary:}}}
+\newcommand{\note}{\textbf{\emph{Note:}}}
+
+
+
+%% include background image (wg-document-page-background) 
+
+\usepackage{graphicx}            %% Include pictures into a document
+%% (wg-texdoc-inserttikz)
+
+
+\def\documentisdraft{NOTDRAFT}
+
+%% (wg-texdoc-isdraft)
+%% (wg-texdoc-insert-fancy-headers)
+
+%%\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
+%%\usepackage{makeidx}             %% Make an index uncomment following line
+%%\makeindex                       %%.. yeah this one, too. index{key} in text
+%%
+
+
+
+\definecolor{verbcolor}{rgb}{0.6,0,0}
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\newcommand\debate[1]{\textcolor{darkgreen}{DEBATE: #1} \marginpar{\textcolor{red}{DEBATE} }}
+\newcommand{\ltodo}[2]{\marginpar{\textcolor{red}{ACTION: #1}\endnote{#2}}}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
+\newcommand{\menu}{\ensuremath{\;\rightarrow\;}}
+%%(wg-add-inline-images)  %% add inline images to the Begin
+
+
+
+
+
+%%mix User Definitions: Hint: ~/.latex.defs and  latex.defs  
+%%End User Definitions:
+%%(wg-texdoc-adjust-paper-width)
+%% (wg-texdoc-insert-hypersetup)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+%% (wg-latex-pretty-title-page)
+%% (wg-texdoc-titleblock)
+
+\setcounter{section}{0}
+\pagenumbering{arabic}
+
+\ifx\documentisdraft\drafttest
+\linenumbers    %%%%%%%%%%%%% DRAFT
+\fi
+
+\section*{Support Files for SAS}
+
+This repository is the starting point for feathering the nest with
+IRAF command files, Python utilities, and other items to assist with
+using IRAF under Anaconda.
+
+The repository should be cloned into
+{\color{verbcolor}{\verb#~/iraf#}} directly. If you cloned it
+elsewhere into your file system -- you can move it to
+{\color{verbcolor}{\verb#~/iraf#}} without upsetting git.
+
+\subsection{home\_iraf}
+
+This subdir ({\color{verbcolor}{\verb#~/iraf/smtsci/home_bin#}})
+has:
+
+- {\color{verbcolor}{\verb#.cl#}} scripts that are executed within
+iraf by running an instance of {\color{verbcolor}{\verb#cl#}} and
+using ``file redirection'' to ``input'' the
+{\color{verbcolor}{\verb#~/iraf/smtsci/home_bin/xxx.cl#} script.
+- the {\color{verbcolor}{\verb#.dat#}} and {\color{verbcolor}{\verb#.db#}}
+files serve as templates to dial IRAF to a particular observatory.
+
+The basic manifest in the package:
+
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+~/iraf/smtsci/home_iraf/Makefile       -- update ~/iraf with these files
+
+~/iraf/smtsci/home_iraf/iraf.aliases   -- Handy BASH aliases
+
+
+~/iraf/smtsci/home_iraf/pyraflogin.py  -- python "tasks"
+~/iraf/smtsci/home_iraf/loginuser.cl   -- example for specializing your install
+
+~/iraf/smtsci/home_iraf/fit2fits.cl    -- step1: make filenames right
+~/iraf/smtsci/home_iraf/fits2fits.cl
+~/iraf/smtsci/home_iraf/fts2fits.cl
+
+~/iraf/smtsci/home_iraf/addteam.cl     -- Step 2 fix/update headers
+~/iraf/smtsci/home_iraf/clean_imagetyp.cl
+~/iraf/smtsci/home_iraf/clean_pinpoint_wcs.cl
+~/iraf/smtsci/home_iraf/clean_spectra.cl
+~/iraf/smtsci/home_iraf/dcosite.cl     -- Example of Woody's observatory
+
+~/iraf/smtsci/home_iraf/artic_trim.cl   -- Step 3 clean overscans etc.
+
+~/iraf/smtsci/home_iraf/cosmic_ray_correction.cl -- Step 4 CR correct all files 
+
+
+~/iraf/smtsci/home_iraf/FixGrasshopper.cl
+~/iraf/smtsci/home_iraf/cleantemps.cl
+
+~/iraf/smtsci/home_iraf/fakewcs.cl     -- quick/dirty wcs onto a file.
+~/iraf/smtsci/home_iraf/fakewcs.par
+
+~/iraf/smtsci/home_iraf/printtimes.cl  -- hack of making a logbook entry
+~/iraf/smtsci/home_iraf/readme
+~/iraf/smtsci/home_iraf/zwofix.cl      -- ZWO can not get headers right
+
+
+~/iraf/smtsci/home_iraf/gaodb.dat      -- observatory examples
+~/iraf/smtsci/home_iraf/sbodb.dat
+
+~/iraf/smtsci/home_iraf/sbo.dat        -- instrument example
+
+
+# sextractor configuration files
+# default.param and default.sex have been tuned
+# to the particular instrument and its capabilities
+
+~/iraf/smtsci/home_iraf/sextractor/10inch:
+
+   README              gauss_2.5_5x5.conv   mexhat_4.0_9x9.conv
+   block_3x3.conv      gauss_3.0_5x5.conv   mexhat_5.0_11x11.conv
+   default.conv        gauss_3.0_7x7.conv   tophat_1.5_3x3.conv
+   default.nnw         gauss_4.0_7x7.conv   tophat_2.0_3x3.conv
+   default.param       gauss_5.0_9x9.conv   tophat_2.5_3x3.conv
+   default.sex         mexhat_1.5_5x5.conv  tophat_3.0_3x3.conv
+   gauss_1.5_3x3.conv  mexhat_2.0_7x7.conv  tophat_4.0_5x5.conv
+   gauss_2.0_3x3.conv  mexhat_2.5_7x7.conv  tophat_5.0_5x5.conv
+   gauss_2.0_5x5.conv  mexhat_3.0_9x9.conv
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\subsubsection{Sextractor default.param file}
+
+The default.param file:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+ALPHAWIN_SKY             Windowed right ascension  (native)                        [deg]
+DELTAWIN_SKY             Windowed declination (native)                             [deg]
+X_IMAGE                  Object position along x                                   [pixel]
+Y_IMAGE                  Object position along y                                   [pixel]
+FLUX_ISO                 Isophotal flux                                            [count]
+FLUXERR_ISO              RMS error for isophotal flux                              [count]
+BACKGROUND               Background at centroid position                           [count]
+THRESHOLD                Detection threshold above background                      [count]
+ELONGATION               A_IMAGE/B_IMAGE                                          
+ELLIPTICITY              1 - B_IMAGE/A_IMAGE                                      
+FWHM_IMAGE               FWHM assuming a gaussian core                             [pixel]
+FWHM_WORLD               FWHM assuming a gaussian core                             [deg]
+MAG_AUTO                 Kron-like elliptical aperture magnitude                   [mag]
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+is a subset of around 400 parameters available. Here
+the the ra/dec and x/y locations of the centers of
+round-like features together with FWHM,ELONGATION
+and ELLIPTICITY. The ELONGATION and ELLIPTICITY
+together with the FWHM are used to different
+real stars from small galaxies and other features
+that sextractor obtains. 
+
+   
+
+
+\subsection{home\_bin}
+
+Here are a few of the utility programs in bash and python
+related to astronomy data. More to serve as programming
+templates -- fix as needed locally.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+/home/wayne/iraf/smtsci/home_bin/Makefile     -- update ~/bin  needed
+/home/wayne/iraf/smtsci/home_bin/asolve       -- driver for astrometry.net
+/home/wayne/iraf/smtsci/home_bin/asolveclean  -- clean up asolve runs
+/home/wayne/iraf/smtsci/home_bin/myplot2      -- hack conda python plotter
+/home/wayne/iraf/smtsci/home_bin/pycrmedian   -- hack conda python crmedian
+/home/wayne/iraf/smtsci/home_bin/sexprep      -- link defaults to current dir
+/home/wayne/iraf/smtsci/home_bin/specplot     -- hack pyton spectral plotter
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\appendix
+\renewcommand \thesection{\Alph{section}}
+
+\section{Using ``git''}
+
+The git suite of tools were designed to allow the developers
+of the Linux kernal and support routines to collaborate.
+It is extremely powerful -- but a proper subset serves
+our needs.
+
+I would recommend:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   take good notes about what you do. It is done infrequently,
+and needs special attention to detail.
+   \item   Make a directory {\color{verbcolor}{\verb#~/git#}}
+   \item   {\color{verbcolor}{\verb#cd#}} there and do all the clones
+   \item   use git to create a local repository, say {\color{verbcolor}{\verb#myiraf#}}
+   \item   copy the files you want to specialize for your site to {\color{verbcolor}{\verb#myiraf#}}
+from {\color{verbcolor}{\verb#~/iraf/smtsci#}} and use git to manage them
+\end{enumerate}
+
+
+
+%% use a bibitem approach to the references publications etc.
+%% (wg-bibitem)
+
+%%\clearpage
+%%\addcontentsline{toc}{section}{References}
+%%\renewcommand*{\refname}{My Bibliography and References}
+%%\bibliographystyle{plain}	% bibliographystyle{apalike} and \usepackage{natbib}
+%%\bibliography{MasterBib}	% expects file "MasterBib.bib"
+
+
+%%\clearpage
+%%\addcontentsline{toc}{section}{Index}
+%%\printindex %% www.cs.usask.ca/resources/tutorials/latex/notes/toc-index.pdf
+
+%%\begin{thebibliography}{80}
+%%\usepackage{natbib}   %% bibitems
+%%\end{thebibliography}
+
+% /home/wayne/iraf/smtsci/doc/SMTSCI.tex
+
+%% (wg-texdoc-endnotes)
+\end{document}

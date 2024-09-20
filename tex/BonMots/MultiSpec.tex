@@ -1,0 +1,38 @@
+\section{Multispec Spectra}
+
+These images have a NAXIS of 3 or 4, where:
+NAXIS1 - BAND1 reduced image
+NAXIS2 - BAND2 raw image
+NAXIS3 - BAND3 sky that results in reduced = raw image - sky
+NAXIS4 - BAND4 variance (apall.weights = 'variance' specified.
+
+1D spectra consist of just the BAND1 image.
+
+When wavelength calibrated the WCS has WAT headers (values are from
+a random image):
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+WAT0_001= 'system=multispec'
+WAT1_001= 'wtype=multispec label=Wavelength units=angstroms'
+WAT2_001= 'wtype=multispec spec1 = "1 1 2 1. 2.1919422441886 4200 0. 452.53 471'
+WAT3_001= 'wtype=linear'
+WAT2_002= '.60 1. 0. 3 3 1. 4200.00000000001 1313.88904209266 1365.65012876239 '
+WAT2_003= '1422.67911152069 1479.0560707956 1535.24082980747 1584.94609332243'
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+There are several keywords for headers in the spectra to be corrected:
+REFSPEC1
+REFSPEC2
+REFSHFT1
+REFSHFT2
+
+
+
+DCLOG - any removed WCS during a reapplication of dispcor
+
+cp: cannot stat '/home/wayne/dispcor.pdf': No such file or directory

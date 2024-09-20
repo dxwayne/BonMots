@@ -1,0 +1,261 @@
+% /home/wayne/play/sasiraf/doc/BonMots/Commandline.tex
+
+\section{IRAF/PyRAF Command Line Basics}
+
+The login.py and loginuser.py file declares a lot of Unix functions
+to be \dhl{foreign} \index{functions!foreign}, foreign as not residing
+within the IRAF source code or affiliated packages. This includes any
+programs you may want to write. 
+
+Non-foreign commands are available by preceeding/escaping the
+line with an exclaimation point, aka a ``bang'' (!). \index{functions!bang}.
+
+Common commands that will be used within the CL/PyRAF environment.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{| l | l | l |}
+\hline
+Command  & Description   & PyRAF Form   \\
+\hline
+pwd       & print wd            & !\$(pwd)    \\ 
+ls        & list files          & !ls *pat > l.l    \\ 
+cd        & change dir          & change     \\ 
+cp        & copy                & ! cp -pr *pat dir    \\ 
+mkdir     & mkdir               & !mkdir p     \\ 
+!rm       &                     & remove (*)    \\ 
+cat       & dump file           & pipes    \\ 
+less/more & like page           & help task  | less    \\ 
+awk       & strong inline edits & gawk    \\ 
+sed       & script-ed           & pipe partner    \\ 
+grep      & filters             & grep -v (not pattern)    \\ 
+diff      & compare files       & compare source files    \\ 
+sh        & use bash            & really, use bash    \\ 
+%% ones-based: \cline{a-b}
+\hline
+%%\DeleteShortVerb{|}
+\end{tabular}
+%%\end{minipage}    %% for footnotes  r@{.}l 
+\caption[Basic Linux Commands]{A handful of basic Linux commands.}
+\label{table:BasicCommands}
+%%} % end small etc
+\end{table}
+
+
+In loginuser.cl
+
+iraf//noao/imred/ccdred/ccddb/
+iraf/noao/lib/obsdb.dat
+
+setinst.site='gao' -- defined in iraf/noao/lib/obsdb.dat
+
+camera.dat - description tying loca; dialects to IRAF
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+exptime         otime
+darktime        ttime
+imagetyp        data-typ
+subset          f1pos
+biassec         biassec []
+datasec         datasec []
+
+fixpix          bp-flag 0
+overscan        bt-flag 0
+zerocor         bi-flag 0
+darkcor         dk-flag 0
+flatcor         ff-flag 0
+fringcor        fr-flag 0
+
+'OBJECT (0)'            object
+'DARK (1)'              dark
+'PROJECTOR FLAT (2)'    flat
+'SKY FLAT (3)'          other
+'COMPARISON LAMP (4)'   other
+'BIAS (5)'              zero
+'DOME FLAT (6)'         flat
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\subsection{Linux Commands}
+
+Linux is an full modern multi-user peer-peer operating system that is very
+similar in all regards to Unix.
+
+Unix proper does not distinguish between binary or text files\footnote{mode
+of 'r' has been replaced of late with the need to open 'rb', or read-binary.}.
+File extensions are ``social conventions'' and should carry no meaning.
+There may be multiple periods (dots) in a file name. However, while 
+filenames may have spaces in Linux -- this places a burden on the
+users to put silly-quote marks around the file names to make sure
+all the space-separated parts stay together as one name.
+
+All commands and command line arguments are case-sensitive. The filenames
+Makefile and makefile are different -- indeed Makefiles usually control
+making programs using sub-programs defined by their own makefile (note
+case of the filename characters).
+
+
+The paragigm of a Linux ``\dhl{program}'' or command is one of a
+``\dhl{filter}''. A filter recognizes three files, that are 
+open and available when the program stars : 
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item  standard in (stdin),
+   \item  standard out (stdout) and 
+   \item  standard error (stderr).
+\end{enumerate}
+
+A Filter takes its data-input from stdin, uses arguments to affect (or
+not) the data-input read for that file and sends the results to stdout.
+Errors are reported on a separate stream called stderr. This disambiguates
+a few important messages from a possible torrent of output.
+
+Techinally -- each program, when it wakes up, has an unsigned integer
+count of the arguments and a pointer to an array of strings that are
+the 'arguments'. The arguments may be used in any fashion by the program.
+A technical description may be found in Section \ref{sec:technicaldescription}.
+
+\subsection{Linux Command Technical Description}  \label{sec:technicaldescription}
+
+This is a crude Bakus-Naur Format (BNF) parser template for a linux command
+line processor, where:
+
+\begin{quote}
+   STRING is a set of [A-Za-z\_][A-Za-z\$\_0-9.-], essentially no spaces
+   and being careful not to use characters that carry weight with more
+   advanced features.
+
+   DASH is the hyphen character (minus sign)
+
+   DOUBLEDASH is two immediately adjacent hyphens.
+
+   wildcard -- left to another discussion, but essentiall an asterisk or a 
+   question mark
+
+   special character [\$()\&|<>`'"] as \$ for environment variables, () to initiate
+   a subshell, \&\& logical and || logical or >2\&1 to copy stderr into stdout,
+   back-tick (`) as in `cmd` to take the results of cmd into the command line.
+
+   The special characters like the arrows, page up/down etc are not considered
+   and have been known to create filenames that are a Real Pain\texttrademark to remove!
+
+
+\end{quote}
+
+are some of the uses for characters w.r.t. command lines.
+
+Here is the syntax: example follows...
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+Program      :: command arguments
+             ;
+
+command      :: STRING
+             ;
+
+arguments    :: argument
+             | argument SPACE argument
+             | wildcard
+             ;
+
+options      :: option
+             | filename
+             ;
+
+option       :: shortoption
+             | longoption
+             ;
+
+shortoption  :: DASH singlechar             # eg -H -i -n -s
+             | shortoption | singlechar     # eg -Hins
+             ;
+
+longoption   :: concat(DOUBLEDASH,switchname)                  # eg --with-filename (-H)
+             | concat(DASH,switchname)
+             | longoption switchoption
+             ;
+
+switchname   :: STRING
+             ;
+
+switchoption :: STRING
+             ;
+
+switchoption :: 
+
+filename     :: STRING
+             |  QUOTEDSTRING
+             ;
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\textbf{\emph{Goal:}} Find the filename and line numbers for procedure definitions in
+all the tcl files at or under this directory; while we're at it
+keep a copy of that list and then view the list.
+
+\textbf{\emph{Example:}}
+\verb=find $(PWD) -name "*.tcl" | xargs grep -Hins "^[ ]*proc" | tee results.txt | less=
+
+\textbf{\emph{Prose:}}. Find all files (\verb=-iname "*.tcl"=) at or
+below \verb=$(PWD)= sending the filenames one at a time into a
+Linux program \verb=xargs= that will feed the files -- one at a time -- into
+grep. Use \verb=grep= with witches that outputs the filename:lineno: text
+to its output. But! Using plumbing terms, a \verb=tee= will send flow
+in two directions: 1) on to the next task, and 2) into a file we
+will call \verb=results.txt=. Then use \verb=less= to comfortably
+view and search the results. 
+
+Essentially, linux commands can be combined to leverage their varying
+and various actions with parameters to quickly hash up a command sequence
+that acts like a program. All right from the command line.
+
+It can be made more difficult, but sufficent unto the day, etc.
+
+Find a GUI that does that!
+
+
+\subsection{IRAF/PyRAF Environment}  \label{sec:IRAFPyRAFEnvironment}
+
+IRAF/PyRAF tasks refer to elements in the file system using a set of
+cl specific environment variables. They are of the form of <text><dollarsign>.
+They are set with the \dhl{set} command and may be examined with the \dhl{show}
+command. They usually do not expand.
+
+The command:
+
+\dhl{x=iraf.show('iraf', Stdout=1)[0]}
+
+will set a python variable with the text of the base directory for iraf.
+
+In spectroscopy, the identify task wants to know the fully-qualified
+path to the linelists file via the iraf.identify.coordlist variable or
+the \dhl{coordlist} task parameter. This is a bit tedious to determine.
+Using lpar identify, the coordlist = 'linelists\$fhydrogen.dat', so
+having the proper value for linelists\$ is needed.
+
+show linelist returns:  \dhl{noaolib\$linelists/}. Now the question of
+what is the value of \dhl{noaolib\$}?. Using show noaolib returns
+\dhl{noao\$lib/}, show noao returns \dhl{iraf\$noao} and show iraf
+returns \dhl{/home/wayne/anaconda3/envs/geminiconda/iraf/}.
+
+Putting it all together:
+
+\dhl{/home/myhome/anaconda3/envs/geminiconda/iraf/noao/lib/linelists}
+
+is the place to put your linelists, together with all the default IRAF
+supplied linelists.
+
+
+\textbf{\emph{Summary:}} Using \dhl{set} and \dhl{show} manages IRAF
+environment variables. \index{IRAF!environment variables}.

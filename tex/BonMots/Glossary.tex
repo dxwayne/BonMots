@@ -1,0 +1,105 @@
+%%\section{Glossary}
+
+\newglossaryentry{noise}{name={noise},description={From \dhl{scombine} help: ``Values that are mixed into the record of a signal that originates as part of the system. Various strategies, philosophies and techniques are used to extimate the value. The noise characteristics of the \\
+spectra can be described by fixed gaussian noise, a poissonian noise\\
+which scales with the square root of the intensity, and a sensitivity\\
+noise which scales with the intensity.''\\
+$\sigma = \sqrt{\left(\frac{<\tt{I}>}{\tt{GAIN}} \right ) + \left( \frac{\tt{RDNOISE}}{\tt{I}} \right )^{2}  + (\tt{SENNOISE}\; \times <\tt{I}>)^{2}}$\\
+\\
+using RDNOISE, GAIN, and ``sensitivity noise''. Note: RDNOISE and GAIN\\
+and intensity (I) are in ADU (DN) and require scaling by GAIN.  The\\
+``sensitivity noise'', taken from flats, is a ``fraction''.}}
+
+\newglossaryentry{analysis}{name={analysis},description={Action performed on a fully reduced file.}}
+
+\newglossaryentry{apall}{name={apall},description={A IRAF task used to define apertures, extract the trace, determine and subtract background information, and to describe the trace using various fitting math functions: spline, spline3, chebyshev, legendre.}}
+
+\newglossaryentry{apertures}{name={apertures},description={Apertures are assigned to each individual star's trace or the order of an echelle spectrum.}}
+
+\newglossaryentry{background}{name={background},description={Noise, light pollution, spectral lines from city lamp sources, etc. Subtracted from source information in an image and characterized by its own noise statistics.}}
+
+\newglossaryentry{band}{name={band},description={In IRAF, a subsets of information related to the data. In multispec spectra, band 1) is the final signal; 2) the raw signal before corrections; 3) the sky area; and 4) the SNR for the data.}}
+
+\newglossaryentry{beam}{name={beam},description={A record from a separate optical path/sensor combination that may appear in certain instrument's spectral images.}}
+
+\newglossaryentry{calibration}{name={calibration},description={The act of assigning a \textbf{\emph{W}}orld \textbf{\emph{C}}oordinate \textbf{\emph{S}}ystem to data.}}
+
+\newglossaryentry{combine}{name={combine},description={In IRAF the combination of data from two or more images.}}
+
+\newglossaryentry{command}{name={command},description={Incomputing, an imperative subject to qualification by parameteres, to accept data from a source (stdin), and send results to an output (stdout). }}
+
+\newglossaryentry{commands}{name={commands},description={One or more command imperatives. They may be collected together into a 'script' and replayed  to affect at a later time.}}
+
+\newglossaryentry{database}{name={database},description={An organized collection of data and inter-relationships stored in a management framework. Popular databases include Maria DB, PostgreSQL, etc.}}
+
+\newglossaryentry{default}{name={default},description={A value used for a parameter, when no overide is provided.}}
+
+\newglossaryentry{FITS}{name={fits},description={\textbf{\emph{F}}lexible \textbf{\emph{I}}mage \textbf{\emph{T}}ransport \textbf{\emph{S}}ystem Several forms: SIMPLE, \textbf{\emph{M}}ultiple \textbf{\emph{E}}xtension \textbf{\emph{F}}ile (MEF), Cube.}}
+
+\newglossaryentry{flat}{name={flat},description={A special image file used to capture the vignetting profile, dust, and other defects unrelated to a source as seen by a sensor.}}
+
+\newglossaryentry{function}{name={function},description={A name for an algorithm and its encapsulating logic. Used together with general logic forms tasks and programs.}}
+
+\newglossaryentry{GAIN}{name={gain},description={A FITS value used to correct a 16-bit image pixel's value to the electron-count (inferred photon count) from a source as recorded by the sensor.}}
+
+\newglossaryentry{header}{name={header},description={One of two parts of a FITS image extent, carrying information in 80 character cards (extents. think computer punch card) grouped together into blocks of 36 cards. Each entry consists of a keyword, value, and comment. Special cards for HISTORY and COMMENT follow different rules. The HEADER stops with a card with the END as its keyword. Blank cards are filled with 0x20 characters (spaces) not 0x00 (NULL).}}
+
+\newglossaryentry{hedit}{name={hedit},description={The IRAF used to modify, extend or delete cards from a FITS header.}}
+
+\newglossaryentry{histogram}{name={histogram},description={A binning of data, where the ordinal value is a value and the abscissa (reversed sense from algebra). Used to denote frequency of occurance of a value in a dataset.}}
+
+\newglossaryentry{IMAGETYP}{name={imagetyp},description={IRAF tasks use a set of definitions. These are BIAS, DARK, FLAT, DOMEFLAT, SKYFLAT, IMAGE, COMPARISON etc. There are built in meanings to some, and offered by sites to help direct action of their specific packages.}}
+
+\newglossaryentry{IRAF}{name={iraf},description={The Image Reduction and Analysis Facility. A collection of packages, tasks and proceedures created to reduce data from a particular instrument. May be used in very specific or loose general ways.}}
+
+\newglossaryentry{MEDIAN}{name={median},description={Used here mainly to describe the value value falling between the minimum and maximum value in a dataset as described by a statistical approach.}}
+
+\newglossaryentry{MODE}{name={mode},description={Used here mainly to describe the most common value in a dataset as described by a statistical approach.}}
+
+\newglossaryentry{NAXIS}{name={naxis},description={A FITS keyword, found in an image, that describes the dimensions of the data. Value: 1) like a spectrum; 2) like an image; and 3) a datacube.}}
+
+\newglossaryentry{object}{name={object},description={The target of an observation.}}
+
+\newglossaryentry{OBJNAME}{name={objname},description={FITS - a significant keyword denoting the catalog or list name for a target.}}
+
+\newglossaryentry{observations}{name={observations},description={A set of data, usually taken during one section on one date, at one site, of one or multiple targets; together with calibration and other instrumentation data.}}
+
+\newglossaryentry{package}{name={package},description={A collection of parameters, tasks, help files within IRAF.}}
+
+\newglossaryentry{parameters}{name={parameters},description={The information in the form of switches on a command line, values in a parameter file, etc that inform and alter the way a task proceeds with its actions.}}
+
+\newglossaryentry{pixels}{name={pixels},description={A single element of a sensor. }}
+
+\newglossaryentry{profile}{name={profile},description={In IRAF, a list of aperture profile images, the shape of data like a Point Spread Function for a star, a gaussian fit 'profile' centered around a point of interest, the general shape of a descriptive curve. }}
+
+\newglossaryentry{pyraf}{name={pyraf},description={The newest, latest and probably final version of cl -- the IRAF command language.}}
+
+\newglossaryentry{pyraflogin}{name={pyraflogin},description={A user supplied file, containing data, functions and tasks for use with PyRAF.}}
+
+\newglossaryentry{Python}{name={python},description={Python is not a programming language as it is more of a programming envionment. The environment is richly awarded functionality. Care should be exercised as 'programs' developed under one version may not easily port to another.}}
+
+\newglossaryentry{regions}{name={regions},description={Subsections of a 1D or 2D images.}}
+
+\newglossaryentry{rejection}{name={rejection},description={Pixels that are discarded (and should be noted/recorded) from reduction and analysis.}}
+
+\newglossaryentry{science}{name={science},description={IRAF - a shorthand way to describe an image carrying the information about sources in the sky.}}
+
+\newglossaryentry{scombine}{name={scombine},description={The IRAF task to combine spectra, in the same way 2d images are aligned by the combine task.}}
+
+\newglossaryentry{sigma}{name={sigma},description={The square root of the variance, defined in different ways by different statistical approaches.}}
+
+\newglossaryentry{spectrum}{name={spectrum},description={A reduced trace from a star, imaged by a spectrograph. May be instrumental (not corrected) or complete with wavelength and energy calibration.}}
+
+\newglossaryentry{standard}{name={standard},description={A short-hand way to refer to a standard (pre measured and described) reference star.}}
+
+\newglossaryentry{stdout}{name={stdout},description={Unix: the file stream where nominal messages are written, as to the terminal or redirected to a file.}}
+
+\newglossaryentry{task}{name={task},description={A 'function' within a package within IRAF.}}
+
+\newglossaryentry{target}{name={target},description={See OBJNAME.}}
+
+\newglossaryentry{trace}{name={trace},description={The path of a star's image across a sensor.}}
+
+\newglossaryentry{Unix}{name={Unix},description={The operation system, a play on words from the Multics operating system. The OS of IRAF.}}
+
+\newglossaryentry{WCS}{name={WCS},description={\textbf{\emph{W}}orld \textbf{\emph{C}}oordinate \textbf{\emph{S}}ystem: a function that maps a sensor's x,y and sometimes z axis into RA/Dec or Angstroms etc. The Z axis may contain time data by wavelength for example.}}

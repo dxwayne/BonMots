@@ -1,0 +1,118 @@
+\section{Quick Spectrum Extraction}
+https://noirlab.edu/science/data-services/other/spectral-atlas
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+
+apall:
+   change certain parameters to meet needs.   Add skyband (3)
+   extras = iraf.yes                   # multi spec with 4 bands
+   lower = -12                         # The 'l' and 'u' key usually used
+   upper = 12                          #
+   b_sample = -40:-30,3-,40            # The place to set background bands
+   b_niterate = 3                      # Try a few times
+   threshold = 500                     # Careful of glare etc
+   line   = 5000                       # Line bright middle of star dispersion
+   
+   format = "multispec"                # Multispec
+   
+   EXTRACTION PARAMETERS:
+     background = "fit"                # Details to cause band 4 to be there
+     weights = "variance"              # vs none, this makes a stat to record!
+There are others, use as needed.
+
+# To do a fit: Roughly the keys used in order.
+apall z_sci.fits
+yes          Find apertures for HD51055_60s_20240811_093802m9? ('yes'):    
+1            Number of apertures to be found automatically (1):            
+yes          Resize apertures for HD51055_60s_20240811_093802m9? ('yes'):  
+yes          Edit apertures for HD51055_60s_20240811_093802m9? ('yes'):    
+w e e
+l u
+b
+z z
+s s  and s s
+f
+q
+
+yes
+yes
+yes
+
+s s
+f
+(d to delete errant points)
+(residual ~< 0.05)
+yes
+yes
+yes
+yes
+q
+
+
+The questions and how to answer are a bit goofy. Some times you
+enter stuff into the white strip at bottom of X display; sometimes
+on the terminal. Usually the questions pop out on the terminal.
+
+Questions roughly in order. the [answer] into the white box.
+
+Find apertures for HD51055_60s_20240811_093802m9?                       ('yes'): 
+Number of apertures to be found automatically                           (1): 
+Resize apertures for HD51055_60s_20240811_093802m9?                     ('yes'): 
+Edit apertures for HD51055_60s_20240811_093802m9?                       ('yes'):    
+Trace apertures for HD51055_60s_20240811_093802m9?                      [yes]
+Fit traced positions for HD51055_60s_20240811_093802m9 interactively?   [yes]
+Fit curve to aperture 1 of HD51055_60s_20240811_093802m9 interactively  [yes]
+Write apertures for HD51055_60s_20240811_093802m9 to database           [yes]
+Extract aperture spectra for HD51055_60s_20240811_093802m9?             [yes]
+Review extracted spectra from HD51055_60s_20240811_093802m9?            [yes]
+Review extracted spectrum for aperture 1 from <thefitsfile>?            [yes]
+q
+
+The review window is not splot.
+Then you may use splot on the new spectrum as quality check.
+
+-----------------------------------------------------------------------------
+
+apall CalHD51055_60s_20240811_095130m1.fits ref=HD51055_60s_20240811_093802m9.fits recen- back- trace- intera-
+splot CalHD51055_60s_20240811_095130m1.ms.fits  # see the results, extracted from same trace area.
+ 
+apall FlatLUI_2s_20240811_095703m3.fits ref=HD51055_60s_20240811_093802m9.fits recen- back- trace- intera-
+
+-----------------------------------------------------------------------------
+coordlist
+:labels coord
+
+-----------------------------------------------------------------------------
+From my notes:
+
+apall z_comp.fits ref=z_sci recen- back- trace- intera-
+identify z_comp.ms.fits
+  m m m f  d..d f l m d m m func chebyshev order 5 f d..d f q
+hedit z_sci.ms.fits REFSPEC1 z_comp.ms.fits add+ update+ ver- show-
+dispcor z_sci.ms.fits cal_sci.ms.fits
+splot cal_sci.ms.fits
+##-- flux calibration
+standard
+
+-----------------------------------------------------------------------------
+-- getting snap to work
+
+"The IRAF Simple Graphics Interface (SGI)"
+https://iraf.readthedocs.io/en/latest/unixsmg.html
+/usr/local/lib/iraf/dev/graphcap
+   ueps - make eps files....
+
+epsfl # is eps in landscape mode
+
+        stdgcur         = "stdgraph"
+        stdimcur        = "stdimage"
+
+stdvdm uparm$vdm # stdvdm is the name of a graphics metacode (mc) file.
+
+
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

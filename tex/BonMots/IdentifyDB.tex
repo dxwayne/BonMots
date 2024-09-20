@@ -1,0 +1,297 @@
+\section{Identify Database}
+
+\url{https://iraf.net/irafdocs/formats/identify.php#:~:text=The%20IDENTIFY%20database%20specified%20by,of%20a%20number%20of%20records.}
+
+\subsection{Documentation}
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+IDENTIFY Database -- From the WEB
+
+The IDENTIFY database specified by the parameter database is a
+directory of simple text files. The text files have names beginning
+with 'id' followed by the entry name, usually the name of the
+image. The database text files consist of a number of records. A
+record begins with a line starting with the keyword "begin". The rest
+of the line is the record identifier. Records read and written by
+identify have "identify" as the first word of the
+identifier. Following this is a name which may be specified following
+the ":read" or ":write" commands. If no name is specified then the
+image name is used. For 1D spectra the database entry includes the
+aperture number and so to read a solution from a aperture different
+than the current image and aperture number must be specified. For
+2D/3D images the entry name has the 1D image section which is what is
+specified to read the entry. The lines following the record identifier
+contain the feature information and dispersion function coefficients.
+
+The dispersion function is saved in the database as a series of
+coefficients. The section containing the coefficients starts with the
+keyword "coefficients" and the number of coefficients.
+
+The first four coefficients define the type of function, the order or
+number of spline pieces, and the range of the independent variable
+(the line or column coordinate along the dispersion). The first
+coefficient is the function type code with values:
+
+	Code	Type
+	   1	Chebyshev polynomial
+	   2	Legendre polynomial
+	   3	Cubic spline
+	   4	Linear spline
+
+The second coefficient is the order (actually the number of terms) of
+the polynomial or the number of pieces in the spline.
+
+The next two coefficients are the range of the independent variable
+over which the function is defined. These values are used to normalize
+the input variable to the range -1 to 1 in the polynomial
+functions. If the independent variable is x and the normalized
+variable is n, then
+
+	n = (2 * x - (xmax + xmin)) / (xmax - xmin)
+
+where xmin and xmax are the two coefficients.
+
+The spline functions divide the range into the specified number of
+pieces. A spline coordinate s and the nearest integer below s, denoted
+as j, are defined by
+
+	s = (x - xmin) / (xmax - xmin) * npieces
+	j = integer part of s
+where npieces are the number of pieces.
+
+The remaining coefficients are those for the appropriate function. The
+number of coefficients is either the same as the function order for
+the polynomials, npieces+1 for the linear spline, or npieces + 3 for
+the cubic spline.
+
+1. Chebyshev Polynomial
+
+The polynomial can be expressed as the sum
+
+	y = sum from i=1 to order {c_i * z_i}
+where the the c_i are the coefficients and the z_i are defined interactively as:
+
+	z_1 = 1
+	z_2 = n
+	z_i = 2 * n * z_{i-1} - z_{i-2}
+2. Legendre Polynomial
+
+The polynomial can be expressed as the sum
+
+	y = sum from i=1 to order {c_i * z_i}
+where the the c_i are the coefficients and the z_i are defined interactively as:
+
+	z_1 = 1
+	z_2 = n
+	z_i = ((2*i-3) * n * z_{i-1} - (i-2) * z_{i-2}) / (i-1)
+3. Linear Spline
+
+The linear spline is evaluated as
+
+	y = c_j * a + c_{j+1} * b
+
+where j is as defined earlier and a and b are fractional difference
+between s and the nearest integers above and below
+
+	a = (j + 1) - s
+	b = s - j
+4. Cubic Spline
+
+The cubic spline is evaluated as
+
+	y = sum from i=0 to 3 {c_{i+j} * z_i}
+
+where j is as defined earlier. The term z_i are computed from a and b,
+as defined earlier, as follows
+
+	z_0 = a**3
+	z_1 = 1 + 3 * a * (1 + a * b)
+	z_2 = 1 + 3 * b * (1 + a * b)
+	z_3 = b**3
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\section{Identify Example Output}
+
+From a FlexSpec Kzin Calibration Unit: NeAr bulbs from fluorescence
+lighting ballasts.
+
+A header line was added to this example marked ``WG Added.''. There
+are 3 numbers unaccounted for with questin marks.
+
+Using a spline3 function, order 1. Fit is not that great, reported overall
+residual of approx 1.2.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+# Sun 20:47:32 18-Aug-2024
+begin	identify CalHD51055_60s_20240811_095130m1.ms - Ap 1
+	id	CalHD51055_60s_20240811_095130m1.ms
+	task	identify
+	image	CalHD51055_60s_20240811_095130m1.ms - Ap 1
+	aperture	1
+	aplow	2130.1
+	aphigh	2132.9
+	units	Angstroms
+	features	35
+   ---    X Pos   Fit Coord    Ref Coord   ?  ? ? From the linelists file.    --- WG Added.
+	       1805.83   4073.524     4072.2   4.0 1 1 blend A 4072.01 and 4072.40
+	       1963.10 4261.27762   4259.361   4.0 1 1 AI(9)
+	       1994.46 4298.73507     4300.4   4.0 1 1 AI(4) blend
+	       2382.01 4762.28642    4764.89   4.0 1 1 AII(15)
+	       2416.51 4803.59825    4806.07   4.0 1 1 AII(6)
+	       2478.77 4878.17885     4879.9   4.0 1 1 AII(14)
+	       2550.87   4964.554    4965.12   4.0 1 1 AII(14)
+	       2738.58  5189.5661   5187.746   4.0 1 1 AI
+	       2764.62 5220.79924    5221.27   4.0 1 1 AI
+	       2916.25 5402.67667   5400.562   4.0 1 1 NeI(3)
+	       2995.83 5498.16604   5495.872   4.0 1 1 AI(14)
+	       3087.34 5607.99778   5606.732   4.0 1 1 AI
+	       3124.66 5652.79259   5650.703   4.0 1 1 AI(12)
+	       3205.83 5750.23124   5748.299   4.0 1 1 NeI(13)
+	       3218.68 5765.66441   5764.418   4.0 1 1 NeI(13)
+	       3290.05 5851.34135  5852.4878   4.0 1 1 NeI(6)
+	       3368.45 5945.48383  5944.8342   4.0 1 1 NeI(1)
+	       3440.33 6031.79857  6029.9971   4.0 1 1 NeI(3)
+	       3475.66 6074.21579  6074.3377   4.0 1 1 NeI(3)
+	       3493.78 6095.97699   6096.163   4.0 1 1 NeI
+	       3532.59 6142.58842  6143.0623   4.0 1 1 NeI(1)
+	       3549.58 6162.99312  6163.5939   4.0 1 1 NeI(5)
+	       3593.67 6215.93178  6217.2813   4.0 1 1 NeI(1)
+	       3634.75 6265.26625   6266.495   4.0 1 1 NeI(5)
+	       3666.70 6303.62995  6304.7892   4.0 1 1 NeI
+	       3690.94 6332.73805  6334.4279   4.0 1 1 NeI(1)
+	       3731.24 6381.13188  6382.9914   4.0 1 1 NeI(3)
+	       3747.04 6400.10493   6402.246   4.0 1 1 NeI(1)
+	       4189.98 6931.83955   6929.468   4.0 1 1 NeI(6)
+	       4612.11 7438.03939   7438.899   4.0 1 1 NeI
+	       4655.07 7489.51637   7488.872   4.0 1 1 NeI
+	       4777.95 7636.68828   7635.105   4.0 1 1 AI(1)
+	       4990.16 7890.64051   7891.075   4.0 1 1 AI
+	       5289.76 8248.62927   8424.647   4.0 1 0 AI(3)
+	       5423.25 8407.90349   8408.208   4.0 1 1 AI(8)
+	function spline3
+	order 1
+	sample *
+	naverage 1
+	niterate 3
+	low_reject 3.
+	high_reject 3.
+	grow 0.
+	coefficients	8
+		3.
+		1.
+		1.
+		6279.999999999999
+		-862.4345381609604
+		303.9913188956315
+		1585.435675215371
+		2780.057811955834
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\subsection{Example Line List}
+
+The line list used.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+# units Angstroms
+3464.14     AII(70)
+3520.5      NeI 3520.472 blend with A 3520.0
+3545.58     AII(70)
+3559.51     AII(70)
+3718.21     AII(131) blend with 3724.51 AII(131)
+3729.29     AII(10)
+3737.89     AII(131)
+3780.84     AII(54)
+3850.57     AII(10)
+3928.62     AII(10)
+4044.418    AI(4)
+4072.2      blend A 4072.01 and 4072.40
+4131.73     AII(32)
+4158.590    AI(2)
+4259.361    AI(9)
+4277.55     AII(32) blend with AI(4) 4272.168
+4300.4      AI(4) blend
+4426.01     AII(7)
+4510.733    AI(9)
+4545.08     AII(15)
+4579.39     AII(17)
+4657.94     AII(15)
+4764.89     AII(15)
+4806.07     AII(6)
+4879.90     AII(14)
+4965.12     AII(14)
+5187.746    AI
+5221.270    AI
+5400.562    NeI(3)
+5495.872    AI(14)
+5572.548    AI
+5606.732    AI
+5650.703    AI(12)
+5748.299    NeI(13)
+5764.418    NeI(13)
+5852.4878   NeI(6)
+5944.8342   NeI(1)
+6029.9971   NeI(3)
+6074.3377   NeI(3)
+6096.1630   NeI
+6143.0623   NeI(1)
+6163.5939   NeI(5)
+6217.2813   NeI(1)
+6266.4950   NeI(5)
+6304.7892   NeI
+6334.4279   NeI(1)
+6382.9914   NeI(3)
+6402.246    NeI(1)
+6506.5279   NeI(3)
+6532.8824   NeI
+6598.9529   NeI(6)
+6717.0428   NeI
+6752.832    AI(11)
+6871.290    AI
+6929.468    NeI(6)
+6965.430    AI(1)
+7032.4127   NeI(1)
+7147.041    AI(1)
+7173.939    NeI(6)
+7245.167    NeI(3)
+7383.980    AI
+7438.899    NeI
+7488.872    NeI
+7503.867    AI(8)
+7514.651    AI
+7635.105    AI(1)
+7723.8      blend AI(1) 7723.760 and AI(6) 7724.206
+7891.075    AI
+7948.175    AI(6)
+8006.156    AI(3)
+8012.000    AI Blend of 8006 and 8014 for low dispersion
+8014.786    AI(1)
+8082.458    NeI(6)
+8103.692    AI(3)
+8110.000    AI Blend of 8103 and 8115 for low dispersion
+8115.311    AI(1)
+8264.521    AI(8)
+8408.208    AI(8)
+8424.647    AI(3)
+8521.441    AI(8)
+
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

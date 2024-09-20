@@ -1,0 +1,95 @@
+\section{USB Devices}
+
+Discuss issues surrounding how to attach telescope related equipment to a Linux
+(Raspberry Pi 4b) system running Stellarmate 1.75.
+
+lsusb
+       -t  -  
+       -v  - Very long string of information
+
+
+lsusb # output
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+Bus 002 Device 003: ID 174c:3074 ASMedia Technology Inc. ASM1074 SuperSpeed hub
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 020: ID 0c76:1800 JMTek, LLC. USB PnP Audio Device
+Bus 001 Device 016: ID 046d:082d Logitech, Inc. HD Pro Webcam C920
+Bus 001 Device 021: ID 05ac:024f Apple, Inc. Aluminium Keyboard (ANSI)
+Bus 001 Device 017: ID 045e:0040 Microsoft Corp. Wheel Mouse Optical
+Bus 001 Device 004: ID 174c:2074 ASMedia Technology Inc. ASM1074 High-Speed hub
+Bus 001 Device 002: ID 0b05:19af ASUSTek Computer, Inc. AURA LED Controller
+Bus 001 Device 009: ID 8087:0033 Intel Corp. 
+Bus 001 Device 006: ID 0b05:879e ASUSTek Computer, Inc. ROG STRIX LC
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+lsusb -t #
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+/:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/8p, 20000M/x2
+    |__ Port 8: Dev 3, If 0, Class=Hub, Driver=hub/4p, 5000M
+/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/16p, 480M
+    |__ Port 2: Dev 2, If 2, Class=Human Interface Device, Driver=usbhid, 12M
+    |__ Port 2: Dev 2, If 0, Class=Vendor Specific Class, Driver=, 12M
+    |__ Port 6: Dev 4, If 0, Class=Hub, Driver=hub/4p, 480M
+        |__ Port 2: Dev 21, If 0, Class=Human Interface Device, Driver=usbhid, 12M
+        |__ Port 2: Dev 21, If 1, Class=Human Interface Device, Driver=usbhid, 12M
+        |__ Port 3: Dev 16, If 2, Class=Audio, Driver=snd-usb-audio, 480M
+        |__ Port 3: Dev 16, If 0, Class=Video, Driver=uvcvideo, 480M
+        |__ Port 3: Dev 16, If 3, Class=Audio, Driver=snd-usb-audio, 480M
+        |__ Port 3: Dev 16, If 1, Class=Video, Driver=uvcvideo, 480M
+        |__ Port 1: Dev 17, If 0, Class=Human Interface Device, Driver=usbhid, 1.5M
+    |__ Port 8: Dev 20, If 3, Class=Human Interface Device, Driver=usbhid, 12M
+    |__ Port 8: Dev 20, If 1, Class=Audio, Driver=snd-usb-audio, 12M
+    |__ Port 8: Dev 20, If 2, Class=Audio, Driver=snd-usb-audio, 12M
+    |__ Port 8: Dev 20, If 0, Class=Audio, Driver=snd-usb-audio, 12M
+    |__ Port 13: Dev 6, If 0, Class=Human Interface Device, Driver=usbhid, 12M
+    |__ Port 14: Dev 9, If 0, Class=Wireless, Driver=btusb, 12M
+    |__ Port 14: Dev 9, If 1, Class=Wireless, Driver=btusb, 12M
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\subsection{Wireshark}
+
+\url{https://wiki.osdev.org/USB_Human_Interface_Devices}
+Contents 2) USB Keyboard
+
+Might want to add a profile to the terminal screen: red backgound with
+yellow text to essentiall anounce -- \dhl{WARNING} -- in root mode!
+
+sudo -s  # get into the mode
+Right mouse in terminal -> profile -> root.
+
+ sudo usbview
+
+
+modprobe usbmon # one time per restart.
+ls /sys/kernel/debug/usb/usbmon
+
+wireshark > log 2>& 1 &
+
+
+example:
+
+(usb.src  != "host" and usb.src != host) and (usb.src == "1.17.1" or usb.dst == "1.17.1" )
+
+
+
+\subsection{Hardware Support}
+
+https://shop.sysmocom.de/OpenVizsla-v3.x-USB-Protocol-Analyzer-PCBA/openvizsla-pcba-v3.4
+
+Product information "OpenVizsla v3.x USB Protocol Analyzer PCBA"
+
+
+
+
+

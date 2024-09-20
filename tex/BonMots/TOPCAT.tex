@@ -1,0 +1,25 @@
+\section{TOPCAT - Catalog Query Tool}
+
+TOPCAT \cite{2005ASPC..347...29T}, University of Bristol, is a powerful
+tool for querying the databases in Vizier and other select locations.
+Output from a sophisticated ADQL \index{ADQL}\index{TOPCAT!ADQL} 
+``Astronomical Data Query Language'' \cite{2004ASPC..314..293Y}
+has special additions for searching by coordinates etc.
+
+\subsection{TOPCAT Query Examples}  %\label{ref:TOPCATQueryExamples}
+
+\index{TOPCAT!Refcat2!Cone Search}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+SELECT TOP 9999 * FROM "J/ApJ/867/105/refcat2" 
+WHERE (CONTAINS(
+   POINT('ICRS', RA_ICRS, DE_ICRS), 
+   CIRCLE('ICRS', 239.61843, 25.94192, 0.23333)) = 1 )
+and "gmag" < 16
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+

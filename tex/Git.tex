@@ -1,0 +1,315 @@
+Very first and Very foremost!!!!!
+
+DO NOT USE SPACES AND GOOFY CHARACTERS IN FILE NAMES. If we
+work with pro's --- make it so they can use our files without
+any preliminary steps. Remember the header has a lot of info.
+Additional info should be added as required: site location,
+observer, complete instrument etc.
+
+FITS FILES ARE '.fits' NOT FTS FIT etc.
+
+HEADERS ARE STANDARD (mostly) -- amateurs use non-standards or use a
+standard keyword in a bad way. See:
+
+https://fits.gsfc.nasa.gov/fits_standard.html
+
+and Calabretta and Greisen et.al. papers I .. IV at
+
+https://fits.gsfc.nasa.gov/fits_wcs.html
+
+Jessaca Mink's stuff is a little long in the tooth and specialized
+to its own point. She does support SIP under some cases.
+
+Be very careful with SIP.
+
+SITE LOCATOINS are NOT STANDARD, but 
+OBSGEO-L  Longitude  degrees -degrees for W long.
+OBSGEO-B  Latitude  degrees
+OBSGEO-H  Height above sealevel in meters
+
+also
+
+OBSGEO-X  If coordinating with HST observations.
+OBSGEO-Y  HST uses this.
+OBSGEO-Z
+
+BINNING is:
+
+CCDSUM  = x y / where x and y are 1,2,...,n for binning in that axis
+
+BE EXTREMELY CAREFUL WITH BDJ conversions. Barycentric is anything but
+standard. ICRS and ERTS are "the" answer, implemented right in Astropy.
+They use SOFA.
+
+See USNO Circular 179 and references therein for details.
+
+https://aa.usno.navy.mil/publications/docs/Circular_179.php
+
+SOFA is from IAU:   http://www.iausofa.org/
+
+
+So, even APO (Apache Point Observatory) does not follow conventions.
+So using high level scripts to translate vendor/observatory
+files to a consistent internal format that works with IRAF.
+
+GIT
+===
+
+Git lives in a directory. Nothing magical about the directory. By
+convention if the repository is named foo.git, your directory is
+called foo. Git was written to handle the Linux kernel development
+and has millions of user-hours on the code. It is stable!
+
+Under the clone's directory there is a "hidden" directory called .git
+that holds a regular text file called config.
+
+There is nothing magic about extensions in Unix, they are a social
+convention. However, some launchers will share the trick with you
+and presume if it sees a .txt file -- open it with something text
+reading capable.
+
+The .git/config file holds a special format that tells git how
+to work.
+
+The basic work flow is to "clone" a repository (project) 'down'
+to your machine. 
+
+\dhl{git clone https://bitbucket.xxxxxx/sas_spectrography}
+
+Using user's id xxxxxx a password is accepted, then
+the server decides to send the git program (sourcetree
+in your case) down to the machine. 
+
+Then you add some of your files.
+
+These are "staged" for "commit" and a "push" back to the main
+repository. 
+
+In a coding scenario, one has to make a change that spans three
+files. So editing one, test it and get happy; edit the other
+test; edit the third, test. Then a big test. 
+
+Files differ on my machine and the repository's image.
+
+Then use "git status" to see the changes.
+
+Then one can "git add file1 file2 file3" and the three
+files enter a state where they are "staged". Nothing
+really happens, some internal notes are made in the
+.git directory. One can un-do this step if one needs to.
+
+Then when one does a "git commit", all the staged files are prepared to
+be sent up with a note about why the commit was done.
+
+Issuing a "git push origin master" to send the stuff from
+here (origin) to the main repository far away (could be
+just another directory on my machine, or on the bitbucket
+server etc). The password is requested, cleared, and the
+files are copied up.
+
+In the old days, these were saveed as 'deltas' or a set
+of basic editing commands to change the previous version to
+this one. Now, the file is just renamed to be the md5 checksum
+of the contents and a note is made to track that file in context.
+In otherwords, the server holds a bunch of files and a history
+such that any previous snapshot of a revision can be seen.
+
+If someone makes a "push" a "pull" request is sent. This is an email
+to say -- hey we've moved along -- catch up. You then
+
+git pull
+(password)
+and the new stuff comes down.
+If the updated file differes from your image on your machine it is
+'merged'. If there is a collision (two lines differ) then you are
+alerted and have to manually reconcile the differences. From a coding
+point of view it puts two minds on the same page.
+
+That is seldom hit in our world, as we add images.
+
+One handy git thing: the .gitignore file.
+
+You can put exact names or wildcards for files to ignore when adding
+and checking files. Latex drops out a tonne of *.latexerr *.ent *.out
+*.idx *.log *.dvi *.aux *.bbl *.blg *.ilg *.ind *.lot *.lof *.toc
+*.nav *.snm files for each pdf. We really want to ignore them.
+solve-field: *.corr, *.wcs, *.match, *.axy, *.rdls, *.solved, *.xyls,
+*.tsv, *.log, *.png We really want to ignore them too.
+
+.gitgnore:
+*.latexerr
+*.ent
+*.out
+*.idx
+*.log
+*.dvi
+*.aux
+*.bbl
+*.blg
+*.ilg
+*.ind
+*.lot
+*.lof
+*.toc
+*.nav
+*.snm
+*.corr
+*.wcs
+*.match
+*.axy
+*.rdls
+*.solved
+*.xyls
+*.tsv
+*.log
+*.png
+
+
+Git and the astronomy sense
+--------------
+
+Using a few top level a directory called RawData to hold the image
+from the telescope -- warts, blisters and all. This is a straight
+backup of the night. I make this directory and its contents read-only
+and push it to the repository.
+
+At the same level as RawData I like to create a directory I call
+'usw' (und so weider -- the German for etc. The etc directory is used all
+over Unix so I avoid the confusion for Unix people this way). Into
+usw I put DSS images, plan files, ds9 region files, catalog images
+and other meta-information files. A readme is nice etc. I also put
+IRAF scripts like reduce.cl -- specific for this purpose. I have
+very common scripts stored in IRAF itself. I may add significant 
+papers related to the targets, email copies realted to the observing,
+database .psql files anything that is generally related to the 
+concerns of the repository.
+
+I then push this.
+
+On my local machine I make a temporary directory called PreAnalysis
+and copy all the RawData files into PreAnalysis. I then 'reduce' these
+data to a pretty cooked state. This state includes trimming, cosmic
+ray removal, zero and dark subtraction, flat-fielding, plate-solving,
+star extraction, error/residual maps etc. I do not analyze the data
+here. Anything that is "administrative" in nature is done at this
+phase.
+
+I then make PreAnalysis and its contents read-only.
+
+I make a third directory called Reduce. I copy the final reduced
+info from PreAnalysis here and start the analysis.
+
+At any point I make a mistake,,,, no!!! at THE point that I make another
+mistake again!,,,, I can copy the RawData over and run my scripts sans
+the mistake. This catches me back up in a minute or two. 
+
+At the end of it all, I can move certain information from the reductions
+into the usw directory. I now have an audit-trail for the images.
+
+For common things for a site or a vendor package, I make scripts
+I put into the smtsci repository -- update my overall environment
+outside of this target's working repository.
+
+I can 'git add' the Reduce directory, git add all the new stuff in
+usw, commit and push. I ignore the PreAnalysis directory -- in theory
+you can reproduce it using usw/scripts and the RawData. Saves time and
+space and encourages duplication (ie check) of the process.
+
+
+Planning
+========
+
+I use the Aladin Java app from VizieR/SIMBAD people. Wow.
+I tie this to TOPCAT, ds9, glue via the SAMP protocol.
+I can find a field in Aladin, download one of a million
+catalogs via TOPCAT or Aladin and share that between all the
+packages. I put my results from these tools into my usw
+directory.
+
+Observing
+=========
+
+The usw directory is very handy at the telescope. Here there
+are too many packages/paths to summarize as each observatory
+has its own needs/requirements. APO wants a target list
+that is different from KPNO for example.
+
+
+Reduction
+=========
+
+For photometry:
+
+I run custom scripts using astrometry.net for plate solutions. I then
+run sextractor a final time with customized default control files to
+make a star list and extract photometry. I filter this list for stars.
+
+For each image, I make a database with the photometry and the positions,
+times etc.
+
+I then make (or already have) a database table for the stars with their
+photometric data. From USNO or other sources. PanSTARRS is AB magnitude,
+USNO-x is not exactly photometric, and APASS is all over the map.
+I tend to use PanSTARRS and AB magnitudes. I filter for variables
+
+I can do ensemble (whole-field) photometry in this way. I can also
+identify AAVSO check-stars etc.  I tend to think for myself and not
+take canned opinions.  Just look at the AAVSO records for CCD
+magnitudes, and note the variations there.
+
+The software is free: but needs Linux
+
+astrometry.net
+sextractor
+PostgreSQL
+
+ds9 and glue for the visualization. I have hacked extensions for ds9.
+
+Advanced Reductions
+==================
+
+I use 'conda' from Anaconda.com as my Python environment. It
+is platform agnostic (same for Windows, Mac and Linux). I use
+the STSci astroiraf or iraf27 environment under conda (it
+is python 2.7 consistent with PyRAF). This works on Mac and Linux
+only. Windows never figured out X11 windowing!
+
+This provides 'glue' (glueviz.org) an emerging and very powerful
+data visualization package. We use it with radio/optical data.
+
+It brings all the power of Numpy (scientific numerical processint ala
+matlab etc) and Astropy -- an emerging (since 2009 and pretty decent
+at this point -- use carefully). The power of the environment
+is tied to IRAF by PyRAF. Not for the faint of heart. Used everyday
+by Pros.
+
+I may use Jupyter notebooks (Spelled Jupyter with the py for python)
+for explainatory reasons and documentation.
+
+Publication
+===========
+
+I use Latex. I was hosed over by Windows/Word one too many times.
+
+
+I hate spreadsheets -- I made a lot of money when I was consulting
+fixing expensive mistakes from pinheads using spreadsheets. The
+logic is hidden, often wrong, and impossible to make sense of a 
+few months down the road.
+
+Just write some code.
+
+
+IRAF
+===
+
+IRAF wants a file $HOME/iraf to exist. I created a git repository called
+smtsci that I clone inside of $HOME/iraf. It has a Makefile mechanism
+to copy files from inside the repository and put them into $HOME/iraf.
+As I change, extend, fix these files and push them to the repository
+others can update their systems with little confusion.
+
+There is a move to try to move IRAF to Jupyter. It will fail. 
+That said, something needs to be done to move IRAF into the 21st
+century or people just need to get comfortable with doing their
+own thinking again!

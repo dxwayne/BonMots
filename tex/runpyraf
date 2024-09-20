@@ -1,0 +1,42 @@
+#!/bin/bash
+
+##############################################################################
+# runpyraf -- without aliases etc, run pyraf 
+#
+##############################################################################
+
+if [[ "$(pwd)" =~ ' ' ]]; then 
+    echo ""
+    echo "THERE ARE SPACES IN THE PATH!"
+    for f in $(set 's/:/\n/g'); do
+		  if [[ "$f" =~ ' ' ]]; then
+				echo "Offending path part is $f"
+				echo "Some GUI let somebody put space(s) in a path."
+				echo "IRAF will not tolerate this."
+		  fi
+    exit 1
+fi
+
+if [[ ! "$PATH" =~ anaconda3 ]]; then
+    export PATH="$HOME/anaconda3/bin:$PATH";
+fi
+
+if [[ ! "$PATH" =~ iraf27 ]]; then
+  if test -e $HOME/anaconda3/envs/iraf27; then
+      source activate iraf27;
+      export PS1='I (\j) \w [\!] '
+      export IMTDEV=inet:5137;
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/anaconda3/envs/iraf27/iraf/lib32
+  else
+		if test ! -e $HOME/anaconda3; then
+			 echo "Expecting anaconda3 in home directory"
+			 echo "install or link it there, or fix the env"
+		fi
+		else
+          echo "Missing conda envirioment iraf27"
+   fi;
+fi;
+
+
+export PYTHONSTARTUP=$HOME/iraf/pyraflogin.py
+$HOME/anaconda3/envs/iraf27/bin/pyraf -s

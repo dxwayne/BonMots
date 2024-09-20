@@ -1,0 +1,42 @@
+\section{Python}
+
+Origninal PyRAF was written in python 2.7. The new PyRAF3 now uses python
+up to 3.7.
+
+\subsection{Changes}
+
+The most important changes include shifting many python functions to return
+an iterator rather that a list. This includes the \dhl{map} keyword.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+def plusone (x) : return x+1;
+map(plusone,[1,2,3,4]) 
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+used to return [2,3,4,5], it now returns an iterator for a list.  This
+is fixed with \dhl{list(map(plusone,[1,2,3,4]))}, but requires
+visiting all usages in the code.  The move expedites \dhl{for loops}
+and \dhl{in} statements, as ``most of the time'' the map is used with
+an iterator.
+
+
+The \dhl{print} keyword. Print is weird enough, its main deficency is formating
+output. This is never easy, but python has never done a decent job compared
+to the original ease of printf in "C". The form of the print statement is now
+one of a function and requires its paremeters to be set off in parenthesis and
+the output file be handled with a keyword argument.
+
+print >>sys.stderr,"hello" becomes print("hello",file=sys.stderr). 
+
+The \dhl{f-string} was introduced in python 3.6. Here, print parses
+the output string and recognizes fields delimited by "{}" curly-braces.
+The content of the curley braces accepts a program's variable name or
+constant. Formating is achieved with a suffix starting with a colon
+and followed by a C-like printf string. Details are in Python's PEP 498.
+
+\ltodo{2.7x to 3.x Conversions}{Flesh out the {2.7x to 3.x Conversions}

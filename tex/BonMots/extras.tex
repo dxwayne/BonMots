@@ -1,0 +1,348 @@
+
+
+\section{Wildcards}
+
+There are command line file ``wildcards'' and regular expressions. For
+command line wildcards:
+
+\begin{quote}
+{\color{verbcolor}{\verb#?#}}  -- the question mark matches exactly one character
+{\color{verbcolor}{\verb#*#}}  -- the asterisk matches zero or more characters
+\end{quote}
+
+Character sets can be supplied but you have to use a bash sub-shell
+with two statements: one to tell bash to allow case distinction
+{\color{verbcolor}{\verb#LC_ALL=C#}} and then the command that wants
+to use this feature.
+
+\begin{quote}
+{\color{verbcolor}{\verb#! (export LC_ALL=C; rm [a-z]_*fits 2> /dev/null;)#}}
+\end{quote}
+
+\subsection{Regular Expressions}
+
+Searching for a pattern occurring in strings in a file requires a robust
+way to state the matching search pattern. Mastering regular expressions
+takes time. Simple ones are easy to use.
+
+The Unix programs vi, grep and sed (there are more) -- use the basic
+regular-expression engine found in the Unix editor
+{\color{verbcolor}{\verb#ed#}}.
+
+\textbf{\emph{BTW:}} grep gets its name from \textbf{\emph{g}}lobal/\textbf{\emph{r}}egular-\textbf{\emph{e}}xpressions/\textbf{\emph{p}}rint (g/re/p). Its the {\color{verbcolor}{\verb#re#}} part
+we're interested in.
+
+
+A few common regular expression
+elements:
+
+{\color{verbcolor}{\verb#^#}} match the first part of a line.
+{\color{verbcolor}{\verb#$#}} match the end of a line.
+{\color{verbcolor}{\verb#[A-Z]#}} match any one character that is upper case.
+{\color{verbcolor}{\verb#[A-Za-z][A-Za-z0-9$]*#}} a set of characters starting with a upper/lower
+case letter and may be followed by zero or more letters/numbers or a dollar
+sign. (like paths in IRAF.)
+
+It is possible to pick groups of characters from a string.
+
+{\color{verbcolor}{\verb#!ls -1 c_*fits | tee in.list | sed -e 's/^/c_/' > out.list#}}
+
+is a one-liner for PyRAF that finds all cosmic-ray files (by our convention),
+uses {\color{verbcolor}{\verb#tee#}} to save a copy in a file called in.txt,
+then uses sed to prepend the {\color{verbcolor}{\verb#c_#}} to each line
+which saves the modified name into a file called {\color{verbcolor}{\verb#out.list#}}.
+No interactive editing needed!
+
+Regular expressions appear in the python module {\color{verbcolor}{\verb#re#}}.
+They are quite powerful.
+
+\subsection{AWK}
+
+AWK is a programming language, similar to {\color{verbcolor}{\verb#lex#}},
+that makes heavy use of regular expressions. For the serious script-writer
+who requires fast and easily to develop parsing routines AWK is the tool.
+I wrote a comprehensive source code management system using mostly AWK.
+
+\section{Handy things to know}
+
+The IRAF command {\color{verbcolor}{\verb#envget('param')#}} helps
+with tracking down odd-ball paths:
+
+\section{Making PyRAF Jump Through Hoops}
+
+The python readline is superceded with PyRAF version (pycmdline.py) to allow
+special commands etc to work the way they did in cl, while
+retaining a flavor of python.
+
+The exclaimation point is an escape to the shell.
+!( blah ) runs a subshell where things can be strung togeter.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+
+.logfile filename [overwrite] -- create a logfile
+.logfile                      -- stop lgging
+.logfile filename append      -- start up again
+.logfile                      -- done.
+
+.clemulate 0 -- turn off cl emulation! the rest is straight python
+.clemulate 1 -- cl back on mixed mode.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\textbf{\emph{Prose:}} Hey PyRAF, log this session. With the
+\dhl{overwrite} feature, start a new logfile. With the \dhl{append}
+feature, add on to where I left off. Use the \dhl{.logfile}
+\index{logfile} \index{PyRAF!logfile} by itself to stop/pause and the
+\dhl{append} feature to resume.
+
+\textbf{\emph{Prose:}} Hey PyRAF, I need to stop pretending to be CL
+(ecl), for a tad -- so I used \dhl{.clemulate 0} to turn off the
+special readline feature. OK, now I'll say \dhl{.clemulate 1} to
+return to using ecl like syntax
+
+Example script using PyRAF, psql, ds9 loading a catalog.
+
+\begingroup \fontsize{8pt}{8pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+!sexprep                   # drag in some default files.
+!(for f in *fits; do sextractor $f; mv test.cat ${f/.fits/.cat}; done)
+!sex2psql -q -D at2019abn -t apr23cats *cat > apr23cats.psql
+!psql < apr23cats.psql
+.clemulate 0 -- turn off cl emulation! the rest is straight python
+query="""\\c at2019abn
+copy (
+select a.ora, a.odec, 
+       b.x_image, y_image, 
+   b.fluxerr_iso, b.fwhm_image, b.elongation, b.ellipticity, fname 
+   from raw_at2019abn_ucac4 as a,
+        apr23cats           as b
+   where public.q3c_join(a.ora, a.odec, b.ora, b.odec, 0.0005)
+   and fname = 't_AT2019abn_Hbeta'
+   order by fname
+) to '/tmp/photohb.tsv' with CSV HEADER DELIMITER ','
+;
+"""
+with open('query.psql','w') as f:
+   f.write(query)
+.clemulate 1
+!psql < query.psql
+!cp /tmp/photohb.tsv .; sudo  rm /tmp/photohb.tsv ;
+!ds9  t_AT2019abn_Hbeta.fits -catalog import tsv photohb.tsv
+.ex
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\textbf{\emph{Prose:}} \index{PyRAF!scripts, heavy duty} Hey PyRAF, I
+want to use a database \dhl{within} \textbf{\emph{within}} my
+script. The program \dhl{sexprep} drags SExtractor's default scripts
+into play.  Then run sextractor by excaping to bash -- rename the
+default output file \dhl{test.cat} to the original file's basename
+exchanging \dhl{.fits} for \dhl{.cat}. Then use the special script
+\dhl{sex2psql} to translate the sextractor catalog output into
+\PostgreSQL and rename a few fields along the way (Section
+\ref{sec:PostgreSQLInstallation}).  Now we turn off
+\index{PyRAF!clemulate} \dhl{cl emulation} \index{clemulate} (special
+readline's help), and in raw python make a query as an extended
+string. Open a file, write that query to the working directory. Before
+I forget turn that \dhl{cl emulation} help back on. Then using regular
+excapes to the shell -- run that query and make a
+\dhl{/tmp/photohb.tsv} file. \PostgreSQL is safety conscience and
+leaves the output file readable, but still owned by root. So I have to
+use a little force to get rid of that file. Now might as well use a
+few features of \dhl{ds9} and add the \dhl{-catalog import tsv
+  photohb.tsv} phrase to go ahead and open the catalog file on a test
+image.
+
+
+
+ 
+
+\subsection{Mixed Mode Scripts}
+
+A simple script like:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+   print("Hello Script!")
+   .ex
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+run with the command \dhl{pyraf < myscript.pyraf} does a simple
+script and quits.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+   ones = np.ones((10,10))
+   omean = ones.mean()
+   twos = 2*ones
+   threes = 3*ones
+   cube = np.array([ones,twos,threes])
+   newfits("cube.fits",cube)
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\index{PyRAF!Python makes FITS cubes}
+\index{PyRAF!fancy Numpy analysis}
+
+provided you are using the proper alias and have a pyraflogin.py
+file with newfits() defined therein.
+
+\section{Statistics}
+
+Mode \index{statistics!mode} for a real-valued large population is
+estimated within IRAF by Pearson's techinique:
+
+
+
+\begin{align}
+Mode &= 3 \times Median − 2 \times Mean & \rm{IRAF/Pearson}\\
+Mode &= 2.5 \times Median − 1.5 \times  Mean & \rm{Sextractor}
+\end{align}
+
+
+
+\section{History}
+
+IRAF was born as a cross between VAX VMS and Unix
+(\cite{1984BAAS...16..497V}), at a time when structured procedural
+programming reigned supreme. Its control language (cl, then ecl and
+now PyRAF) can easily mix features from Unix, IRAF and Python.
+The "cl" language (\cite{CLProgrammersGuide}) and PyRAF programming
+(\cite{PyrafProgrammersGuide}) are covered in web-accessible manuals.
+
+Herein are a few IRAF ``Bon Mots'', or ``good words'' (incantations
+are more like it!). Here are a few lines taken from a reduction script
+to learn and understand...
+
+{\color{verbcolor}
+\begin{quote}
+\begingroup \fontsize{8pt}{8pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+1  !for f in *.*fits ; do mv  $f  ${f//./_}        ; done  # change one or more dots to '_'
+2  !for f in *-*fits ; do mv  $f  ${f/-/_}         ; done  # '-' to '_' ...
+3  !for f in *fits   ; do mv  $f  ${f/%_fits/.fits} ; done  # _fts  renamed to .fits
+
+4  !ls -1 F*lat*fits | tee in.txt | sed -e 's/^/out_/' > out.txt
+
+5  files somewildcardexpression > in.l
+6  !sed -e 's/^/out_/' < in.l >out.l
+7  hselect c_*fits %I "(IMAGETYP ?= flat && FILTER ?= 'HA')" > l.l
+8  imarith @l.l / norm_flatHa.fits f_//@l.l
+9  !vi -es -c "%s/ /_/g" -c "%s/./_/g" -c "%s/_f\([a-z]\+\)/f\1"-c "w" -c "q" outfile
+
+10 !ls -1 [a-z]*fits | sed -e 's/\(^.*$\)/crmedian \1 c_\1/' > crall.cl
+11 type crall.cl | less
+12 cl < crall.cl
+
+   # 'flat's by exposure time, example image, how many files at what exposure time
+13 hselect c_*fits $I,EXPTIME,IMAGETYP "(IMAGETYP == 'flat'  )" > l.l
+14 !sort l.l -n -k 2 | uniq -c -f 1
+15 histogram c_Flat_0034.fits fulline-
+16 cat l.l   # I always check my work
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}
+
+... and are described in this matching enumerated list...
+
+\vspace{-.15cm}
+\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   \textbf{\emph{Prose:}} Hey bash, for files I'll refer to as
+{\color{verbcolor}{\verb#f#}}, which match the wildcard {\color{verbcolor}{\verb#*.*fits#}}
+rename ({\color{verbcolor}{\verb#mv#}}) the file {\color{verbcolor}{\verb#$f#}}
+using the bash variable replacement operator (\cite{BASHParameters1}) {\color{verbcolor}{\verb#//#}} to
+replace one-or-more occurrences of a dot (period) with an underscore.
+   \item   \textbf{\emph{Prose:}} Do the same but change ``minus'' signs (dashes).
+   \item   \textbf{\emph{Prose:}} BTW \#1 changed the ending from {\color{verbcolor}{\verb#.fits#}} to {\color{verbcolor}{\verb#_fits#}}, so use the bash variable replacement operator of {\color{verbcolor}{\verb#%#}} to replace the last-most occurrence of {\color{verbcolor}{\verb#_fits#}} with
+{\color{verbcolor}{\verb#.fits#}}.
+   \item   \textbf{\emph{Prose:}} Wow, Hey PyRAF send the end of this line off to bash! Hey bash, take the
+output of a list {\color{verbcolor}{\verb#(ls)#}} of all the files matching a wildcard of {\color{verbcolor}{\verb#F*lat*fits#}}
+and ``pipe'' {\color{verbcolor}{\verb#|#}} the output into the Unix {\color{verbcolor}{\verb#tee#}}
+program; hey {\color{verbcolor}{\verb#tee#}} while ``piping'' the flow of data
+along, make a copy of the flow into a file called {\color{verbcolor}{\verb#in.list#}};
+then send the flow via a pipe operator  {\color{verbcolor}{\verb#|#}} into the
+unix stream-editor program {\color{verbcolor}{\verb#sed#}}; Hey sed, change the
+beginning of a line using the regular-expression {\color{verbcolor}{\verb#^#}} to
+{\color{verbcolor}{\verb#out_#}} thus changing all the input filenames to one
+that has ``out\_'' prepended to it. -- And save all that into the temporary file
+{\color{verbcolor}{\verb#l.l#}}.
+   \item   \textbf{\emph{Prose:}} Hey PyRAF use the IRAF {\color{verbcolor}{\verb#files#}} command and a wildcard to
+make me list of files, one-per-line, that I can supply as an ``at-file'' to a command.
+   \item   \textbf{\emph{Prose:}} Hey PyRAF, my TA tells me I have to edit the ``at-file'' {\color{verbcolor}{\verb#@#}} to change the filenames to be used 1:1 as output filenames --
+so send a line to {\color{verbcolor}{\verb#bash#}} to use {\color{verbcolor}{\verb#sed#}}
+to perform those edits for me because I don't want to have to stop and edit a file every time.
+   \item   \textbf{\emph{Prose:}} Hey PyRAF, use the
+{\color{verbcolor}{\verb#hselect#}} command to choose filenames
+{\color{verbcolor}{\verb#$I#}} using a wildcard for all the cosmic-ray
+reduced files and a ``boolean'' expression that only chooses from all filenames those which
+satisfy the test: IMAGETYP ``looks like'' ({\color{verbcolor}{\verb#?=#}})
+a 'flat' file and where the FILTER looks like HAlpha (the {\color{verbcolor}{\verb#?=#}}
+will be satisfied with just the HA letters).
+   \item   \textbf{\emph{Prose:}} Hey PyRAF use the IRAF command
+{\color{verbcolor}{\verb#imarith#}} (image arithmetic) to  divide those images by
+a normalized Ha flat file, and use the IRAF concatenation operator
+{\color{verbcolor}{\verb#||#}} to prepend a {\color{verbcolor}{\verb#f_#}}
+to create output filenames from the input filenames and let me avoid thinking about
+editing anything.
+   \item   OK ..., John was complaining that he wanted to use {\color{verbcolor}{\verb#vi#}},
+but didn't want to open the editor each time. No Problem Thank You Very Much Mr. Joy
+\footnote{Bill Joy, while at Berkeley in 1976, made a ``visual'' interface to the
+``ex'' editor written by Joy and Chuck Haley. A cult has grown around this editor.},
+to let {\color{verbcolor}{\verb#vi#}} be able to run in batch mode! So, \textbf{\emph{Prose:}}
+Hey PyRAF pass along a line to bash to use vi: the {\color{verbcolor}{\verb#-es#}} switch
+tells vi to start in Ex mode ({\color{verbcolor}{\verb#-e#}}) and be quiet about it (-s); each of the -c switches supplies a command to be run in order over each line; the
+{\color{verbcolor}{\verb#-c "w"#}} says to write the file and the
+{\color{verbcolor}{\verb#-c "q"#}} says to quit. The other commands uses
+{\color{verbcolor}{\verb#%s/ /_/g#}} to remove spaces and the next one to remove dots.
+   \item   \textbf{\emph{Prose:}} Hey PyRAF! Hold onto your hat -- tell bash to list a
+bunch of files, upon which we what to perform cosmic ray corrections, that start with
+{\color{verbcolor}{\verb#upper/lower case letters*fits#}} as
+a wildcard and pipe the list along to sed; Hey sed! do a substitution by picking
+up the entire line and call it pattern one (1) -- and change it into an IRAF
+command via the substitution clause {\color{verbcolor}{\verb#crmedian \1 c_\1#}} by replacing all the {\color{verbcolor}{\verb#\1#}} strings with the filename! This makes a long list of {\color{verbcolor}{\verb#crmedian file.fits c_file.fits#}} and save the output into a cl script file called {\color{verbcolor}{\verb#crall.cl#}}.
+   \item  \textbf{\emph{Prose:}} Hey PyRAF show me the new script file's content because I always check my work.
+   \item  \textbf{\emph{Prose:}} Hey PyRAF run the new script and scare me because crmedian takes a little while on each file!
+   \item \textbf{\emph{Prose:}} Hey PyRAF, using the Unix command {\color{verbcolor}{\verb#cat#}},
+declared as a ``foriegn task'' in {\color{verbcolor}{\verb#~/iraf/login.cl#}}, show me the
+contents of that temporary file before I pass it along to the next step. Why?
+\textbf{\emph{ I always check my work}}. Look before you leap!
+\end{enumerate}
+
+{\color{verbcolor}
+\begin{quote}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+envget("ccddb")  # ccdred$ccddb/ the merry chase begins
+envget("ccdred") # 'imred$ccdred/'
+envget("imred")  # 'noao$imred/'
+envget("noao")   # 'iraf$noao/'
+envget("iraf")   # '/home/wayne/anaconda3/envs/iraf27/iraf/'
+
+soooo! /home/wayne/anaconda3/envs/iraf27/iraf/noao/imred/ccdred/ccddb
+is the terminus of ccddb$
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}

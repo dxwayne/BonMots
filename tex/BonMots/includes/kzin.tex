@@ -1,0 +1,63 @@
+\section{Composit Flats}
+
+Composit flats made by the Kzin ring, use multiple illumination
+sources in combination to provide sufficient counts in the blue end --
+where sensors are insensitive and the blackbody response of bulbs are
+also low.  When working with a ``composite'' flats, the goal is to
+bring the edges of the slit \dhl{at each wavelength} up to the level
+of where the science trace will be.
+
+Look at a calibration lamp image, or a sky image with strong skylines.
+You will note that there is tilt, smile and a higher-order spacing
+from the blue end to the red end caused by the changes in wavelength
+convolved with the physics of the dispersing optic and optical
+projection within the instrument. In other words, wavelength is
+not constant along the trace, and this relationship is unique to
+each column (row for DISPAXIS=2). Therefore generating a master
+flat is a nightmare!
+
+Flats require matching calibration lamp images. The OBJECT should
+read "flatcal". The RA/DEC fields should agree between the flat
+and cal images (indicator that the same flexure is in effect). Exposures
+should be very close in time (indicator that temperature differentials
+are not present). Each cal sequence should include a matching flat
+exposure).
+
+
+Here is a PyRAF snippet for the work:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+chdir OBS$/Flats
+ll a*fits
+imarith  @l.l - OBSROOT$/usw/zmaster.fits z_//@l.l  # zero sub the darks
+!rm -f flatmaster.fits fmaster.fits
+flatcombine z_@l.l output=flatmaster.fits statsec="[*,404:422]" combine=average ...
+   ... reject=crreject scale=mode
+f = fits.open('flatmaster.fits')
+d = f[0].data.T   # back into IRAF coordinates
+h = f[0].header
+tracemean =  d[:,404:422].mean(axis=1)
+our_figure()                                      # clear the plot
+our_plot(tracemean,np.arange(*tracemean.shape))   # reverse back to numpy coords
+our_plot_show()                                   # finished overplotting(none), render.
+fdata = d / tracemean[:,None]
+if('OBJECT' in h):
+   h['OBJECT'] = ('FMASTER')
+newfits('fmaster.fits',fdata.T,h)
+!cp fmaster.fits $OBSROOT/usw/fmaster.fits
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+The functions \verb=our_figure(),our_plot(),our_plot_show(),= and \verb=newfits()=
+are included in the Pyraflogin.pyraf confguration script.
+\index{pyraflogin!our\_figure()} \index{pyraflogin!our\_plot()} \index{pyraflogin!our\_plot\_show()} \index{pyraflogin!newfits()}. The \verb=newfits()= function creates the \dhl{fmaster.fits} file.
+plot functions are used for checking results only. The function \dhl{ll} is simply
+a foreign function \verb=ls -1 > l.l && cat l.l=, usually added to \dhl{loginuser.cl}
+initialization script.
+
+The assumption is that smile and tilt are not that severe, and that the entire column
+may be treated as the same wavelength.

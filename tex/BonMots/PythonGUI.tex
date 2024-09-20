@@ -1,0 +1,62 @@
+\section{IRAF GUI Notes} \label{sec:IRAFGUINotes}
+
+IRAF, per se, uses epar. PyRAF implemented epar usin the TCL/Tk interface.
+To this end, the Python package \dhl{tkinter} may be used for just about
+anything with proper programming. \index{GUI!PyRAF} \index{GUI!tkinter}
+\index{tkinter!epar GUI}.
+
+\subsection{Anaconda} \label{sec:PythonAnaconda}
+
+Anaconda is a fully integrated envrionment. When installed you get
+all the Astropy modules needed and can add additional community
+packages as needed. 
+
+\subsection{Python with VSCode}  \label{sec:PythonWithVSCode}
+
+Use the ``Qt for Python'', leverages the PySide6.x world.
+This has the file completion lexicon for QT, works with Qt Designer
+for PySide6 and a few other goodies like Qt CSS style sheets.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+conda deactivate -- remove Conda from the path.
+Head to python.org
+download the tar.gz file, unpack into ~/Configuration/python
+do a ./configure and fix the items
+
+bz2
+dbm
+gdbm
+lzma
+tkinter
+uuid
+
+sudo apt-get install build-essential gdb lcov pkg-config \
+  libbz2-dev libffi-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
+  libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev \
+  lzma lzma-dev tk-dev uuid-dev zlib1g-dev
+
+
+
+make 
+make test
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\subsection{PySide6}
+
+The PySide license is more ammenable to general opensource programming.
+To this end, conda does not support pyside6.
+
+Python GUIs
+
+
+% lengthy discission, in very beginning terms, leverages PyCharm
+% https://www.youtube.com/watch?v=uzqDnB44qf4
+
+% Geared to Windows/VSCode
+% https://www.youtube.com/watch?v=E9U-EBG8jVk

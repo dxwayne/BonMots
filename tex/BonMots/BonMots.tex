@@ -1,0 +1,3273 @@
+\documentclass[letter,11pt,oneside]{article}
+% /usr3/titan18/home/sasiraf/doc/BonMots/BonMots.tex
+%%% HEREHEREHERE
+% Fancyhdr... http://tug.ctan.org/tex-archive/macros/latex/contrib/fancyhdr/fancyhdr.pdf
+%% APPENDIXes
+
+
+
+%% APPENDIXEND
+% git/ASTR3510_2019/doc/BonMots.tex
+%%% (occur "[ ]*\\(\\\\input\\|\\<include\\\\>\\)")
+% dependencies
+%%\input{Spectroscopy.tex}
+%% %\input{SPLOTQuestions.tex}
+%% \input{ApallLPARS.tex}
+%% \input{IdentifyLPARS.tex}
+%% \input{ds9.tex}
+%% \input{Statistics.tex}
+%% \input{imexamine.tex}
+%% \input{includes/kzin.tex}
+%% \input{Glossary.tex}
+%% \input{extras.tex}
+
+%%\documentclass[11pt,twocolumn]{article}
+%%\usepackage[inline]{asymptote}   %% Inline asymptote diagrams
+%%\usepackage{wglatex}             %% Use this one and kill others.
+\usepackage{color}                %% colored letters {\color{red}{{text}}
+\usepackage[paperheight=7.31in,paperwidth=9.5in,
+  footskip=.05in,margin=.75in,
+  includehead,includefoot,heightrounded
+]{geometry}
+
+\usepackage{fancyhdr}              %% headers/footers
+\usepackage{fancybox}              %% headers/footers
+\usepackage{dirtree}
+%%\usepackage{fancyvrb}            %% headers/footers
+\usepackage{datetime}              %% pick up tex date time
+\usepackage{lastpage}              %% support page of ...lastpage
+\usepackage{times}                 %% native times roman fonts
+\usepackage{textcomp}              %% trademark
+\usepackage{amssymb,amsmath}       %% greek alphabet
+\usepackage{parskip}               %% blank lines between paragraphs, no indent
+\usepackage{shortvrb}              %% short verb use for tables
+\usepackage{lscape}                %% landscape for tables.
+\usepackage{longtable}             %% permit tables to span pages wg-longtable
+\usepackage{url}                   %% Make URLs uniform and links in PDFs
+%%\usepackage{enumerate}           %% Allow letters/decorations for enumerations
+\usepackage{enumitem}              %% Allow letters/decorations for enumerations
+\usepackage{endnotes}              %% Enhance footnotes/endnotes
+\usepackage{listings}              %% Make URLs uniform and links in PDFs
+\pdfadjustspacing=1                %% force LaTeX-like character spacing
+%%\usepackage{geometry}            %% allow margins to be relaxed
+%%\usepackage{wrapfig}             %% permit wrapping figures.
+%%\usepackage{subfigure}           %% images side by side.
+%%\geometry{margin=1in}            %% Allow narrower margins etc.
+\usepackage[T1]{fontenc}           %% Better Verbatim Font.
+\usepackage{makeidx}             %% Make an index uncomment following line
+\makeindex                       %%.. yeah this one, too. index{key} in text
+
+\usepackage{glossaries}            %% make a glossary
+\makeglossaries
+\input{Glossary.tex}
+
+\renewcommand*\ttdefault{txtt}     %%
+%\usepackage{cite}
+\usepackage{natbib}   %% bibitems
+
+%% include background image (wg-document-page-background)
+
+\usepackage{graphicx}            %% Include pictures into a document
+%% (wg-texdoc-inserttikz)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PAGE SIZE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+
+\fancyhf{}
+%\cfoot{{\tiny Page \thepage \hspace{1pt}}}
+
+
+\def\documentisdraft{NOTDRAFT}
+
+%% (wg-texdoc-isdraft)
+
+
+\def\drafttest{DRAFT}
+\def\wgdocdate{06 Oct, 2018}
+\def\wgdocdatetime{\wgdocdate at \currenttime}
+\ifx\documentisdraft\drafttest
+\usepackage[left]{lineno}   %%%%%%%%%%%%% DRAFT
+\usepackage{draftwatermark}
+%%\SetWatermarkScale{5.0}
+%%\SetWatermarkColor[gray]{0.3}
+\fi
+
+%% (wg-texdoc-insert-fancy-headers)
+
+\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
+
+%%
+
+
+\newcommand{\crreturn}{\raisebox{1.2pt}{\setlength{\fboxsep}{2pt}\ensuremath{\hookleftarrow}}}
+%\newcommand{\llbox}[1]{\color{verbcolor}{\Ovalbox{#1}}}
+
+\newcommand{\home}{\raisebox{.5pt}{\char`~}}
+
+
+\makeatletter
+\newcommand\llbox[1]{%
+  \@tfor\@ii:=#1\do{%
+    {\color{verbcolor}\Ovalbox{\strut\@ii}}%
+  }%
+}
+\makeatother
+
+\definecolor{verbcolor}{rgb}{0.6,0,0}
+\definecolor{darkred}{rgb}{0.6,0,0}
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\newcommand\debate[1]{\textcolor{darkgreen}{DEBATE: #1} \marginpar{\textcolor{red}{DEBATE} }}
+\newcommand{\dhl}[1]{{\color{verbcolor}{\texttt#1}}}
+\newcommand{\ltodo}[2]{\marginpar{\textcolor{red}{ACTION: #1}\endnote{#2}}}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
+\newcommand{\menu}{\ensuremath{\;\rightarrow\;}}
+
+%https://tex.stackexchange.com/questions/472/how-can-i-have-two-or-more-distinct-indexes
+% make index for examples, etc.
+\newcounter{teachcounter}
+\newcommand{\goal}{%
+  \stepcounter{teachcounter}%
+  \textbf{\emph{Goal \theteachcounter:}~}}
+
+\newcommand{\exercise}[1][] {\textbf{\emph{\color{verbcolor}{Exercise} \theteachcounter #1:}~ }}
+\newcommand{\example}  {\textbf{\emph{\color{verbcolor}{Example} \theteachcounter :}~ }}
+\newcommand{\prose}    {\textbf{\emph{\color{verbcolor}{Prose} \theteachcounter :}~ }}
+\newcommand{\takeaway} {\textbf{\emph{\color{verbcolor}{Take Away} \theteachcounter :}~ }}
+
+%%(wg-add-inline-images)  %% add inline images to the mix
+
+
+
+%%Begin User Definitions: Hint: \~{}/.latex.defs and  latex.defs
+%%End User Definitions:
+%%(wg-texdoc-adjust-paper-width)
+%% (wg-texdoc-insert-hypersetup)
+
+%%% PDF Fields uncomment \usepackage[bookmarks]{hyperref} above.
+
+\hypersetup{
+colorlinks=true,
+linkcolor=blue,
+citecolor=red,
+urlcolor=blue,
+pdfauthor = {Copyright(c) 2018-22. All rights reserved. Wayne Green},
+pdftitle = {PyRAF/IRAF/Unix 2.18 Now with Official Support and PyRAF 3 “Bon Mots”},
+pdfsubject = {Collection of Notes for IRAF},
+pdfkeywords = {Phoptometry, Spectrography,IRAF},
+pdfcreator = {LaTeX with hyperref package},
+pdfproducer = {dvips + ps2pdf}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+\setlength{\footskip}{13.59999pt}
+
+%% (wg-latex-pretty-title-page)
+%% (wg-texdoc-titleblock)
+\pagenumbering{gobble}   %ignore page numbers for a while
+
+\pagecolor{yellow}
+\vspace{-2.5cm}
+\title{\vspace{2.0cm}
+{\huge DRAFT} \\
+PyRAF/IRAF/Unix \emph{``Bon Mots''}\\
+{\color{darkred}{Now! With Official 2.18 and PyRAF 3}}}
+\author{\vspace{-0.5cm} Wayne Green}
+\date{\vspace{-0.5cm} \today}
+\maketitle
+
+\begin{abstract}
+{\color{darkgreen}
+\begin{quote}
+~\\
+``I am not young enough to know everything.'' {\small \emph{Oscar
+    Wilde}\footnote{The ``bon mot'' or good word was a wicked weapon
+of words weilded by Oscar Wilde -- to whom the turn of phrase ``bon
+mot'' is often attributed.}}
+\\
+``Pay very close attention to the noise, the signal will take care if itself''
+{\small \emph{Wayne Green}}
+\\
+``When it comes to backups there are two types of people: those that do
+and those that will.'' {\small \emph{unknown}}
+\\
+``Never work on raw data -- only copies.'' {\small \emph{me}}
+\\
+``I always check my work.'' {\small \emph{Pinocchio}}
+\end{quote}
+}
+\end{abstract}
+\clearpage
+\pagecolor{white}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% table of contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{roman}   % i,ii,etc
+\pagenumbering{gobble}   %ignore page numbers for a while
+\pdfbookmark[0]{Table of Contents}{MyTOC} % if usepackage{hyperref} in use.
+
+\section*{~} \label{sec:contents}
+\tableofcontents
+%\listoffigures
+\listoftables
+
+\clearpage
+
+Quick Overview of the file system we recommend. This example is used throughout.
+
+\vskip 2cm
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{images/Overview1.png}
+\caption{Basic Pipeline Steps} %% \caption{{\tiny{citation}}}
+\label{figure:basicpipeline}
+\end{figure}
+
+\clearpage
+
+\setcounter{section}{0}
+
+\ifx\documentisdraft\drafttest
+\linenumbers    %%%%%%%%%%%%% DRAFT
+\fi
+
+\clearpage
+\pagenumbering{arabic}
+%% \fancyfoot[ELF,OLF]{Go to: \hyperref[sec:contents]{Contents}}
+%% \fancyfoot[ERF,ORF]{Go to: \hyperref[sec:index]{Index}}
+%% \fancyfoot[ECF,OCF]{Page \thepage}
+
+\fancyfoot[LF,OLF]{Go to: \hyperref[sec:contents]{Contents}}
+\fancyfoot[RF,ORF]{Go to: \hyperref[sec:index]{Index}}
+\fancyfoot[CF,OCF]{Page \thepage}
+
+
+\section*{Overview}
+
+This document refers to the new IRAF/Pyraf Noirlab 2.18 supported
+Pyraf3 : \url{https://iraf.noirlab.edu/} and
+\url{https://github.com/iraf-community/pyraf}.
+
+The document covers details system setup for observing and reduction.
+We are using a Raspberry Pi/libindi/Ekos for managing cameras and
+other details. Once data is captured it is quickly copied to a more
+stable platform for backup and reduction. We have IRAF/PyRAF installed
+on the RPi to facilitate focus and quick tests of the images.
+
+IRAF/PyRAF is considered a terminal based ``command line
+environment'', a very flexible way to use small programs to achieve
+large goals. GUI environments restrict users to 'canned' logic. Many
+people are uncomfortable with command line work. It requires learning,
+practice, and frequent use to maintain a fine edge needed for scientific
+data reduction.
+
+This \dhl{Bon Mots} document represents many tricks that one may use
+to avoid editing temporary files by hand and to provide an audit trail
+for projects.
+
+Go to Section \ref{sec:complexexample} and briefly ponder the code with an
+eye towards: ``What is this person thinking!''.
+
+\section{Typography} \label{sec:Typography}
+
+The typographic conventions used in these notes.
+
+Here \llbox{k} means hit the ``k'' on the keyboard. 
+
+\subsection*{Text}
+
+The document uses \dhl{color} to make something \dhl{interesting},
+stand out from the text.
+
+\subsection*{Examples}
+
+Examples, in general, state a \dhl{Goal}, the statement of the
+\dhl{example}, and \dhl{Prose} to describe the 'thought model' or a
+statement about takeaways from the example, and where needed some
+exercises. These are presented in this format:
+
+\begin{quote}
+\goal Demonstrate a goal. Yes this example was a goal.\\ \example Give
+an example of some syntax.\\ \prose Hey, put a linguistic pattern into
+your ``thought process'' for that syntax.\\ \exercise[-a] Pick up your
+pencil and start your notebook! \\ \exercise[-b] Time to stand for a
+minute. \\ \takeaway Tie the thought process to a concrete goal and
+example and begin documenting and checking your work.
+\end{quote}
+
+\subsection{Margin Annotations}
+
+There are places in the notes where margin annotations are used
+to draw attention to something important. In some cases this will
+be a note to the author to add/clarify a section of text. Usually
+more information may be found in the End Notes section of the document.
+\ltodo{Example of Margin Note}{Added a note to demonstrate the note process.}
+
+\subsection{Index}
+
+This document is written in \LaTeX. The \LaTeX environment permits developing
+and maintaining a set of bibliographic references, a great index and glossary. 
+
+\section{The Unix and the Data ``Big Picture''}
+
+This document is centered around the Ubuntu 22.04 LTS release using
+the NOIRlab IRAF/PyRAF 2.18 pagkage. It offers a paradigm developed
+over years of working with IRAF. This leverages Unix. The astronomy
+community uses Apple Mac computers that still retain enough about Unix
+to allow easy porting of IRAF and friends to that platform, even the
+Apple Mx processors.
+
+Win1X requires a VirtualBox (the Microsoft HyperV does not work well
+enough).  The client operating system installed in the Virtual box may
+be Fedora (the community version of Red Hat Enterprise Linux or RHEL).
+This allows installing ESO packages that leverage the RHEL environment.
+\textbf{Note}: Some AMD processors will not run hypervisors.
+\index(RHEL!ESO) \index{RHEL!Win1X} \index(VirtualBox)
+
+In Unix everything is a 'file'. Programs should be small, perform a
+duty and do it well, permit some options. A program takes input from
+``standard-in'' (\dhl{stdin}), does its work and puts its output to
+``standard-out'' (\dhl{stdout}). Any errrors are reported via
+``standard-err'' (\dhl{stderr}). Unix uses a device called a \dhl{pipe}
+to send the output from one program into the stdin input of another.
+Thus programs can be linked together on one line. 
+
+OK, some programs are huge, and this paradigm does not necessarily
+apply. But all the basic Unix utility programs like \dhl{ls}, \dhl{find},
+\dhl{grep} etc work this way.
+
+Changing from a GUI paradigm to a command line paradigm is one of the
+hardest things for many reading these notes to do.
+
+The Unix philosophy set forth by Ken Thompson, as documented by Doug
+McIlroy \cite{McIlroy1978,McIlloryPhilosophy}:
+
+\begin{quote}
+Make each program do one thing well. To do a new job, build afresh
+rather than complicate old programs by adding new "features". Expect
+the output of every program to become the input to another, as yet
+unknown, program. -- McIlroy
+\end{quote}
+
+GIUs are monolithic in design.\footnote{A GUI is a great way to encapsulate
+a process where variation in the process is shuned and discouraged. Scientific
+data is noisy and physics is opinionated -- this requires a careful attention
+to detail not managable with GUI environments.}
+
+One negotiates with Linux's root process to connect to the Linux
+system, where the login process drops the user into a \dhl{shell}. There are
+several shells to choose from -- here we will stick with \dhl{bash}
+\index{bash}. \textbf{\emph{Note:}} \dhl{/usr/sh} defaults to an abbreviated shell
+called \dhl{dash} on most Debian systems. \index{Unix Shell!intro}
+
+\begin{quote}
+``On a UNIX system, everything is a file; if something is not a file, it is a process.'' --
+Machtelt Garrels, ``Introduction To Linux: A Hands On Guide''
+\end{quote}
+
+Peter Freeman \cite{freeman1975software} offered a model of a computer
+(and a good operating system) as one of a \dhl{Processor},
+\dhl{Memory} and \dhl{Transducer} (PMT) \index{computer!PMT}. The
+processors today have less than one core to multiple cores, symmetric
+arrays of cores and massively parallel cores.  Even the core of yore
+is being supplanted by compute engines, the current popular one is the
+GPU with $10^{\$}$ tiny cores.
+
+Files are specialized and fall into classifications like: directories,
+special files, links, sockets, named pipes.
+
+There is only one file system and it starts at ``/'' or \dhl{root}.
+We tend to think of files as residing on a disk drive. Multiple
+drives, and their multiple partitions are simply ``mounted'' at
+a location under the ``/''   root directory. Examples are
+usually called something like /usr2. Disks on other machines
+are usually found, conceptually as a sub-directory the /mnt directory.
+
+\subsection*{The Shell ,``commands'', and Scripts}
+
+The computer sees typed text as groups of characters separated by some
+delimiter. Usually the delimiter is a combination of one or more
+spaces and/or tab characters. These are called \dhl{whitespace}.
+
+So all of programming takes a stream of complex symbols that, when
+taken together, direct the computer to take some safe action. Linux
+uses whitespace to set apart each symbol. 
+
+Commands are designed to be typed at the keyboard and are usually
+highly abbreviated. One of the handiest commands is \dhl{man}.
+
+\example Use the ``\dhl{man}'' command \\
+\prose Hey, what does the man (or ls or ln) command do?\\
+\exercise Enter ``\dhl{man man}'' at the shell prompt.\\
+\takeaway Read about how man works!\\
+\exercise[-b] Enter ``\dhl{man ls}'' at the shell promot.\\
+\takeaway Note: it says ``list directory contents'' so the abbreviation
+of ``ls'' makes sense. It also offers up a myriad of options.\\
+\exercise[-c] Try ``\dhl{ls -l}'' to see details of each file, one per line.\\
+\takeaway A way to determine if files are normal files, directories or
+links.
+
+One of the oldest Unix commands is ``ls'' used to 'LiSt' directories and
+their contents in interesting ways.
+
+\section{Files and Directory Structure}
+
+IRAF/PyRAF 2.18 is installed at a system level, and customized for each user.
+The \dhl{mkiraf} command will create a {\textasciitilde}/.iraf directory.
+
+IRAF uses two key files: \dhl{login.cl} and \dhl{loginuser.cl} to select from a myrid
+of options and packages one will use for the tasks at hand. The \dhl{login.cl}
+file now resides at \dhl{/etc/iraf/login.cl}. The loginuser.cl is located
+at {\textasciitilde}/.iraf.loginuser.cl -- this is the file you change.
+\textbf{\emph{Note}}: a single line with the word ``keep'' is required at the bottom
+of this file.
+
+The loginuser.cl file may be used to add your own special on-off commands,
+and to leverage \dhl{foreign} tasks (usually other handy programs on the
+path). \index{IRAF!foreign tasks}
+
+Each IRAF task has a set of parameters, managed in the {\textasciitilde}/.iraf/uparam
+directory. 
+
+\textbf{BEWARE}: IRAF tasks are ``sticky''. When you change something it remembers the new
+thing. The IRAF command \dhl{unlearn <task>} will cause the task to revert to
+its defaults. \index{IRAF!sticky}
+
+Other files:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item  {\textasciitilde}/.bashrc, include your own {\textasciitilde}/.iraf-aliases
+   \item  login.cl  - traditional configuration, don't edit this one.
+   \item  loginuser.cl - configuration to users special taste.
+   \item  pyraflogin.py - while not official has handy python functions
+   \item  home\$/uparm - where the system keeps parameter files.
+\end{enumerate}
+
+\subsection{Directory Layout}
+
+There are two quintessential things about data: 1) preserve the data
+and 2) be able to audit processing of the data.
+
+The most important thing is the preservation of the data. Backup,
+Backup and Backup again. Then make a copy. It is best to save data on
+multiple machines, or to the cloud. Google Drive (and other places)
+offer 5TB of data storage for a quite reasonable fee.
+
+All camera data consists of \dhl{16-bit unsigned ADU} values per pixel from
+the camera. It is not necessary to change and/or archive raw data with
+float values. The QHY600M images are 9600 x 6433 x 2 bytes of image,
+roughly 13e6 bytes. Therefore 5TB of disk space will hold roughly
+380,000 images. At 3 images per minute for an 8 hour night you get
+2400 days of observations for 5TB of disk storage. That's 12 years in
+practical terms. However, transferring these images over the net is a
+problem.
+
+% (iv (setq tmp (* 9600 6433 2)))    123513600  
+% (iv (setq tmp (/ 5e12 13e6 )))    384615
+% (iv (setq tmp (/ 384615 (/ 1440 3 3) 200 )))   12     2403
+
+The \dhl{{\textasciitilde}/Desktop} directory allows software acquisiton software to be
+configured once. Each night should be copied and archived. 
+
+\begin{quote}
+\begin{figure}[h!]
+\dirtree{%
+.1 {/home/user}.
+.2 Observations.
+.3 usw  - target lists, cl, notes, other generic things.
+.3 ddMMMyyyy  - Date of sunset at Observatory.
+.4 usw  - target lists, cl, notes, other generic things.
+.4 RawData  - data: warts, blisters and all made read only.
+.4 PreReduce  - copy RawData, and work here.
+.4 PreAnalysis - pick up analysis for files.
+.4 Reduce - Major IRAF/NonIraf reduction.
+.4 Analysis - Major IRAF/NonIraf analysis.
+.2 Desktop.
+.3 Today - where all ``tonights'' observations go.
+}
+\label{figure:dirlayout}
+\end{figure}
+\end{quote}
+
+
+The directory \dhl{usw} is used in lieu of etc. It is the German language
+way of saying the samething - \dhl{und so wieder} ``and so again''.
+In Unix \dhl{etc} contains loosely related information. For example
+puruse \dhl{/etc}, where the system keeps configuration information
+of a global level. It is so overloaded something unique is desired.
+
+With this layout, the \dhl{{\textasciitilde}/Observations/usw}
+directory contains side files of importance your overall personal
+observing strategy. Files, like ds9 region files, special catalog
+files general tools etc are stored here. Make subdirectories that
+hold common information for different sites or instruments. Copy
+those data into a nightly structure as needed.
+
+Data is taken at night. Use dates that reflect the date of sunset
+at the site where the data were obtained.
+
+Using the KStars/Ekos/libindi, running on a Raspberry Pi for example,
+or a local machine you may want a \dhl{{\textasciitilde}/Desktop/Today} directory
+for each night's observing run. In this way the capture/observatory
+software does not have to be configured each night. That export directory
+remains the same. At the end of the night, simply rename the directory.
+
+Date formats may be confusing, and subject to a computer's LOCALE
+subsystem Nobody can make their minds up about date formats.
+
+\centerline{{\huge{{\color{darkred}{SO! SPELL THE DATE OUT!}}}}}
+
+The \dhl{ddMMMyyyy} directory uses the 1 or 2 digit day of month,
+followed by the text abbreviation of the month, followed by a 4-digit
+year (lets don't play Y2K again). 
+
+This format makes the shell's text completion a quick way to move around.
+Text completion involves typing a few starter characters of the file/directory
+name then hit the tab. It will advance to the next non-unique thing.
+
+Underneath \dhl{ddMMMyyyy} is the usw directory for tonight's work. The
+target list, special catalog file of reference stars etc, the scheduler's
+input. Here we store the \dhl{reduce.cl} or \dhl{reduce.py} script
+template to be developed for these particular data.
+
+The RawData/PreReduce/PreAnalysis/Reduce/Analysis directories are
+cascading stages of data. You may use an \dhl{attic} directory where
+to sideline unrelated or terrible images.
+
+You can automate file reduction by using sub-scripts/tasks within the
+melange of IRAF/PyRAF/bash/python/whatever language programs and then
+leveraging Python and cl into making a
+\dhl{OBSERVATION/usw/reduce.pyraf}\index{reduce.cl}
+script\index{reduce.pyraf} script for the data. Save this as a template in
+the general \dhl{usw} directory, and copy in to each observation's repository.
+Detailed example is in Appendix \ref{sec:ReducePyrafControlFile}.
+
+At this time PyRAF (a mix of ecl and Python) does not act well as a
+``script'' due to the hack that adds ecl syntax to the GNU runline command
+input. It uses the raw input directly and side-steps \dhl{stdin}. This
+violates the Unix philosophy of each program should take its input from
+stdin, process its results and put the results into stdout.  This
+allows one to pipe programs together to achieve an ultimate goal.
+
+Scripts may be written in the \dhl{.cl} language (really ecl or extended cl),
+actual PyRAF (\dhl{.pyraf}), or hacked into PyRAF with the \llbox{!}
+cl prefix as you go along.
+
+\textbf{\emph{Note}}: The \dhl{.pyraf} scripts blend python and PyRAF together.
+See the complicated example of how to deal with APO NICFPS camera
+images.
+
+\section{Critical First Steps}
+
+It is critical you properly install the IRAF/PyRAF3 packages. This
+release looks for a {\textasciitilde}/.iraf directory that may not be fully integrated
+into the rest of IRAF.
+
+You may make a soft link of \dhl{\home/iraf} to \dhl{\home/.iraf}:
+
+\dhl{ln -s \home/iraf \home/.iraf}
+
+The document will continue to refer to \dhl{\home/iraf} as the base
+of the IRAF package. 
+
+It is important to use a \dhl{~/iraf/loginuser.cl} file with task
+aliases foreign and tasks.\index{tasks!aliases} \index{tasks!foreign
+  tasks}
+
+One way to make things simple is to create a bash alias for pyraf that:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   uses xdotool to change the color of the window's background
+   \item   update the PATH and PYTHONPATH to access all the special files you use
+   \item   run the system pyraf (note the /usr/bin path is prefix is necessary) 
+ with the ``-s'' switch for ``silent'' start.
+\end{enumerate}
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+alias pyraf="xdotool key shift+F10 r 1;\\
+  export PATH="/usr/local/bin:$PATH"; export PATH="/usr/local/astrometry/bin:$PATH";\\
+  export PYTHONPATH=$HOME/.iraf; export PATH="$HOME/.iraf/smtsci/bin:$PATH";\\
+  /usr/bin/pyraf -s;"
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\subsection{IRAF/PyRAF Tasks and Packages}
+
+IRAF, from ye-olden times, uses \dhl{packages} containing help text
+and parameter files to hold values from run-to-run together with the tasks'
+executable code.
+\index{IRAF!tasks} Tasks are ``programs'', usually written in FORTRAN
+or in cl proceedural code. Some are written in C/C++.
+
+\dhl{BEWARE}: IRAF is \dhl{sticky}! It retains parameter values from
+run-to-run that can perpetuate errors. Review all the parameters to be
+sure your reductions are proper. These values are stored in the
+\dhl{~/iraf/uparm} directory.
+
+Tasks are built into IRAF/PyRAF but are only loaded once. Each time
+they are used -- they are in memory and already part of the CPU thread
+you are using. Thus they very fast. Using \llbox{!} shell-escape or a
+\dhl{\$foreign} task causes Unix to create a new heavy-thread with
+significant overhead (especially in a loop).
+
+IRAF has a habit of loading images into memory and keeping them there.
+Some tasks will modify the in-memory image but not write it back to
+the disk. Work may be lost. See Section \ref{sec:FITSFiles} for quick
+details.
+
+IRAF has a neurotic habit of \dhl{sometimes} adding an extent to
+certain FITS files! This is the case with master darks and flats
+and a handful of other operations.
+
+It is best to develop your \dhl{reduce.pyraf} script in an editor, one line
+and step at a time, then cut/paste edited lines at the interactive
+prompt. When you make a mistake -- and you will -- you can start over
+with a fresh copy of data and stop short of the mistake. Pick up and
+go again.
+
+\subsection{Full On Python Hacks}
+
+\example Python's \dhl{import iraf} statement allows for operations like: \\
+\prose I want to use IRAF's imstat command to get a binary value, assign
+the value to my python variable. \\
+\exercise Enter: \\
+{\color{verbcolor}{
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+mymean = float( iraf.imstat(images='*fits',fields='mean',format=iraf.no,Stdout=1)[0])
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}}
+
+\takeaway The task has a pythonic wrapper, contained in the iraf.py
+module's namespace.  It needs a list of files, we only want the one
+field \dhl{mean}, we do not want the headers (format=iraf.no). The
+phrase Stdout=1 (note capitalization) returns the text as a string
+rather than printing on the terminal. But! The string is actually an
+array, so we want the first bit. But! that bit is a string, and we
+need to convert to binary with the \dhl{float} python function.
+
+where \dhl{mymean} is now a proper python float. Yes, convoluted, but
+its buried in a scrip and available for your use. \index{Stdout}
+
+\subsection{Task Parameters}
+
+Always be aware of the:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item    ~/iraf/uparm directory
+   \item    lparm <taskname> command to list parameters.
+   \item    \dhl{unlearn <task>} command.
+   \item   help <task> and look at the see also part at the bottom.
+\end{enumerate}
+
+\section{Goals}
+
+The main goal of scripting is not the script, it is the result. Good
+data results do not come from good scripting -- but come from good
+planning, good execution of the plan and attention to configuring
+your tools.
+
+
+\subsection{Things to remember}
+
+IRAF \dhl{cl} morphed into PyRAF \cite{2006hstc.conf..437G} to allow a more
+powerful \dhl{cl} by hacking the Python \dhl{readline} subsystem. The
+grammar of python was altered to allow for a ``direct entry'' of most older
+\dhl{cl} commands. Direct access to the underlying tasks was
+accomplished with a ``cythonic'' interface into underlying code. An ``iraf''
+module was added to support programming calls to IRAF tasks and using 
+a special Python \dhl{keyword} argument Stdout to return output as a string.
+Parsing this string with python allows chaining \dhl{cl} commands together
+for a goal.
+
+A tremendous amount of power is available for you to mix and match to meet
+your specific needs. 
+
+\subsection{Observation Directory}
+
+One can not expect proper structure by simply importing a night's
+observations, warts blisters and all. Files will be scattered all
+over, mis-named, bad headers, useless(!), and other oddities. But copy
+the data into date/RawData. See directory layout table \ref{figure:dirlayout}
+
+Open date/usw/reduce.cl in your favorite editor. Anything you want
+to type into PyRAF -- type it into the reduce.cl file. Then cut/paste
+the command to PyRAF. This means when you make the mistake -- you
+can remove the last line, save the reduce.cl file, and rebuild
+to that point. Yes, some interactive things will or may happen.
+Try not to make too many mistakes.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   cd ~/Observations
+   \item   mkdir 22Feb2022 \# date of sunset at the observatory
+   \item   cd 22Feb2022
+   \item   mkdir -p Plan RawData PreAnalysis Analysis Publish usw
+   \item   mkdir -p PreAnalysis/{Bias,Darks/{s300,s3},Flats,Comps} \# prior knowledge
+   \item   cd RawData
+   \item   cp -pr /mnt/NAS/22Feb2022/* .  \# copy the raw data
+\end{enumerate}
+
+Now the plan for observations and initial PreAnalysis results is in 
+place. The \dhl{usw/reduce.cl} script is the key. 
+
+Good observations are the result of good planning. Make the list of targets,
+determine offsets and guide stars, create a ds9 region file in ICRF WCS
+coordinates for the field of view and possible orientations of the instrument.
+If possible download the preparation package from the observatory and take
+time to prepare. \index{planning}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.4\textwidth]{images/Overview.eps}
+\caption{The observations directory was in place with the plan.
+Load up the raw images. Then copy raw data to pre-analysis.} %% \caption{{\tiny{citation}}}
+\label{figure:GoalsOverview}
+\end{figure}
+
+\clearpage
+\subsection{The main tricks}
+
+Note: Unix files do not rely on their extensions. A Unix extension is a social
+convention. Many authors use two files, like \dhl{in.txt} and \dhl{out.txt}.
+They will use an editor to change the bits of one to another. 
+
+I recommend using goofy file names, like \dhl{xxx} and \dhl{l.l}, when seen
+they may be removed. The filename \dhl{l.l} is real easy to type because
+the \llbox{l} and \llbox{.} are right next to each other!
+
+The \llbox{/}\llbox{/} sequence is the cl concatenation operator, used to
+join two strings without intervening whitespace.
+
+Instead of having the input files in in.txt, then editing to make unique
+output names -- simply prepend a string, with some meaningful context
+to the @file. 
+
+The order of operations may be to
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   t\_ trim a file.
+   \item   c\_ cosmic ray removal
+   \item   z\_ to zero correct
+   \item   d\_ to dark correct
+   \item   f\_ to flat a file
+\end{enumerate}
+
+
+etc. data.fits, after processing may be \dhl{f\_d\_z\_c\_t\_data.fits}.
+
+So PyRAF has several tricks up its sleave:
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   It can act like a basic ``calculator'' just by typing standard python at the
+PyRAF command prompt. Remember to ``import'' packages like math and numpy.
+   \item It works with list of files. These are refered to as ``list''
+     or ``at'' files. They are like {\color{verbcolor}{\verb#@l.l#}}
+     where the file ``l.l'' has a list of filenames -- one per line.
+   \item You can take the files in ``l.l'' and produce new files with
+     the same name but prepend a clause to the
+     filename!\\ \textbf{E.g.:}
+     {\color{verbcolor}{\verb#imarith @l.l - zmaster.fits z_//@l.l#}}\\ will
+     subtract the zero master from each file in ``l.l'' and make a
+     corresponding {\color{verbcolor}{\verb#z_filename.fits#}}.
+\item PyRAF is a a replacement for {\color{verbcolor}{\verb#cl#}} (actually
+ecl). You can loop {\color{verbcolor}{\verb#.cl#}} commands together
+with bash commands into the mix to do work using:\\
+{\color{verbcolor}{\verb#cl < ~/iraf/fit2fits.cl#}} to bring a Vendor's
+fit format to the PyRAF standards.
+\end{itemize}
+
+It has a few oddities, inherited from the ecl lashup of the Pythonic 'readline' hack,
+ripped from a \dhl{reduce.cl} script:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item Oops! Its Python 2.7 so write helpers like \dhl{trim} and
+     \dhl{fitsls} accordingly.
+   \item   Most of the IRAF \dhl{cl} commands work
+   \item   \dhl{set OBSROOT=/home/me/Observations/23Feb2022}
+   \item   \dhl{set OBS=OBSROOT\$/PreAnalysis}
+\end{enumerate}
+
+The IRAF command \dhl{chdir} \index{cl!chdir} changes directory while respecting
+the IRAF use of iraf-environment variables.
+
+You can escape to bash by starting the line with a bang (!). This
+allows developing handy bash scripts to store in iraf/bin.
+
+\clearpage
+
+\subsection{System Setup}
+
+I presume the use of the Ubuntu 22.04 Linux distribution from Canonical\texttrademark.
+
+%% Under Microsoft Windows\texttrademark Pro, there is a system called \dhl{Hyper-V}.
+%% It is very ``light-weight'' virtualization layer for Windows that permits
+%% the seamless of an essentially containerized Ubuntu 22.04 + anaconda and other
+%% Linux based tools while maintaining contact with the Windows file system,
+%% the network etc. \index{Windows!Hyper-V}.
+
+%%Under Linux you are running Linux anyway.
+MacOS is very Linux like, even on their M1 processor series.
+
+Install the Anaconda package without the Navigator. This brings in
+a massive amount of power, including Astropy \cite{astropy:2013} \cite{astropy:2018}
+\cite{astropy:2022}.
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item    Necessary:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item    Ubuntu 22.04/Mac OS + many apt-get packages
+   \item    Anaconda (Python 3+)
+   \item    Astroconda PyRAF recipe (a python2.7 env)
+   \item    Ubuntu aptitude iraf/pyraf packages
+   \item    Sextractor
+   \item    Current SAOImage/ds9
+   \item    Current Astrometry.net + 4200 and GIAI data
+   \item    Fitsverify \cite{fitsverify-1}
+   \item    GitHUB sasiraf package (currently private contact author.)
+\end{enumerate}
+   \item    Optional
+\end{enumerate}
+
+\subsection{Unix\texttrademark Aliases}
+A few aliases need to be setup.
+
+\ltodo{Add Aliases}{Update/add aliases for bashrc file.}
+
+\begin{figure}
+{\color{darkred}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+function pyraf  { #export PYTHONPATH=$HOME/iraf;
+                  export PATH="/home/wayne/anaconda3.8/envs/geminiconda \\
+                     /bin:$HOME/iraf/smtsci/bin:$PATH"; (folded line)
+                  source activate geminiconda;
+                  xdotool key shift+F10 r 6;     # change terminal color
+                  $HOME/anaconda3/envs/geminiconda/bin/pyraf -s $*;
+                }
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+\caption{An entry into the aliases file, using the Gemini pyraf installation.}
+\label{fig:geminialias}
+\end{figure}
+
+This is a little-bit complicated:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   The PYTHONPATH allows pyraflogin3 to be imported after start.
+   \item   This assumes \dhl{~/iraf/pyraflogin.py} is present.
+   \item   The function in figure \ref{fig:geminialias} tells Anaconda to activate
+     the geminiconda environment
+   \item   The xdotool allows the color of the terminal window to be changed.
+   \item   PyRAF is then started, the \dhl{-s} switch is quiet about packages loaded.
+   \item When pyraf starts, it loads \dhl{login.cl} which in turn
+     loads my \dhl{loginuser.cl} scripts.
+\end{enumerate}
+
+\subsection{Initialization files}
+
+PyRAF uses \dhl{~/.iraf/login.cl} to manage system level commands and should
+not be edited -- except to ensure that \dhl{cl < "home\$/iraf/loginuser.cl"} is
+enabled. Edit the \dhl{loginuser.cl} file and pile changes.
+ \index{Initialization!login.cl}
+\index{Initialization!loginuser.cl}
+
+A special \dhl{~/iraf/pyraflogin.py} file can 'extend' the Python
+environment.  A sample file is available with this package. It
+requires the special alias to start PyRAF. It adds simple
+\dhl{matplotlib} plotting and some handy fixer-upper functions. See
+that package for documentation. \index{Initialization!pyraflogin.py}
+
+\subsection{Initial Steps}
+
+This process uses a user-defined  directory structure as shown in
+figure \ref{figure:basicpipeline}. 
+
+The main steps are:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Layout basic directory structure:
+
+
+   \item  Add a few toplevel soft-links for non-sentient file browsers.
+\dirtree{%
+.1 \$HOME/.aaatoday linked to \$HOME/Desktop/Today.
+.1 \$HOME/.aaareduce linked to current working reduction.
+}
+
+   \item   Planning - load up the \dhl{\$HOME/Desktop/Today/usw} directory with
+FOV files, and anything related to observatory etc.
+
+   \item   Observe
+   \item   Move dhl{\$HOME/Desktop/Today} to dhl{\$HOME/Desktop/Observations/mmDDDyyy}
+date of sunset at the observatory of the instrument.
+   \item   Make a safe backup.
+   \item   Start the process of reducing the data.
+\end{enumerate}
+
+The script provides the audit trail you used. Modify this for each
+instrument setup, and for each filter type etc.  Essentially the same
+for spectroscopy -- just watch the statistics sections.
+
+You may not need darks, and the flats will be different.
+
+When, not if, you mess up you can delete the PreAnalysis directory, fix
+the above script, and start over. As you move deeper into the file
+processing, the script becomes more valuable.
+
+
+\clearpage
+\subsection{PyRAF Calculator Mode}
+
+\goal Demonstrate borrow Pyraf as a calculator within PyRAF. Determine
+the mean plus 3 times the standard deviation for a limit.
+
+\example 
+{\color{verbcolor}{\verb#imstat zmaster.fits fields=mean,stddev#}} \\
+you find the mean is 346 and the stddev is 47.
+
+\exercise How many pixels in the zero master are 3 or 5 $\sigma$ above
+the mean?
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+from astropy import fits  # DO THE IMPORTS ONCE
+import numpy
+
+f = fits.open('zmaster.fits')    # open the fits file as a cfitsio like
+d = f[0].data   # get the data   # structure and just grab the data.
+# using some python magic!
+(mean,stddev) = map(float,
+                   iraf.imstatistics(Stdout=1,fields='mean,stddev',
+                      images='zmaster.fits',format=iraf.no)[0].split())
+len(d[d> mean + 3.0*(stddev)]) # 25729 pixels matched this example
+len(d[d> mean + 5.0*(stddev)]) #  1220 pixels matched this example
+f.close()
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+
+\prose Hey, we're PyRAF, a pythonic interpreter -- so lets really use
+Python.  The imports are used to get the modules/functions we
+need. The fits.open gets the FITS file open for business; we grab just
+the image data as a numpy array of shape
+{\color{verbcolor}{\verb#NAXIS2,NAXIS1#}} (switched(!), numbered from
+zero now and the data will have overscans if present!) using
+{\color{verbcolor}{\verb#d = f[0].data#}}. The
+{\color{verbcolor}{\verb#iraf#}} is imported by virtue of we're PyRAF;
+the {\color{verbcolor}{\verb#imstat#}} is run as a python function
+using {\color{verbcolor}{\verb#iraf.statistics()#}}.  The
+{\color{verbcolor}{\verb#Stdout=1#}} tells the task to return the
+output not send it to the terminal. The
+{\color{verbcolor}{\verb#format=no#}} tells the function to omit the
+usual header text etc, and just return the two values requested with
+the {\color{verbcolor}{\verb#fields="mean,stddev"#}}.  The output is
+one string with two ASCII numbers. These are split into an array, then
+the {\color{verbcolor}{\verb#float#}} function converts the strings
+into actual numbers -- returned as the tuple
+{\color{verbcolor}{\verb#(mean,stddev)#}}.
+
+\subsection{Using Numpy Arrays}
+%HEREHEREHERE
+
+Numpy arrays follow the ``C'' indexing scheme, which is ``ordinal'' in nature
+(starting with zero). For an (X,Y,Z) index -- the array is referenced \dhl{backwards}:
+myarray[Z][Y][X]. This differs from the FORTRAN convention for arrays, ``cardinal''
+in nature (counting from 1).
+
+FITS images are stored in FORTRAN order, and in Big Endian format. This makes
+difficult for Intel architectures.
+
+This is critical. Data are written into FITS images in so-called \dhl{Big-Endian}
+fashion. In Jonathan's ``Gulliver's Travels'', a fictional character encounters
+a culture in heated conflict over weather or not one should crack open an
+egg on the little end or the big end. Computer aritectures are conflicted on
+how to store a larger value, say an integer that spans more than one byte
+into a linear address space. Decisions (bad perhaps) were made to store
+a 16-bit integer with the byte containing least significant digit first.
+The word oxBO is stored with the 0 first then the 0x0B. This was to make
+a very early machine fast at ++value operations! We're stuck with that decision
+since.
+
+The real issue boils down to the Bad Thing\texttrademark practice of
+``type punning'' whereby a block of data in ``Endianess Be Damed''
+format is read into memory, then attempts to access it as though it
+had the right byte order results in catastropy when data is exchanged
+between the types of architectures.
+
+Intel processors are ``Little Endian'' where processors like the Motorla
+68000 were ``Big Endian''. 
+
+Data are stored as arrays, with astropy.fits.io open command setting the
+data[0] extent as a pythonic numpy array. So the indices are a bit backwards
+The fits header would read something like:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+NAXIS  = 2
+NAXIS1 = 2048
+NAXIS2 = 512
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+To store a 2D image array. This is ment to denote an image that is 2048 wide and 512
+tall. 
+
+\ltodo{numpy vs FORTRAN}{Get into index details.}
+
+
+The next bits use numpy arrays. Here we use the conditonal indexing
+mode common to numpy arrays to get all the pixels that match
+expression of the value > the
+{\color{verbcolor}{\verb#mean + n times stddev#}}.
+
+Need a ``Quick Calculation'' to find the center of an image to
+use as a ``statistics section'' for normalizing?:
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+imhead zmaster.fits   # result is 'zmaster.fits[1368,1364][real]:'
+# half size? pick up the [NAXIS1,NAXIS2] from abbreviated imhead result...
+(1368//2, 1364//2)   # returns tuple (684, 682)  the '//' is integer divide.
+print "[%d:%d,%d:%d]" % (1368//2 - 50, 1368//2 + 50, 1364//2 - 50, 1364//2 + 50)
+# [634:734,632:732]  Et Viola! A handy center stat section for normalizing!
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+Make your own functions! Then imexamine -- the comp star and the target star.
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+import math    # DO THIS ONCE
+def mag(compmag,compflux,observedflux):
+   return -2.5(math.log10(observedflux / compflux) + compmag
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\exercise Correct for background.
+
+\section{Getting Started}
+
+Configure the system. Copy the login.cl to ~/.iraf. Copy loginuser.cl script
+to ~/iraf. \textbf{\emph{Note}} One has a hidden-file dot.
+
+Add the .iraf.aliases file to \dhl{\$HOME} directory and if you like, add it to
+the \dhl{\$HOME/.bashrc} file.
+
+Start PyRAF in one window and start Editor in another window. I
+recommend emacs or Sublime Text as editors -- they are GUI
+oriented. Remember all things have a learning curve.
+
+Why we use the vi editor. Vi is the ``\dhl{Vi}sual Editor'' that sits
+on top of a powerful albeit basic Unix editor ``\dhl{ed}. The \dhl{ed}
+editor is the basis for the \dhl{sed} the Unix stream editor. Regular
+expressions (think wildcards) are very sophisticated and turn up all
+over the Linux/Unix system. They are worth the effort to learn. The
+``re'' of the grep program (\dhl{g}lobal \dhl{re}gular expression
+\dhl{p}rint) program obviously makes heavy use of regular expressions.
+
+The very basic Linux commands are:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{| l | l |}
+\hline
+Command  & Basic Action   \\
+\hline
+cd    & change directory    \\ 
+ls    & list files     \\ 
+pwd   & print the current working directory    \\ 
+cat   & \dhl{concatenate} file(s)    \\ 
+less  & view content of a file    \\ 
+man   & the Manual -- print details of a command \\ 
+which & show where on PATH an executable is \\ 
+rm    & remove files and directories. \\
+%% ones-based: \cline{a-b}
+\hline
+%%\DeleteShortVerb{|}
+\end{tabular}
+%%\end{minipage}    %% for footnotes  r@{.}l 
+\caption{Very Basic Unix Commands}
+\label{table:VeryBasicUnixCommands}
+%%} % end small etc
+\end{table}
+
+
+\subsection{Very Basic PyRAF commands}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{| l | l |}
+\hline
+Command  & Use   \\
+\hline
+cl            & run the cl editor                            \\
+epar          & edit parameters/launch task                  \\
+hedit         & fast/dirty header editor                     \\ 
+imhead        & list the header values for a file            \\ 
+hselect       & select values from headers                   \\ 
+imexamine     & all manor of ways to view images             \\ 
+apall         & reduce a spectrum image                      \\ 
+identify      & identify spectral lines assign wavelenghts   \\
+dispcor       & apply identify results to science spectrum   \\
+splot         & view/analyze reduced spectrum                \\ 
+imstat        & print mean,min,max,std etc for set of images \\ 
+%% ones-based: \cline{a-b}
+\hline
+%%\DeleteShortVerb{|}
+\end{tabular}
+%%\end{minipage}    %% for footnotes  r@{.}l 
+\caption{Very Basic IRAF/PyRAF commands}
+\label{table:VeryBasicIRAF/PyRAFcommands}
+%%} % end small etc
+\end{table}
+
+
+\section{Working on subsets of files.}
+
+IRAF uses ``list files'' denoted \dhl{@list.txt}. The \llbox{@} key
+as the first character of the filename tells IRAF to open that
+file and take from it filenames -- one filename per line. This is
+real handy.
+
+Some documents have you make lists, then use an editor to change the
+list as you go. They recommend filenames like mylist.txt. This is
+cumbersome to type. Try using a simple name like \dhl{l.l}. Note the
+\llbox{l} key is very near the \llbox{.} key! Handy to type.  If you
+see the file \dhl{l.l} you know you can simply remove it.  The \llbox{!}
+as the first character on a command line sends the rest of the line
+to the local bash script. This escape mechanism allows you to use
+all the power of Unix inside cl scripts.
+
+The command \dhl{!ls -1 *Dar* > l.l} takes all filenames with Dar
+in it and lists them out in lexicographical (sorted) order. Here
+are some example of ways to build list-files.
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+!ls -1 *fits > l.l
+cl < ~/iraf/crall.cl
+# all the files are now c_<filename>
+
+hselect c_*fits $I "IMAGETYP ?= 'Bias'"  > l.l
+hedit @l.l IMAGETYP zero add+ show- ver- update+
+!if test -e zmaster.fits; then rm zmaster.fits; fi  # bash to rm file if exists
+imcombine @l.l zmaster.fits combine=median
+
+hselect c_*fits $I IMAGETYP ?= 'Light'"  > l.l
+hedit @l.l IMAGETYP object add+ show- ver- update+
+imarith @l.l - zmaster.fits z_//@l.l
+imarith z_//@l.l - dmaster.fits d_z_//@l.l
+imarith d_z_//@l.l / flatmaster_SII.fits f_d_z_//@l.l
+
+# files are now {\color{verbcolor}{\verb#f_d_z_c_filename.fits#}}
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+This makes use of the fact that we can pile on prefixes to
+processed files:
+
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   t - trimmed
+   \item   c - cosmic ray reduced
+   \item   z - zero subtracted
+   \item   d - dark corrected
+   \item   f - flat normalized
+\end{itemize}
+
+At the end, a flat-normalized file called {\color{verbcolor}{\verb#science.fits#}} will
+have the name {\color{verbcolor}{\verb#f_d_z_c_t_science.fits#}}.
+
+Lots of intermediate files lying around: Clean them up!
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+print "Remove residual files."
+! (export LC_ALL=C; rm [a-z]_*fits 2> /dev/null;)
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\textbf{\emph{Prose:}} \textbf{\emph{Hey}} PyRAF send the line to bash; but! using a sub-shell
+set {\color{verbcolor}{\verb#export#}} the {\color{verbcolor}{\verb#LC_ALL=C;#}}
+shell variable to let bash actually use case sensitive wildcards. Then
+{\color{verbcolor}{\verb#rm [a-z]_*fits 2> /dev/null;#}} remove the
+file -- and in case there is some whining about the process, send the
+whines to the bit-bucket ({\color{verbcolor}{\verb#/dev/null#}}).
+
+
+\section{Observing}
+PyRAF \index{PyRAF!Observing} is a useful tool for spectroscopy. Using
+the imexamine command and the 'j' key: set the rplot to wider than a bright
+line width. 
+
+% HEREHEREHERE
+
+\clearpage
+\section{Overall Philosophical Approach}
+
+This document covers a philosophy --- a set of general tools and
+scripts to take and reduce data.
+
+In this case some location like {\color{verbcolor}{\verb#/opt/myobs/iraf/#}}
+or {\color{verbcolor}{\verb#~/iraf/#}} contains a number of small generic
+{\color{verbcolor}{\verb#.cl#}} scripts to handle specific needs. These
+are specific to certain conditions -- like a package that writes {\color{verbcolor}{\verb#.fts#}}
+instead of {\color{verbcolor}{\verb#.fits#}} files. Routines to remove pesky
+spaces that GUI users like to use; get rid of multiple ``dots''; plus signs
+etc. 
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Create a planning directory. Rename to Observations/directory
+when the plan is executed.
+   \item   Create a ``usw'' directory to hold the plan, collect pre-analysis information:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   DSS image -- ds9 Analysis \menu Image Servers
+   \item   Region files, catalog files for ds9 -- ds9 Region \menu Shape ...
+   \item   Photometry reference stars --- ds9 Analysis \menu Catalogs \menu Database \menu UCAC4;
+or with the Aladin application and TOPCAT make one the hard way. (PanSTARRS DR1).
+   \item   Bibliographic information -- Browser and SIMBAD for the target(s).
+   \item   Gather any existing bad pixel masks -- previous runs; observatory supplied files.
+\end{enumerate}
+
+   \item  Gather raw data --- stay up all night
+   \item  Archive raw data as a RawData and make read only --- back to your {\color{verbcolor}{\verb#Observations#}} directory:\\
+{\color{verbcolor}{\verb#(cd Observations/YYYYmmDD; mkdir -p RawData; cd RawData; rsync <from somewhere> .; chmod -w -R *#}}).
+\end{enumerate}
+
+
+\vspace{-.15cm}
+\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Copy raw data to a PreAnalysis directory -- do not damage any
+raw data whatsoever. Make the PreAnalysis files writable:\\
+({\color{verbcolor}{\verb#cd Observations/YYYYmmDD; mkdir -p PreAnalysis; cd PreAnalysis; cp -pr ../RawData/* .; chmod +w -R .#}})\\
+Clean data and make initial analysis files:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Fix the filenames --- {\color{verbcolor}{\verb#cl < ~sbo/iraf/fix_sbig.cl#}}
+   \item   Fix the headers--- {\color{verbcolor}{\verb#cl < ~sbo/iraf/fix_headers.cl#}}
+   \item   Trim (remember) overscan --- see above
+   \item   Remove bad WCS especially from zero/dark/flats {\color{verbcolor}{\verb#cl < ~sbo/iraf/fix_sbig_wcs.cl#}}
+   \item   Remove cosmic rays ---  {\color{verbcolor}{\verb#!ls -1 *fits > l.l#}}
+followed by {\color{verbcolor}{\verb#cl < ~sbo/iraf/crall.cl#}}
+\item Other basic reduction steps to be covered elsewhere:
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Make any bad pixel masks 
+   \item   Make master zeros and darks 
+   \item   Make master flats 
+   \item   apply zeros,darks,flats to science images
+   \item   add new WCS or de-distort and add new WCS
+   \item   extract photometry
+   \item   combine images for deeper photometry
+   \item   freeze this work
+\end{enumerate}
+\end{enumerate}
+
+
+   \item  Copy the PreAnalysis data into an Analysis Directory.
+(Any damage here is quickly recovered from PreAnalysis.)\\
+{\color{verbcolor}{\verb#!(cd ..; mkdir -p Analysis; cd Analysis; cp -pr ../PreAnalysis/f_d_z_c_t* .)#}}
+\end{enumerate}
+
+
+A break down of the above steps reveals the need to make/use
+certain scripts (some shown in red in context above):
+
+\vspace{-.15cm}
+\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Fix the filenames: remove dots, spaces, dashes other special characters.
+   \item   Fix the headers: Observatory/Vendor non-IRAF keywords to IRAF
+keywords; Very-Non-Standard keywords like PCOUNT and GCOUNT
+   \item   Pinpoint is good enough for tracking (still takes a while to apply
+and will fail) but is not accurate.
+   \item   Single Pixel errors from cheap cameras, inevitable cosmic rays need
+to be mitigated in raw zero, dark and flat frames.
+   \item   Masks provide locations in pixel coordinates of defects that can ruin
+the science.
+   \item   Adding a new WCS will help to quickly align images. This may be enough
+if there is no distortion, de-distort with flux conservation where possible.
+\end{enumerate}
+
+
+You can stop here and defer photometry to the analysis step. However,
+you can extract photometry using sextractor and a few tricks.
+
+Combining images is an art.
+
+
+\textbf{\emph{Main goal:}} to develop a \textbf{\emph{compact}} set of
+skills with Unix/Python/PyRAF/IRAF to create a
+\textbf{\emph{collection}} of IRAF scripts to process images from two
+cameras, three telescopes using vendor's software. In this sense,
+``compact'' means: the basic IRAF commands; python, bash and Unix
+tricks and commands; a basic use of SAOImage/ds9. A familiarity with
+command line operations and vocabulary to support planning, executing,
+reducing data and publishing photometic data. Summary: the course is
+designed to introduce astrophysical hands-on research -- not the
+tedious nature of the related software tools.
+
+Examples, long and short, will provide an overview of all the weird/odd ways
+Bash/IRAF/PyRAF and Python are used is in Appendix \ref{app:PutItTogether}.
+
+\textbf{\emph{The Problem:}} PyRAF is a ``pythonic''
+wrapper/controller of collection of IRAF tasks/commands that in turn
+are based on the Unix operating system. The long path to getting a
+handle on PyRAF is to build on knowledge gained over time: starting
+with Python, then Unix in general and the bash shell in particular,
+then IRAF commands and tasks. This is hard to do in two weeks.
+
+\textbf{\emph{Exercise:}} we'll jump into the middle of the mess and
+build as we go. To temper this exercise, examples are from a third
+observatory and vendor's software -- this is to
+\textbf{\emph{prevent}} a simple cut/paste without taking the time to
+understand each fragment of the provided example code.
+
+
+\section{PyRAF, IRAF and Unix (bash)}
+
+IRAF was developed in a slow rather ad hoc fashion, its birthday
+established by Donald Wells \cite{FITSBirthday} as 28 March 1979,
+real development started in 1981 and was it put to use in 1984
+\cite{1993ASPC...52..173T}.  At the time researchers at various
+institutions using various computing platforms developed ``packages''
+that were brought together at NOAO under IRAF (Image Reduction and
+Analysis Facility). It was developed under Digital Equipment
+Corporation's PDP and Vax computing environments as well as Unix. The
+result today reflects coding and use patterns in vogue since that
+time. \index{IRAF!history}
+
+The original IRAF used code from a book that ran afoul of copyright
+infringements. While still suited for academic work, the work
+was dropped by AURA and taken up by a Github based community. There
+were several issues with the older 2.14 code. FORTRAN's COMMON and
+EQUIVALENCE blocks did not translate well from 32 bit architectures
+to 64 bit architectures. The copyright and FORTRAN issues were resolved,
+and released as version 2.17.
+
+\clearpage
+From \cite{NOIRLabReleaseNote} page:
+
+\begin{quote}
+The Image Reduction and Analysis Facility (IRAF) is a general-purpose
+software system for the reduction and analysis of scientific data. Its
+development started in 1984 at the National Optical Astronomy
+Observatories (NOAO) in Tucson, Arizona. As of January 2024, the
+Community Science and Data Center (CSDC) and the US National Gemini
+Office (US NGO) at NSF NOIRLab launched the new NOIRLab IRAF v2.18.
+\end{quote}
+
+For many years we've been awaiting those new packages to be written.
+The amount of legacy code, the need to audit results, should see
+IRAF supported well into the future.
+
+PyRAF is a ``pythonic'' wrapper for a vast array of IRAF commands and
+``tasks''.  IRAF's early control program was ``cl'' melding ideas from
+many system's various approaches.  \index{IRAF!cl!history} Users
+wanted ``\emph{more}'' so the extended command language or ``ecl'' was
+created. Users wanted more `\emph{`more}''.  So, around 1998, rather
+than create an ``extended extended command language'', the
+\index{PyRAF!history} IRAF developers adapted the then-current
+interactive python base to create PyRAF (\cite{2006hstc.conf..437G}
+and references therein). PyRAF is a decent replacement for IRAF/ecl
+that is mostly backward compatible (to a very large degree -- and
+there are differences) with ecl. In cl/ecl it was always possible to
+send a string to the underlying operating system by starting the line
+with an exclamation point ({\color{verbcolor}{\verb#!#}}).
+
+UNIX\texttrademark\; (Unix) was licensed to outside parties in the 1970's.
+\index{Unix!history}. The philosophy was founded on the premise that things
+should be of a minimalist and modular set of clear and concise processing
+steps. This is in stark contrast to the modern (haha) use of a Graphical
+User Interface (GUI). The GUI places severe restrictions on one's ability
+to combine steps in interesting ways to push the bounds of knowledge. It
+also acts as a diaper to prevent people from messing up their business
+environment. A good tool in one context (business) and very bad in science.
+
+Under Unix, there are about 160 user commands. There is similar number
+of terminal actions within a GUI so learning commands is not that daunting.
+
+Summaries of basic Unix commands abound on the net. Here we will
+ignore the basics (ls,cp,mv,rm,pwd,echo,head,tail,cat) and apply
+some attention to a small subset of the {\color{verbcolor}{\verb#bash#}}
+command shell's capabilities. 
+
+We will manipulate file names using the bash shell's variable
+substitution rules together with looping and conditional constructs.
+
+We will introduce several ways to automatically edit files using:
+{\color{verbcolor}{\verb#sed,awk and vi#}}. 
+
+In short, we want to master a small subset of the powerful Unix environment
+to make brief one-liners (Bon Mots!) to get the job done quickly.
+
+\subsection{Unix and its One-Line Editors}
+
+Unix commands expect its input from a special file known as STDIN
+(the command line or a file that is piped or otherwise redirected
+INTO a command). It does its work and sends its output to STDOUT
+which may be the terminal's display or to a pipe or file. If there
+are any errors they are sent to the special file known as STDERR.
+STDIN,STDOUT and STDERR are three main default streams through which
+data (information) flows. 
+
+\clearpage
+\subsubsection{Sed (the stream editor)}
+
+The {\color{verbcolor}{\verb#sed#}} program accepts its
+input from STDIN does work specified by one of a few command
+line expressions and sends its output to STDOUT.
+
+In tIRAF task {\color{verbcolor}{\verb#crmedian#}} is an odd-ball
+in that it refuses to work on more than one file at a time.
+
+\textbf{\emph{Strategy:}} To make crmedian work on all files, we will use Unix
+to create a {\color{verbcolor}{\verb#cl#}} file on the fly, and
+run that file. This violates so many principles! But it works.
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+! ls -1 *fts *fits *fit > l.l
+! echo "crmedian.unlearn" > crall.cl
+! echo "crmedian.sigma    = ''" >>crall.cl
+! echo "crmedian.residual = ''" >>crall.cl
+! echo "crmedian.crmask   = ''" >>crall.cl
+! echo "crmedian.median   = ''" >>crall.cl
+! cat l.l | sed  -e 's/\(^.*$\)/crmedian \1 c_\1/' >>crall.cl
+cl < crall.cl
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\textbf{\emph{Prose:}} \textbf{\emph{Hey}}, PyRAF, send a few lines to
+bash. \textbf{\emph{Hey}}, bash, first make a list of all the fits
+files. Then use {\color{verbcolor}{\verb#echo#}} to send some text (a
+cl command to set an internal variable related to crmedian)
+{\color{verbcolor}{\verb#echo "crmedian.unlearn"#}} via redirection
+using a single greater-than-sign to start a new script file
+{\color{verbcolor}{\verb#> crall.cl#}}. Then send a few similar lines,
+using double greater-than-signs to append text to the emerging new
+script file. (These lines tell iraf to ignore making mask files!.)
+Then, bash, run the {\color{verbcolor}{\verb#cat#}} command to read
+the list of filenames {\color{verbcolor}{\verb#l.l#}} and send (pipe)
+{\color{verbcolor}{\verb#|#}} the filenames (one at a time) to the
+stream editor {\color{verbcolor}{\verb#sed#}}.
+
+\textbf{\emph{Hey}}, {\color{verbcolor}{\verb#sed#}}, use a single
+command ({\color{verbcolor}{\verb#-e#}}) of
+{\color{verbcolor}{\verb#'s/\(^.*$\)/crmedian \1 c_\1/'#}} that uses a
+{\color{verbcolor}{\verb#g/re/p#}} like command. Globally
+({\color{verbcolor}{\verb#g#}}) use a regular expression
+({\color{verbcolor}{\verb#re#}}) {\color{verbcolor}{\verb#\(^.*$\)#}}
+to do substitute the contents of the line with
+{\color{verbcolor}{\verb#crmedian \1 c_\1#}} -- and followed by a
+print ({\color{verbcolor}{\verb#p#}}).  The regular expression is of
+the form {\color{verbcolor}{\verb#\(#}} start a group.  Into that
+group accept all characters satisfying
+{\color{verbcolor}{\verb#^.*$#}} (from the start of the line
+{\color{verbcolor}{\verb#^#}} all characters
+{\color{verbcolor}{\verb#.*#}} stopping at the end of the line
+{\color{verbcolor}{\verb#$#}}. Then close the group
+{\color{verbcolor}{\verb#\)#}}. Send the output to STDOUT using the
+double greater-than-signs, of the form of the command
+{\color{verbcolor}{\verb#crmedian#}} the original filename held in
+group 1 {\color{verbcolor}{\verb#\1#}} and create the output filename
+by prepending a {\color{verbcolor}{\verb#c_#}} to the original
+filename held in group 1 {\color{verbcolor}{\verb#c_\1#}}.
+
+Now, hehe --- \textbf{\emph{Hey}}, cl (yes you are cl script that is already running so
+start a new one), and take that file that {\color{verbcolor}{\verb#sed#}}
+just made as the commands to run!
+
+
+\clearpage
+\subsection{A bit about Unix output redirection}
+
+\index{Unix!io redirection}
+Bash redirection symbols:
+
+{\color{verbcolor}
+\begin{quote}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+command >  file              -- Create file, redirect STDOUT into that file.
+command >> file              -- Append output to file.
+command |  command  >file    -- Connect command1 output to command2 input.
+command >  file              -- Regular output into file, errors to console.
+command >2 file              -- Regular output to console, errors to file.
+command >  file2>&1          -- Both output and errors to file.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}
+
+
+Example of Unix using the ``plumbing'' paradigm to ``redirect'' data ``flows'' from
+one command to another.
+
+\begin{quote}
+{\color{verbcolor}{\verb#!ls -1 F*lat*fits | tee in.txt | sed -e 's/^/out_/' > out.txt#}} \\
+{\color{verbcolor}{\verb#cat in.txt#}} \\
+{\color{verbcolor}{\verb#cat out.txt#}}
+\end{quote}
+
+Not a single interactive editor is used.
+
+\textbf{\emph{Tasks:}} {\color{verbcolor}{\verb#ls, tee, sed#}} and
+ {\color{verbcolor}{\verb#cat#}}. The bang ({\color{verbcolor}{\verb#!#}})
+has PyRAF send the rest of the line (all the Unix part) to the bash
+shell.
+
+\textbf{\emph{Prose:}} {\color{verbcolor}{\verb#ls#}} ``lists'' files
+according to the wild card supplied and the output stream ``flows''
+via the Unix redirection operator the vertical bar
+({\color{verbcolor}{\verb#|#}}). The flow ``ties'' (plumbs?) the
+output from {\color{verbcolor}{\verb#ls#}} to the input of
+{\color{verbcolor}{\verb#tee#}}; where tee makes a copy of the stream
+as it flows along sending one copy into a file called in.txt (mirror
+of the ls output) and then the other along the stream to another pipe
+redirector that passes the stream into {\color{verbcolor}{\verb#sed#}}; where a ``regular
+expression'' is applied to each line. The regular expression says for
+the start of each line prepend a {\color{verbcolor}{\verb#out_#}}
+sub-string with sed's output being redirected into a file called
+{\color{verbcolor}{\verb#out.txt#}}. The {\color{verbcolor}{\verb#cat#}} command
+provides a peek at the output for our approval, because, wait for it, I always
+check my work.
+
+\clearpage
+\subsection{The ``vi'' visual editor in batch mode}
+
+The Unix editor, {\color{verbcolor}{\verb#vi#}} can be run by
+supplying a series of commands {\color{verbcolor}{\verb#-c#}} and
+ending with commands to {\color{verbcolor}{\verb#write#}} and
+{\color{verbcolor}{\verb#quit#}} the process.
+
+E.g.: Same crmedian example:
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+!ls -1 *fits > l.l
+!vi -es -c "%s/\(^.*$\)/crmedian \1 c_\1/" -c "w" -c "q" l.l
+# here l.l is the lines crmedian filename.fits c_filename.fits
+#but the preamble is not there.
+! echo "crmedian.unlearn" > crall.cl
+! echo "crmedian.sigma    = ''" >>crall.cl
+! echo "crmedian.residual = ''" >>crall.cl
+! echo "crmedian.crmask   = ''" >>crall.cl
+! echo "crmedian.median   = ''" >>crall.cl
+! cat l.l >> crall.cl
+cl < crall.cl
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\textbf{\emph{Prose:}} Hey, {\color{verbcolor}{\verb#ls#}}, make that list of
+filenames.  Now, {\color{verbcolor}{\verb#vi#}} change the
+{\color{verbcolor}{\verb#l.l#}} file -- no copies! So use the echo
+sequence, as above, and start the {\color{verbcolor}{\verb#crall.cl#}}
+file. Then copy the {\color{verbcolor}{\verb#ci#}} modified contents
+to the {\color{verbcolor}{\verb#crall.cl#}} file. Then, cl -- do your
+trick.
+\clearpage
+\subsection{AWK -- a very powerful editor/language}
+
+AWK is a very powerful programming environment in-and-of itself.
+Here is the crmedian problem
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+!ls -1 *fits > l.l
+# here l.l is the lines crmedian filename.fits c_filename.fits
+#but the preamble is not there.
+! echo "crmedian.unlearn" > crall.cl
+! echo "crmedian.sigma    = ''" >>crall.cl
+! echo "crmedian.residual = ''" >>crall.cl
+! echo "crmedian.crmask   = ''" >>crall.cl
+! echo "crmedian.median   = ''" >>crall.cl
+! cat l.l | awk  '/./ {print "crmedian $0 c_$0";}' >> crall.cl
+cl < crall.cl
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+} 
+
+\textbf{\emph{Prose:}} Hey PyRAF, do the usual
+{\color{verbcolor}{\verb#ls -1 *fits > l.l#}} trick and then use a
+one-liner with {\color{verbcolor}{\verb#awk#}} to write the commands
+into place. So, {\color{verbcolor}{\verb#awk#}} take each line that
+matches the pattern {\color{verbcolor}{\verb#/./#}} (at least
+something on the line) and print the whole line
+{\color{verbcolor}{\verb#$0#}} as the input filename and a
+{\color{verbcolor}{\verb#c_$0#}} as the output filename.
+
+
+The entire script generation could be managed differently
+with an ``awk'' script:
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+#!/bin/awk
+# say this is awk_crmedian
+BEGIN{
+   print "crmedian.unlearn";
+   print "crmedian.sigma    = ''";
+   print "crmedian.residual = ''";
+   print "crmedian.crmask   = ''";
+   print "crmedian.median   = ''";
+}
+/./ {print "crmedian $0 c_$0";}
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\textbf{\emph{Prose:}} Hey, we wrote our own script {\color{verbcolor}{\verb#awk_crmedian#}}
+and made it executable and put in into {\color{verbcolor}{\verb#~/iraf#}}.
+
+
+Then...
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+!ls -1 *fits | awk_crmedian > crall.cl
+cl < crall.cl
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\textbf{\emph{Prose:}} Hey, PyRAF have bash do the usual
+{\color{verbcolor}{\verb#ls -1 *fits#}} trick, and pipe the output
+into our script called {\color{verbcolor}{\verb#awk_crmedian#}}; hey,
+{\color{verbcolor}{\verb#awk_crmedian#}} dump the output to our hacked
+script crall.cl; then PyRAF use the cl interpreter to run that script.
+
+\clearpage
+\section{Headers should be fixed}
+
+NASA listing of popular keywords.
+\url{https://fits.gsfc.nasa.gov/fits_dictionary.html}
+
+
+The critical header to fix is IMAGETYP. IRAF wants the
+values {\color{verbcolor}{\verb#zero,dark,flat,object#}} all
+in \textbf{\emph{lower case}}!. Some observatories will
+write a {\color{verbcolor}{\verb#NaN#}} (not a number) in
+WCS values that cause some tasks to literally blow up. \index{IMAGETYP!values}
+
+\textbf{\emph{Note:}} these files are usually in a {\color{verbcolor}{\verb#ccddb#}}
+directory where the file types could be bent to the local usage.
+
+
+Different observatory engineering teams and various camera vendor's
+software packages (\cite{IRAFMotherLoad,SBFITSEXT}) add headers
+that are not 'consistent' with what IRAF wants.
+
+Other IRAF keywords are: DATE-OBS, EXPTIME, GAIN, RDNOISE and
+IMAGETYP. \index{IRAF!very important keywords} The specification
+really wants a {\color{verbcolor}{\verb#Z#}} at the end of the
+DATE-OBS to be perfectly clear the string is a ``Zulu'' time
+(UTC). UTC is the best to use as good records allow corrections.
+
+WCS keywords may be inaccurate, and different observatories and
+software packages write these headers. 
+
+
+
+ 
+
+See Table \ref{table:MainKeywords} for the main keywords we're about to discuss.
+
+We will \textbf{\emph{add}}, \textbf{\emph{translate}} and \textbf{\emph{remove}} keywords.
+
+\vspace{-.15cm}
+\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Header KEYWORDS can not be easily changed -- E-GAIN can not be directly changed to GAIN.
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Add the right one
+   \item   Delete the older bad one
+\end{enumerate}
+   \item   Value can be changed.
+   \item   Missing keywords are simply added.
+\end{enumerate}
+
+
+
+\textbf{\emph{BTW:}} Add a filter of ``none'' to zeros and darks:
+
+{\color{verbcolor}{\verb#hselect *fits %I "(IMAGETYP ?= 'dark' || IMAGETYP ?= 'zero')" > l.l#}} \\
+{\color{verbcolor}{\verb#hedit @l.l FILTER none#}}
+
+\textbf{\emph{And}}, strip WCS keywords from zeros and darks, or at
+least guarantee no ``NaN'' or ``inf'' values are in WCS headers for
+non-object files. This requires listing a few files representative of
+the WCS imposed for the night's observations; and creating a series of
+hedits to meet needs:
+
+{\color{verbcolor}{\verb#hedit wildcard Comma-Keyword-List del+ ver- show- update+#}}
+
+\begin{table}[h!]
+%\phantomsection
+%\addcontentsline{toc}{section}{ TOC CAPTION}
+% \setlength{\belowcaptionskip}{6pt} % adjust space under caption abovecaptionskip
+% \renewcommand{\arraystretch}{1.3} % adjust line spacing
+%\small{
+%\begin{minipage}{\textwidth}     % for footnotes in table.
+%\caption[TOC]{Main Keywords}
+\centering
+\begin{tabular}{ l  l l}
+%\MakeShortVerb{\|}
+%\multicolumn{n}{fmt}{text for merged cols}
+\hline
+Right      & Wrong                                          & The Fix  \\
+\hline
+GAIN       & EGAIN                                          & remove the E \\
+RDNOISE    & usually missing                                & use obsutil findgain task \\
+IMAGETYP   & IMGTYPE  EXPTYPE                               & hedit   \\
+DATE-OBS   & DATE and TIME                                  & merge, add 'Z' timezone part for UTC \\
+OBJECT     & Mostly right                                   & remove spaces?   \\
+FILTER     & ties to {\color{verbcolor}{\verb#ccdred$#}}... & to taste   \\
+\hline
+PIXSIZE1   & in degrees                                     & translate \\
+PIXSIZE2   & in degrees                                     & translate  \\
+CCDSUM     & <int> or ( x   y)  pixels                      & translate \\
+\hline
+OBSGEO-B   & LATITUDE SITE-LAT                              & add/translate \\
+OBSGEO-L   & LONGITUD SITE-LONG                             & add/translate \\
+OBSGEO-H   & ALTITUDE  (Greisen  +)                         & add/translate \\
+LONGPOLE   & (usually missing)                              & add $\equiv$ 0 Earth \\
+LATPOLE    & (usually missing)                              & add $\equiv$ 0 Earth\\
+\hline
+OBSERVER   & Main observer (team name)                      & add \\
+OBSERV01   & names of the observers...                      & add \\
+OBSERV02   & names of the observers...                      & add \\
+\hline
+OBJRA      & Sexagesimal                                    & add/translate \\
+OBJDEC     & Sexagesimal                                    & add/translate \\
+\hline
+SATURATE   & float                                          & sextractor \\
+\hline
+%%\DeleteShortVerb{|}
+\end{tabular}
+%%\end{minipage}    %% for footnotes  r@{.}l
+\caption{Main Keywords for IRAF}
+\label{table:MainKeywords}
+%%} % end small etc
+\end{table}
+
+
+IRAF wants \textbf{\emph{lower-case}} text as the IMAGETYP keyword's
+value.\footnote{It matters. See files like
+  \dhl{iraf/noao/imred/ccdred/ccddb/kpno/camera.dat}.}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ l  l  l }
+\hline
+IMAGETYP         & Flexberry Synonym   & Meaning            \\
+\hline
+\multicolumn{3}{c}{KPNO Vocabulary}                         \\
+\hline
+OBJECT (0)           & object          &                    \\
+DARK (1)             & dark            &                    \\
+PROJECTOR FLAT (2)   & flat            &                    \\
+SKY FLAT (3)         & other           &                    \\
+COMPARISON LAMP (4)  & other           &                    \\
+BIAS (5)             & zero            &                    \\
+DOME FLAT (6)        & flat            &                    \\
+\hline
+\multicolumn{3}{c}{Maxim/DL Vocabulary}                     \\
+\hline
+\multicolumn{3}{c}{Advanced FlexBerry Vocabulary}           \\
+object               & object          & Target exposure    \\
+light                & object          &                    \\
+target               & object          &                    \\
+sci                  & object          &                    \\
+science              & object          &                    \\
+light frame          & object          &                    \\
+bias                 & zero            &                    \\
+bias frame           & zero            &                    \\
+zero                 & zero            & Zero/Bias          \\
+dark                 & dark            & Dark               \\
+dark frame           & dark            & Dark               \\
+flat field           & flat            & Flat (Package dependent) \\
+flat                 & flat            &                    \\
+comp                 & comp            & Spectro Comparison 1D \\
+comp2d               & comp2d          & Spectro Comparison Image 2D \\
+1d                   & 1d              & 1D spectrum naxis=1 \\
+(unknown)            & unknown         & unknown/missing keyword \\
+%% ones-based: \cline{a-b}
+\hline
+\end{tabular}
+\caption{Image Type Keywords}
+\label{table:ImageTypeKeywords}
+\end{table}
+\clearpage
+\subsection{Fix Things Up}
+
+Introducing the IRAF commands:  
+
+{\color{verbcolor}{\verb#imheader#}}    \\
+{\color{verbcolor}{\verb#hselect#}} and \\
+{\color{verbcolor}{\verb#hedit#}}
+
+\subsubsection{imheader}
+\index{commands!imheader}
+Look at an ``image'' ``header'':
+
+\begin{quote}
+{\color{verbcolor}{\verb#imheader filelist#}} \\
+{\color{verbcolor}{\verb#imheader filelist long+ user+ | less#}}
+\end{quote}
+
+{\color{verbcolor}{\verb#imheader filelist#}} reports a very basic
+list. It blows up on MEF\footnote{FITS Multi-Extension-FITS.} files!
+Easy way to see a combine operation made a MEF.
+
+\begin{quote}
+{\color{verbcolor}{\verb#imheader filelist long+ user+#}}
+\end{quote}
+
+will show all the user headers.
+
+E.g.:
+
+\begin{quote}
+{\color{verbcolor}{\verb#imhead c_IC1396_WC_0010.fits#}}
+\end{quote}
+
+reports:
+
+{\color{darkgreen}
+\begin{quote}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+imhead c_IC1396_WC_0010.fits
+c_IC1396_WC_0010.fits[1374,1099][ushort]: IC1396_WC
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}
+The template for the output:
+
+\begin{quote}
+{\color{darkgreen}{\verb#filename[NAXIS1,NAXIS2][16-bit integer]: OBJECT#}}
+\end{quote}
+
+E.g.:
+
+\begin{quote}
+{\color{verbcolor}{\verb#imhead c_IC1396_WC_0010.fits long+#}}
+\end{quote}
+
+reports:
+
+{\color{darkgreen}
+\begin{quote}
+\begingroup \fontsize{8pt}{8pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+c_IC1396_WC_0010.fits[1374,1099][ushort]: IC1396_WC
+No bad pixels, min=0., max=0. (old)
+Line storage mode, physdim [1374,1099], length of user area 2673 s.u.
+Created Tue 16:28:49 02-Oct-2018, Last modified Tue 16:28:57 02-Oct-2018
+Pixel file "c_IC1396_WC_0010.fits" [ok]
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}
+E.g.:
+
+\begin{quote}
+{\color{verbcolor}{\verb#imhead c_IC1396_WC_0010.fits long+ user+#}}
+\end{quote}
+
+reports:
+{\color{darkgreen}
+\begin{quote}
+\begingroup \fontsize{8pt}{8pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+imhead c_IC1396_WC_0010.fits long+ user+
+c_IC1396_WC_0010.fits[1374,1099][ushort]: IC1396_WC
+No bad pixels, min=0., max=0. (old)
+Line storage mode, physdim [1374,1099], length of user area 2673 s.u.
+Created Tue 16:28:49 02-Oct-2018, Last modified Tue 16:28:57 02-Oct-2018
+Pixel file "c_IC1396_WC_0010.fits" [ok]
+EXTEND  =                    F / File may contain extensions
+BSCALE  =           1.000000E0 / REAL = TAPE*BSCALE + BZERO
+BZERO   =           3.276800E4 /
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator
+DATE    = '2018-10-02T21:07:29' / Date FITS file was generated
+IRAF-TLM= '2018-10-02T22:28:57' / Time of last modification
+OBJECT  = 'IC1396_WC'          / Name of the object observed
+DATE-OBS= '2018-06-27T10:54:26' /YYYY-MM-DDThh:mm:ss observation start, UT
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}
+\clearpage
+\subsubsection{IRAF COMMAND hselect}
+\index{commands!hselect} 
+
+The {\color{verbcolor}{\verb#hselect#}} command takes filenames from
+a list of files, answers with a list of keyword values that satisfy a
+boolean expression.
+
+\begin{quote}
+{\color{verbcolor}{\verb#hselect filelist Comma-Keyword-List boolean#}}
+\end{quote}
+
+The special keyword {\color{verbcolor}{\verb#$I#}} stands in for the
+related image's filename. The other keywords as they appear in the header.
+
+Its the boolean expression that is the main power. A simple
+{\color{verbcolor}{\verb#yes#}} means to accept all files.
+
+The boolean {\color{verbcolor}{\verb#"(IMAGETYP ?= 'Bias')"#}} looks
+at all files, only acts on those where the {\color{verbcolor}{\verb#IMAGETYP#}}
+keyword's value roughly matches or {\color{verbcolor}{\verb#looks like (?=)#}}
+the string. \textbf{\emph{Note:}} The expressions starts with double-quotes to allow
+use of single-quotes on the inside of the boolean test. Note: use {\color{verbcolor}{\verb#==#}}
+to precisely match the entire quoted string, and {\color{verbcolor}{\verb#!=#}} to
+``not'' ``match'' the entire quoted string. This follows the ``C'' bash string comparison
+paradigm.
+
+Other handy boolean tests:
+
+\begin{quote}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+Line: Expression
+1  hselect c_Flat_0011.fits $I,NAXIS1,NAXIS2 yes
+2  hselect *fits   $I "(IMAGETYP ?= 'Bias')"   > l.l
+3  hselect *fits   $I "(IMAGETYP ?= 'Dark')"   > l.l
+4  hselect *fits   $I "(IMAGETYP ?= 'Flat')"   > l.l
+5  hselect *fits   $I "(IMAGETYP ?= 'Light')"  > l.l
+6  hselect *fits   $I,OBSGEO-B,OBSGEO-L,OBSGEO-H  yes
+7  hselect *fits   $I,LONGPOLE,LATPOLE         yes
+8  hselect *fits   $I,FILTER,EXPTIME,IMAGETYP "(IMAGETYP == 'object' || IMAGETYP == 'flat')"
+9  hselect c_*fits $I,EXPTIME,FILTER "(IMAGETYP == 'flat')"
+10 hselect c_*fits $I "(IMAGETYP == 'flat' && FILTER == 'HAlpha' && EXPTIME==25 )" > l.l
+11 hselect c_*fits $I "(IMAGETYP == 'dark' && EXPTIME=1800 )" > l.l
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+
+In the above (prose):
+
+\vspace{-.15cm}
+\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   For the file {\color{verbcolor}{\verb#c_Flat_0011.fits#}} show the name
+and size (NAXIS1 and NAXIX2)
+   \item   Find all files where IMAGETYPE ``looks like'' Bias, and list only the
+filename {\color{verbcolor}{\verb#($I)#}} one-file-per-line into a
+temp file called {\color{verbcolor}{\verb#l.l#}}.
+(next step! {\color{verbcolor}{\verb#hedit @l.l IMAGETYP zero add+ ver- show- update+#}}
+(next next step!) {\color{verbcolor}\\
+{\verb#imcombine @l.l zmaster.fits combine=mode#}}
+In other words, don't depend on the file's name to be right and while we're at it
+change the header value to the IRAF default, then might as well cook up the
+master zero file.
+   \item   Make a list of all the dark files, next step? (hedit...)
+   \item   Make a list of all the flat files
+   \item   Make a list of  all the possible science objects
+   \item   Look at the site location for all the files (more to very all were updated)
+   \item   Look at the LONGPOLE and LATPOLE values, make sure they are right
+   \item   OK, object and flat files need to me ``zero subtracted'', so get the list
+the follow with a \\
+{\color{verbcolor}{\verb#imarith @l.l - zmaster.fits z_//@l.l#}}
+   \item   List all the names of all the flats.
+   \item   Make a list: test for IMAGETYP of flat, FILTER of HAlpha, and an EXPTIME of 25s
+and save to temp file l.l. This type of list can be used with a \\
+{\color{verbcolor}{\verb#imcombine @l.l flatmaster.fits ...#}} .
+   \item   For the SBO ABG cameras, where we have a lot of 1800s Darks, make a list of them
+\end{enumerate}
+\clearpage
+\subsubsection{IRAF COMMAND hedit}
+\index{commands!hedit}
+\begin{quote}
+{\color{verbcolor}{\verb#hedit listoffiles keyword newvalue switches#}}
+\end{quote}
+
+Examples of hedits, for all files with a wildcard {\color{verbcolor}{\verb#*fits#}}
+or from a list we made with {\color{verbcolor}{\verb#files#}} or with
+{\color{verbcolor}{\verb#hselect#}}:
+
+\begin{quote}
+\begingroup \fontsize{8pt}{8pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+1  hedit *fits OBSERVER 'teamwoody'               add+ ver- show- update+
+2  hedit @l.l IMAGETYP zero                       add+ ver- show- update+
+3  hedit *fits PIXSIZE1 "(@'XPIXSZ')"             add+ ver- show- update+
+4  hedit *fits PIXSIZE2 "(@'YPIXSZ')"             add+ ver- show- update+
+5  hedit *fits RDNOISE 5.31                       add+ ver- show- update+
+6  hedit *fits GAIN 0.26                          add+ ver- show- update+
+
+# how to delete a lot of headers in one go (bad wcs for example)
+7  hedit @l.l CTYPE1,CRVAL1,CRPIX1,CDELT1,CROTA1  del+ update+ show- ver-
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+
+\vspace{-.15cm}
+\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Add/change the OBSERVER keyword to be our team name.
+   \item   For the list of {\color{verbcolor}{\verb#IMAGETYP ?= 'Bias'#}} we
+got from a {\color{verbcolor}{\verb#hselect#}}, change to the proper
+{\color{verbcolor}{\verb#zero#}} string value.
+   \item Change a keyword. Can't do that, but we can add a new keyword
+     with the old one's value. The
+     {\color{verbcolor}{\verb#"(@'XPIXSZ')"#}} picks up the value of
+     an existing {\color{verbcolor}{\verb#XPIXSZ#}} keyword and uses
+     it as the value for the new keyword. Hint:\\
+     {\color{verbcolor}{\verb#hedit @l.l XPIXSIZ del+ update+ show- ver-#}}.
+   \item   Same for the matching PIXSIZE2 \menu YPIXSZ
+   \item Run findgain, or use a calculator, and determine the real
+     GAIN and RDNOISE. Here add/update RDNOISE.
+   \item   Add/update GAIN
+   \item WCS solutions are often not good. There are several lines of
+     the associated keywords. Here is one hedit of several to strip
+     the WCS from the file using the
+     {\color{verbcolor}{\verb#delete#}} switch.
+\end{enumerate}
+
+
+Example of using hselect and hedit together:
+
+{\color{verbcolor}
+\begin{quote}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+hselect *fits $I "(IMAGETYP ?= 'Bias')" > l.l
+cat l.l
+hedit @l.l IMAGETYP zero   add+ ver- show- update+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}
+The line {\color{verbcolor}{\verb#cat l.l#}} shows us the list,
+and lets us check it is what we thought we asked for with the
+{\color{verbcolor}{\verb#hselect#}}.
+
+\subsubsection{Binning}
+
+Binning is all messed up with vendor software. The IRAF keywords
+dictionary cites: {\color{verbcolor}{\verb#CCSSUM = 2#}} or
+{\color{verbcolor}{\verb#CCDSUM = (3 1)#}} (no comma) for
+spectroscopy.
+
+\begin{quote}
+{\color{verbcolor}{\verb#hedit *fits CCDSUM  "((@'XBINNINB)"#}}
+\end{quote}
+
+works for us with symmetric binning and standard imaging.
+
+Handling \gls{noise} is important.
+
+\section{IRAF ``at-files'' or ``@'' Tricks}
+
+During the 1980 command lines were growing longer and longer. We simply
+had more files to work with. So rather than having to type in a long
+list of files the ``seldom-used'' at-cost symbol ``{\color{verbcolor}{\verb#@#}}''
+was conscripted to mean a ``file'' that contained a ``list-of-files''
+with  ``one-filename-per-line''. The command interpreters were hacked to pause, open
+that file, and load up paremeter the developing list (argv for you C programmers) with the contents of that file. Hey,
+it works, and we love it.
+\ltodo{rework}{The load up paremeter the developing list parts needs rethinking}
+
+IRAF users were tired of editing things every time they turned around,
+and string operators were in IRAF's code, so the idea of using
+a string concatenation operator {\color{verbcolor}{\verb#//#}} together
+with the at-file was hatched. This is powerful.
+
+We need to prepare raw images with sequence of steps:
+
+\vspace{-.15cm}
+\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   header cleaning (no need to change file names),
+   \item   overscan and other trimming the overscan regions twist up
+the statistics badly! (And we really need a new filename because the image size changed!)
+   \item   cosmic ray cleaning to improve statistics (need a new file name),
+   \item   zero subtraction (another step),
+   \item   dark subtraction (another step),
+   \item   creating flat files,
+   \item   applying (normalizing) science images
+\end{enumerate}
+
+So, why do you think we call it ``coding'', because we use codes! Here are
+a few suggestions:
+
+\begin{quote}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+t_  trimmed files
+c_  crmedian (cosmic-ray) fixed files
+z_  bias subtaracted
+d_  bias/dark subtracted
+f_  bias/dark/flat subtracted/divided
+n_  bias/dark/flat/normalized (the science image usually)
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+
+The concatenation operation lets us ``prepend'', or add, characters to the \textbf{\emph{start}}
+of the filenames in an at-file.
+
+{\color{verbcolor}
+\begin{quote}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+files *Bias*fits > l.l
+imcombine @l.l zmaster.fits combine=mode
+files *Sci*fits > l.l
+imarith @l.l - zmaster.fits z_//#l.l
+imarith z_//@l.l darkmaster.fits d_//@l.l
+imarith d_//@l.l / flatmaster.fits f_//@l.l
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}
+
+The zero and dark subtraction, the normalization all on the same files,
+all using the same initial list -- just prepending various ``code'' letters
+as we go. The power of the concatenation {\color{verbcolor}{\verb#//#}}
+operation.
+
+\section{Chaining commands together, an @ and // example}
+
+The filename {\color{verbcolor}{\verb#l.l#}} above is a very temporary
+name. Its content will change rapidly during the script's execution. If
+you see one in a directory listing, remove it -- it is only a residual file.
+This saves on all the in.txt and out.txt and other blah.blah.blah.txt files.
+
+IRAF uses a {\color{verbcolor}{\verb#@filename#}} by taking a
+filename, one-per-line from a ``file of filenames''. It is usually
+pronounced ``an at file''. The IRAF command {\color{verbcolor}{\verb#files -1 *Bias*fits > l.l#}}
+or a Unix command sent to the system
+{\color{verbcolor}{\verb#!ls -1 *Bias*fits > l.l#}} with ``file redirection''
+can make a new temporary list.
+
+Always a good idea to check the contents: IRAF's
+{\color{verbcolor}{\verb#type l.l#}} or Unix's
+{\color{verbcolor}{\verb#cat l.l#}} will display the contents to the
+screen.
+
+When using an at file (meaning {\color{verbcolor}{\verb#@l.l#}}),
+IRAF will let you prepend a small string to the front of the filename
+using the IRAF concatenation operator {\color{verbcolor}{\verb#//#}}.
+
+I make a list of all my images.
+
+files *fits > l.l
+
+I then cosmic ray correct all those files and wind up with a fixed
+file for each of the original raw files. Think:
+{\color{verbcolor}{\verb#a.fits#}} \menu {\color{verbcolor}{\verb#c_a.fits#}}.
+
+
+To make the master zero?
+
+\begin{quote}
+{\color{verbcolor}{\verb#hselect c_*fits $I "(IMAGETYP == 'zero')" > l.l#}} \\
+{\color{verbcolor}{\verb#imcombine @l.l zmaster.fits combine=mode#}}
+\end{quote}
+
+Correct my science and flat files?
+
+\begin{quote}
+{\color{verbcolor}{\verb#hselect c_*fits $I "(IMAGETYP == 'OBJECT' || IMAGETYP == 'flat')" > l.l#}} \\
+{\color{verbcolor}{\verb#imarith @l.l - zmaster.fits z_//@l.l#}}
+\end{quote}
+
+I now will find {\color{verbcolor}{\verb#z_cr_a.fits#}} as a ``zero'' corrected
+science file.
+
+I need to flat combine the best twilight exposures Ha filter files?
+
+\begin{quote}
+{\color{verbcolor}{\verb#hselect z_cr_*fits %I "(FILTER ?= 'Ha' && IMAGETYP == 'flat' && EXPTIME == 25)"#}}
+\end{quote}
+
+because the 25 second exposures worked well. The above statement gathers only
+the Ha filter/25 second flat files together for me.
+
+\begin{quote}
+{\color{verbcolor}{\verb#cat l.l#}} to make sure!
+\end{quote}
+
+then
+
+\begin{quote}
+{\color{verbcolor}{\verb#imcombine @l.l flatHa.fits combine=median scale=mode weight=mode#}}
+\end{quote}
+
+Then normalize the file to make {\color{verbcolor}{\verb#norm_flatHa.fits#}}
+
+then flat correct my science images:
+
+\begin{quote}
+{\color{verbcolor}{\verb#hselect z_c_*fits %I "(IMAGETYP == OBJECT && FILTER == 'Ha')" > l.l#}} \\
+{\color{verbcolor}{\verb#imarith @l.l / norm_flatHa.fits > f_//@l.l#}}
+\end{quote}
+
+\subsection{OK One last mind bender}
+
+I want to see a table of exposure times for my dark files, to see if I have
+enough to make a decent master file.
+
+\begin{quote}
+{\color{verbcolor}{\verb#hselect c_*fits $I,EXPTIME,XBINNING,YBINNING "(IMAGETYP ?= 'dark')" > l.l#}}\\
+{\color{verbcolor}{\verb#!sort -n -k 2 l.l ! uniq -c -f 1#}}
+\end{quote}
+
+\textbf{\emph{Prose:}} First use hselect to get get a representative filename, the
+exposure time, and the binning. Next we want to use the Unix command
+{\color{verbcolor}{\verb#uniq #}} to skip the image name
+({\color{verbcolor}{\verb#-f 1#}})and report a count
+({\color{verbcolor}{\verb#-c#}}) of files in the group and just report
+the results to the screen.
+
+I can then see I have quite a few of the right matching times to do the darks.
+
+If I use {\color{verbcolor}{\verb#IMAGETYP ?= object#}} I can see the
+dark masters that I might need to get from a few nights ago.
+
+OK, I can pull the same trick to see what flats I can make, by
+
+\begin{quote}
+{\color{verbcolor}{\verb#hselect c_*fits $I,EXPTIME,XBINNING,YBINNING,FILTER "(IMAGETYP ?= 'dark')" > l.l#}}\\
+{\color{verbcolor}{\verb#!sort -n -k 2 l.l ! uniq -c -f 1#}}
+\end{quote}
+
+to see the filters. The representative file name can be inspected
+with the {\color{verbcolor}{\verb#stdas/histogram#}} command.
+
+\begin{quote}
+{\color{verbcolor}{\verb#histogram c_rep_flat_ha.fits filline+#}}
+\end{quote}
+
+Then choose the best times for the flat based on peeking at the
+graph.
+
+\clearpage
+\section{SAOImage/ds9}
+
+Unix hides files by preceeding them with a '.' character. This makes
+them easy to forget. 
+
+Initialization of ds9 shifts between releases. Currently, a file
+\dhl{\$HOME/.ds9/} contains a few directories. The \dhl{ds9.8.0.prf}
+file contains the preferences set when you Edit\menu Preferences
+and Save. 
+
+Initialize your preferences \index{ds9!preference}.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Under preferences (different paths to this on different operating
+systems):
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Menus and Buttons
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   General \menu GUI Font \menu Helvetica and again General \menu GUI Font \menu 14
+(font size) 
+   \item   Startup set Initialize XPA and Connect SAMP. (may turn this off in some cases)
+   \item   Edit \menu Menu set to None
+   \item   Hit the Region \menu Buttonbar and choose Shape \menu Projection; 
+Shape \menu Circle; Shape \menu Box; (Adds projection to the menu bar)
+   \item   Hit the Scale Menu \menu and choose log, 99.5 percent, use DATASEC
+(three trips into the Menu pulldown)
+   \item   WCS \menu ICRS -- the modern one.
+\end{enumerate}
+
+   \item   Zoom (click to center -- on Mac's the Option+click is middle-mouse event)
+\end{enumerate}
+
+   \item   Then the Save button. This writes a {\color{verbcolor}{\verb#~/.ds9/ds9.M.m.prf#}}
+where {\color{verbcolor}{\verb#M.m#}} is the Major.minor version number.
+\end{enumerate}
+
+\subsection{Using tcl/tk in ds9}
+
+There are two ways to do this. An important way is to enter wildcards
+in certain fields (catalog tool in particular) filter fields. The
+second is to compose/borrow procs (subroutines) from within the
+main body and create your own procs and buttons. You can add those
+features to ds9 via the menu/button system. Nice.
+
+Example scenario: You have 5 dithered images. You want to load
+all 5 into tiled frames. Then adjust one frame's colorbar. Now
+you can write a command that will
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Frame\menu Match \menu Frame \menu WCS
+   \item   Frame\menu Lock \menu Frame \menu WCS
+   \item   Frame\menu Match \menu colorbar
+   \item   Frame\menu Lock \menu colorbar
+\end{enumerate}
+
+
+That takes some time. So download the source. Find some handy
+text in the menu system.
+
+
+The SAOImage/ds9 program is written primarily in TCL/Tk -- the
+``Terminal Control Language with the Toolkit''. Certain filter/text
+fields within ds9 -- especially the Catalog Tool can make use of
+embedding TCL directly in the code. This is considered dangerous in
+the software engineering world for two reasons: one is it allows an
+attack for unfettered code and self-modifying code is considered a
+nightmare to document. Don't worry, were astronomers and therefore
+immune from any sanity remotely associated with coding.
+
+In general, If you see an ``Edit'' capability -- it will provide
+a little dialog to help with this.
+
+Some quick tcl programming tricks.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+\item   SAOImage/ds9 is mostly written in tcl!. A tonne of examples
+  of coding in tcl in general and how to borrow the subroutines for
+  your own purposes can be obtained by simply downloading the source
+  code directly.
+
+   \item   Tcl variables names are ``addresses'' NOT ``values'':
+to get the value preceed the variable with dollar sign
+{\color{verbcolor}{\verb#$#}} sign. For example raj2000 is called
+{\color{verbcolor}{\verb#$raj2000#}}. If there is a space or offending
+characters in a catalog's header you can surround that text with
+curly-braces {\color{verbcolor}{\verb#{}#}} so ``ra j2000'' can become
+{\color{verbcolor}{\verb#${ra j2000}#}}. Handy trick to know.
+\end{enumerate}
+
+
+\subsection{Command line quicksteps}
+
+Tying a catalog to an image is one place where a one-liner is handy.
+
+A very common scenario:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Analysis \menu Catalogs \menu Optical \menu UCAC4
+\end{enumerate}
+
+
+Expressions are a bit of an issue: for inline code,
+use a ``form of'' {\color{verbcolor}{\verb#[eval .... ]#}}.
+
+With a catalog and basic symbol file:
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+!ds9 field2.fits -catalog import tsv ../usw/GAIA.csv -catalog symbol load ../usw/GAIA.sym &
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\textbf{\emph{Scenario:}} You did some planning, and you went to the GAIA database
+and grabbed some information (Aladin for your field from GAIA, export
+to TOPCAT and produce the csv (which acts like as tsv as far as
+ds9 in concerned). This is saved in your {\color{verbcolor}{\verb#~/Observatons/YYYYmmDD/usw#}}
+planning directory.
+
+\textbf{\emph{Prose:}} Hey PyRAF send the ds9 command to the system;
+\textbf{\emph{hey}} ds9 open the file
+       {\color{verbcolor}{\verb#field2.fits#}} and with that frame,
+       import a {\color{verbcolor}{\verb#.tsv#}} catalog file called
+       {\color{verbcolor}{\verb#/tmp/tess.csv#}} then load the
+       previously saved {\color{verbcolor}{\verb#tess.sym#}} setup
+file. 
+\clearpage
+\subsection{The ds9 Catalog Tool} \label{sec:ds9tcl}
+
+There are a few areas within ds9 where you can filter, or prepare
+text labels. This is in the form of relating data from columns of
+a so-called ``tab-separated-variable'' or ``comma-separated-variable''
+file.
+
+\textbf{\emph{Exercise: -- Planning}} Observe the open cluster
+NGC 7218. Create a planning directory in the ~/Planning directory called
+NGC7218: {\color{verbcolor}{\verb#mkdir -p ~/Planning/NGC7218/usw#}}.
+then {\color{verbcolor}{\verb#cd ~/Planning/NGC7218/usw#}}
+or simply {\color{verbcolor}{\verb#cd !$#}}. Start ds9.
+
+Analysis \menu Image Servers \menu DSS .... choose plates, fill in the
+dialog using {\color{verbcolor}{\verb#ngc 7281#}} and let SIMBAD look
+up the coordinates -- or enter the coordinates directly. Acquire (use
+a 45-arcminute field). Once the image loads, you verify it is
+what you asked for, then save the image:
+
+File \menu Save ... and name it something like
+{\color{verbcolor}{\verb#NGC7218_DSS_Red.fits#}}.
+
+Now you have a refrence field for that target.
+
+Ds9 can be used some basic magnitude data for that field:
+
+Analysis \menu Catalogs \menu Optical \menu USNO UCAC4
+
+for example -- will open a catalog tool centered on the image
+in a frame, and draw little circles.
+
+Save that: File \menu Export \menu Tab-Separated-Value...
+
+and name it {\color{verbcolor}{\verb#NGC7218_DSS_Red.csv#}}.
+
+(Use the csv).
+
+\textbf{\emph{Note:}} Catalog tool file want RA in the first column, and Dec
+in the second. After that, its you data. However, the catalogs
+always seem to return a lot of tedious information first.
+So if you open the ``.csv'' file in a spreadsheet -- move the
+columns around and resave as a ``.csv'' you can use the
+catalog file at the telescope and save a lot of time.
+
+Lets add the VBand magnitude and the E(B-V) to the image.  First: on
+the main page add a ``filter'' {\color{verbcolor}{\verb#$Vmag != 0#}}
+to only use rows where Vmag data exists! Then
+under Symbol \menu Advanced, enter
+
+{\color{verbcolor}{\verb#$Vmag ([format "%5.3f" [expr $Bmag - $Vmag]])#}}
+into the ``Text'' field, and hit the Apply Button. This will (should)
+cause things like 13.452 (0.823) to appear on the screen over each of
+the known stars. Handy huh!
+
+Now, in the Symbol \menu Advanced dialiog, under File \menu Save
+save the ``.sym'' file as {\color{verbcolor}{\verb#NGC7281_V_E_BmV.sym#}}
+
+(\textbf{\emph{Note:}} the ``m'' in the name to stand in for the minus sign -- a good
+IRAF habit to form).
+
+\textbf{\emph{Summary:}} Create a 'Planning' directory, then a director for each intended
+target. Into that basic directory's ``usw'' (etc) directory add the
+DSS target field, the UCAC catalog tool -- modified with a spreadsheet
+to have RA/Dec/Vmag/Bmag/Rmag in the first column for easy viewing;
+the special filter.
+
+\section{PostgreSQL}
+
+The PostgreSQL language is taking over in the astronomy world.  It is
+more powerful than MySQL -- and offers a lot of features not found in
+MySQL. Sergey Koposov's Q3C \cite{2006ASPC..351..735K} package adds
+fast indexing to tables. \footnote{\url{https://github.com/segasai}}
+
+
+A scenario: You go to MAST and download a rather complete PanSTARRS
+DR1 field, centered on a location etc. You then platesolve each
+of your images to some degree of precision. Needless to say,
+the two floating points will be exactly different -- close
+but not exact. You need to match based on a radius -- and Q3C
+allows you do do this. For several hundreds of your stars against
+a catalog of several thousand stars becomes $\mathcal{O}(n!/2)$
+problem -- where Q3C converts it to a $\mathcal{O}(log(n))$
+order problem.
+
+To create a database for opencluster data, with several different
+openclusters say m29 and ngc7182:
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+CREATE DATABASE opencl;
+CREATE SCHEMA m29;
+CREATE SCHEMA ngc7182;
+SET SEARCH_PATH to ngc7182; -- choose to work in this/that level
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+Now you get data from PanSTARRS DR1 and GAIA DR2 for each cluster.
+Rather than have tables with different names (this quickly gets
+out of hand), the ``schema'' divides your database into parts:
+one for each cluster.
+
+Thus m29.panstarrs and ngc7182.panstarrs are tables with the
+same ``name'' and you decided to make them identical in structure
+with the same rows names. From the top level you refer to
+a table with the {\color{verbcolor}{\verb#schema.table#}} name.
+etc.
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+CREATE INDEX ON ngc7281.panstarrs   (q3c_ang2ipix(ora, odec));
+CLUSTER panstarrs_q3c_ang2ipix_idx   ON ngc7281.panstarrs;
+ANALYZE  ngc7281.panstarrs;
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+Some general commands that are handy:
+
+{\color{verbcolor}
+\vspace{-.15cm}
+\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
+   \item  Change a table's name
+   \item  Add new column to a table
+   \item  Update (change) a value for a column on a specific row
+or set of rows
+\end{enumerate}
+}
+
+Loading tess data, TOPCAT complains about a varchar that
+has to be set (does not say what exactly). TOPCAT saved
+the file as a .csv ok. Thus, a rawtess.psql file was created
+by loading the .csv data into columns that were text files.
+A small python script was used for the conversion -- there
+are quite a few tedious details.
+
+At this time, what should be null's were blank text files.
+To change the double precision columns from text into sparse columns
+(values and nulls) the fields to convert were noted and an emacs
+snippit was used to create a series of alter commands:
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+(mapcar (lambda (a) (insert (format "ALTER TABLE tess
+  ALTER COLUMN %s TYPE double precision
+    USING (NULLIF(%s, '')::double precision);\n" a a)))
+'(ora odec bmag e_bmag vmag e_vmag umag e_umag gmag e_gmag rmag e_rmag
+     imag e_imag zmag e_zmag gaiamag e_gaiamag))
+
+ALTER TABLE tess
+  ALTER COLUMN ora TYPE double precision
+    USING (NULLIF(ora, '')::double precision);
+...
+ALTER TABLE tess
+  ALTER COLUMN e_gaiamag TYPE double precision
+    USING (NULLIF(e_gaiamag, '')::double precision);
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+A workable solution was obtained. This was followed by a query:
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+copy (select ora,odec,vmag,e_vmag from tess
+where
+   ora between  336.0 and 336.6 and
+   odec between 57.4 and  57.99 and
+   vmag is not null             and
+   e_vmag is not null           and
+   -- e_vmag < 0.010               and
+   vmag < 15
+) to '/tmp/tess.csv' CSV  header delimiter ','
+;
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+to make a ds9 tsv in the /tmp directory.
+
+
+
+\subsection{Higher Level Stategies}
+
+When you get a ``raw'' table, and you want to make
+a smaller more qualified table -- start with creating
+a rawxxx table. Then you can do a ``create select''
+to make the qualified table.
+
+
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+ALTER panstarrs rename to rawpanstarrs; -- (further) refine this table
+DROP SEQUENCE panstarrs_sequence CASCADE; -- make it a basic table
+
+CREATE TABLE panstarrs AS (SELECT * FROM rawpanstarrs
+WHERE gMeanPSFMagErr <= 0.005 AND
+gMeanPSFmagNpt > 9 aND
+gmeanpsfmag < 17);
+
+CREATE INDEX ON ngc7281.panstarrs   (q3c_ang2ipix(ora, odec));
+CLUSTER panstarrs_q3c_ang2ipix_idx   ON ngc7281.panstarrs;
+ANALYZE  ngc7281.panstarrs;
+COMMIT;
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+For stars brighter than 17 in the sloan's g band, the mean error
+was less than 5 milli-mags over at least 9 observations (good
+guess it's not variable and was peeked at a few times).
+
+This makes a smaller table. Then apply the Q3C indexing
+to this qualified table.
+
+
+
+\subsection{Formatting Output}
+
+\subsection{Create a CSV file}
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+\! sudo rm /tmp/ds9catalog.csv
+COPY (
+   SELECT ora,odec,gmeanpsfmag,gmeanpsfmagnpt,gmeanpsfmagerr
+   FROM panstarrs)
+to '/tmp/ds9catalog.csv' with CSV delimiter ',';
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\section{PostgreSQL Installation} \label{sec:PostgreSQLInstallation}
+
+A convention and some rules helps with creating and using databases.
+
+There are a few field names in common databases that align
+with sql keywords. PostgreSQL is case-insensitive (Idiots!)
+so it may be necessary to filter some values using sed
+or awk.
+
+A good convention is to use:
+
+\begin{table}[h!]
+%\phantomsection
+%\addcontentsline{toc}{section}{ TOC CAPTION}
+% \setlength{\belowcaptionskip}{6pt} % adjust space under caption abovecaptionskip
+% \renewcommand{\arraystretch}{1.3} % adjust line spacing
+%\small{
+%\begin{minipage}{\textwidth}     % for footnotes in table.
+%\caption[TOC]{Field Name Convention}
+\centering
+\begin{tabular}{ l | l }
+%\MakeShortVerb{\|}
+%\multicolumn{n}{fmt}{text for merged cols}
+\hline
+Field  & Reason   \\
+\hline
+fname & filename's base (always add the extension, allows for .coo files.)    \\ 
+fqpname & fully qualified path name    \\ 
+oname & object name (OBJECT keyword)    \\ 
+ora &  right ascension in degrees    \\ 
+odec & DECREASING is sql declination in degrees    \\ 
+%% ones-based: \cline{a-b}
+\hline
+%%\DeleteShortVerb{|}
+\end{tabular}
+%%\end{minipage}    %% for footnotes  r@{.}l 
+\caption[Field Name Conventions]{Field Name Conventions}
+\label{table:FieldNameConvention}
+%%} % end small etc
+\end{table}
+
+ction{Python Scripting}
+
+When you write a IRAF helper \index{IRAF!Python Helper} import the
+print statement from ``future''. This allows 3x to run. Avoid those
+real nice extensions like f-strings.  Remember you are accelerating
+your work.
+
+\ltodo{Python}{Expand on the things to make helpers run in a 3.x
+environment.}
+
+\section{Conclusion}
+
+Using a combination of Unix, IRAF and Python it is possible to quickly
+``reduce'' raw data into a form ready for scientific analysis. The
+designers used ``cute'' notation and ``tricks'' that produces
+scripts that are difficulte to understand at a later time (Like next
+week!). Good comments {\color{verbcolor}{\verb=#=}} are your friend!
+
+NEVER work on original data -- always make a copy.
+
+And...
+
+I always check my work.
+\iffalse
+(progn
+   (insert-file "/home/wayne/iraf/zwofix.cl")
+   (insert-file "/home/wayne/iraf/printtimes.cl")
+   (insert-file "/home/wayne/iraf/fixwcs.cl")
+   (insert-file "/home/wayne/iraf/fts2fits.cl")
+   (insert-file "/home/wayne/iraf/fits2fits.cl")
+   (insert-file "/home/wayne/iraf/fit2fits.cl")
+   (insert-file "/home/wayne/iraf/clean_imagetyp.cl")
+   (insert-file "/home/wayne/iraf/cosmic_ray_correction.cl")
+   (insert-file "/home/wayne/iraf/artic_trim.cl"))
+\fi
+
+\section{Other Papers of Note}
+
+W. Kahan \cite{Kahan-Needle-Angles} discusses the use of vectors in place of small angles to
+avoid the inevitable floating point roundoff, especially with sine.
+
+Tools like SIMBAD \cite{2000A&AS..143....9W}, TOPCAT
+\cite{2005ASPC..347...29T}, the Aladin\footnote{It is pronounced Al -
+  A - Din not like the Disney movie. I asked a french astronomer.}
+\cite{1994ASPC...61..215B,2011ascl.soft12019C} App (not the online
+applet), Glue \cite{2012AN....333..505G,robitaille_thomas_2017_1237692}.
+
+
+
+%% APPENDIX
+\appendix \renewcommand \thesection{\Alph{section}}
+
+\section{Prepare for Observation}
+
+Develop the directory structure:
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+mkdir -p $(HOME)/Observations/{PreAnalysis,PreReduce,usw,RawData/usw,Reduce/Analysis}
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\section{Handy CL scripts}
+
+\subsection{Trim files, knowing section.}
+
+{\color{verbcolor}
+\begin{verbatim}
+# trim the apo files in the file l.l
+print "Trim overscan regions from all APO artic camera files.  [1:1368,1:1364]"
+files *fits > l.l
+imcopy @l.l//[1:1368,1:1364] t_//@l.l
+\end{verbatim}
+}
+
+\subsection{Fake a script for crmedian}
+
+{\color{verbcolor}
+\begin{verbatim}
+! ls -1 *fts *fits *fit > l.l
+! echo "crmedian.unlearn" > crall.cl
+! echo "crmedian.sigma    = ''" >>crall.cl
+! echo "crmedian.residual = ''" >>crall.cl
+! echo "crmedian.crmask   = ''" >>crall.cl
+! echo "crmedian.median   = ''" >>crall.cl
+! cat l.l | sed  -e 's/\(^.*$\)/crmedian \1 c_\1/' >>crall.cl
+cl < crall.cl
+# cleanheaders
+\end{verbatim}
+}
+
+\subsection{Fix image types to KPNO vocabulary}
+
+{\color{verbcolor}
+\begin{verbatim}
+
+# the IMAGETYP is case sensitive in IRAF
+hselect *fits $I "(IMAGETYP ?= 'Bias')" > l.l
+cat l.l
+hedit @l.l IMAGETYP zero                                    add+ ver- show- update+
+
+hselect *fits $I "(IMAGETYP ?= 'Dark')" > l.l
+cat l.l
+hedit @l.l IMAGETYP dark                                    add+ ver- show- update+
+
+hselect *fits $I "(IMAGETYP ?= 'Flat')" > l.l
+cat l.l
+hedit @l.l IMAGETYP flat                                    add+ ver- show- update+
+
+hselect *fits $I "(IMAGETYP ?= 'Light')" > l.l
+cat l.l
+hedit @l.l IMAGETYP object                                  add+ ver- show- update+
+
+\end{verbatim}
+}
+
+\subsection{Change fit to fits, fix file names}
+
+Note: the \dhl{shopt -s nullglob} phrase prevents an error if a 
+basic bash wildcard fails to match something. For the \dhl{for}
+loop a failed match is simply an empty list and nothing happens.
+\index{bash!shopt}
+
+{\color{verbcolor}
+\begin{verbatim}
+!for f in *.fit; do if [[ "$f" =~ " " ]] ; then mv "$f" ${f// /_} ; fi ; done
+!(shopt -s nullglob; for f in *.*.*fit ; do mv  $f  ${f//./_}       ; done)
+!(shopt -s nullglob; for f in *-*fit   ; do mv  $f  ${f//-/_}       ; done)
+!(shopt -s nullglob; for f in *_fit    ; do mv  $f  ${f/%_fit/.fits}; done)
+!(shopt -s nullglob; for f in *.fit    ; do mv  $f  ${f//.fit/.fits}; done)
+\end{verbatim}
+}
+\subsection{Change fits to fits, fix file names}
+
+{\color{verbcolor}
+\begin{verbatim}
+!for f in *.fits; do if [[ "$f" =~ " " ]] ; then mv "$f" ${f// /_} ; fi  ; done
+!(shopt -s nullglob; for f in *.*.*fits ; do mv  $f  ${f//./_}        ; done)
+!(shopt -s nullglob; for f in *-*fits   ; do mv  $f  ${f//-/_}        ; done)
+!(shopt -s nullglob; for f in *_fits    ; do mv  $f  ${f/%_fits/.fits}; done)
+\end{verbatim}
+}
+
+\subsection{Change fts to fits, fix file names}
+
+{\color{verbcolor}
+\begin{verbatim}
+!for f in *.fts; do if [[ "$f" =~ " " ]] ; then mv "$f" ${f// /_} ; fi ; done
+!(shopt -s nullglob; for f in *.*.*fts ; do mv  $f  ${f//./_}       ; done)
+!(shopt -s nullglob; for f in *-*fts   ; do mv  $f  ${f//-/_}       ; done)
+!(shopt -s nullglob; for f in *_fts    ; do mv  $f  ${f/%_fts/.fits}; done)
+!(shopt -s nullglob; for f in *.fts    ; do mv  $f  ${f//.fts/.fits}; done)
+\end{verbatim}
+}
+\clearpage
+\subsection{Remove Pinpoint wcs, update the ra/dec and obsgeo fields}
+
+{\color{verbcolor}
+\begin{verbatim}
+# remove Pinpoint WCS  
+hedit CTYPE1,CRVAL1,CRPIX1,CDELT1,CROTA1,CTYPE2,CRVAL2,CRPIX2,CDELT2,CROTA2 del+ show- ver- update+ 
+hedit CD1_1,CD1_2,CD2_1,CD2_2                                               del+ show- ver- update+ 
+hedit TR1_0,TR1_1,TR1_2,TR1_3,TR1_4,TR1_5,TR1_6,TR1_7,TR1_8,TR1_9           del+ show- ver- update+ 
+hedit TR1_10,TR1_11,TR1_12,TR1_13,TR1_14                                    del+ show- ver- update+ 
+hedit TR2_0,TR2_1,TR2_2,TR2_3,TR2_4,TR2_5,TR2_6,TR2_7,TR2_8,TR2_9           del+ show- ver- update+ 
+hedit TR2_10,TR2_11,TR2_12,TR2_13,TR2_14                                    del+ show- ver- update+ 
+
+# Use a line like this grab one set of RA/DEC values (one per target)
+# as the ra/decs are different.
+# hselect f_z_c*fits RA,DEC "(IMAGETYP ?= 'Light')"  > l.l
+# grab just the top filename (only need one)
+!head -1 l.l > tmp
+cat tmp
+
+# cut and paste an inline bit of python into the PyRAF session
+# to do the trick.
+(rawra,rawdec) = map(str.strip,open('tmp').read().split('\n'))[0].replace('"','').split('\t')
+ra    = map(float,rawra.split())
+dec   = map(float,rawdec.split())
+ra    = ra[0] + ra[1]/60.0 + ra[2]/3600.0
+if(dec[0] < 0):
+   dec = dec[0] - dec[1]/60.0 - dec[2]/3600.0
+else:
+   dec = dec[0] + dec[1]/60.0 + dec[2]/3600.0
+#asolvehint="-3 %9.5f -4 %9.5f -5 0.5 --batch $(cat l.l)" % (ra,dec)
+asolvehint="-3 %9.5f -4 %9.5f -5 0.5 )" % (ra,dec)
+
+# fake up a command
+with open('asolvecmd','w') as f:
+   print >>f,"(export asolvehint='%s'; asolve)" % asolvehint
+
+# now we can run ~/bin/asolve script with the hint in place
+hselect f_z_c*fits $I yes > l.l
+cat l.l
+! bash < 'asolvecmd' 
+
+# hard way, thanks vendors!
+hselect *fits sitelat,sitelong,$I "(SITELAT != '')" 
+lattuple = map(float,iraf.hselect(Stdout=1,images='a.fits',
+     fields='sitelat',expr=iraf.yes)[0].replace('"','').split())
+if(lattuple[0] < 0.0):
+   newlat = lattuple[0] - lattuple[1]/60.0 - lattuple[2]/3600.0
+else:
+   newlat = lattuple[0] + lattuple[1]/60.0 + lattuple[2]/3600.0
+
+iraf.hedit(images='@l.l',fields='OBSGEO-B',value=newlat,
+    addonly=iraf.yes,
+    verify=iraf.no,
+    show=iraf.no,
+    update=iraf.yes)
+
+longtuple = map(float,iraf.hselect(Stdout=1,images='a.fits',
+   fields='sitelong',expr=iraf.yes)[0].replace('"','').split())
+
+if(longtuple[0] < 0.0):
+   newlong = longtuple[0] - longtuple[1]/60.0 - longtuple[2]/3600.0
+else:
+   newlong = longtuple[0] + longtuple[1]/60.0 + longtuple[2]/3600.0
+
+iraf.hedit(images='@l.l',fields='OBSGEO-L',value=newlong,
+    addonly=iraf.yes,
+    verify=iraf.no,
+    show=iraf.no,
+    update=iraf.yes)
+# fix altitude
+hedit   *fits OBSGEO-H 366                                  add+ ver- show- update+
+hselect @l.l  OBSGEO-B,OBSGEO-L,OBSGEO-H,$I yes
+\end{verbatim}
+}
+
+\section{Zwo camera data from FireCapture has bad headers}
+{\color{verbcolor}
+\begin{verbatim}
+# zwofix.cl - given a file called l.l with all the filenames
+# to modify, change the EXPTIME from a string to a float.
+
+!cat l.l | awk -e '/./ {printf("hedit %s EXPTIME del+ ver- show- update+\nhedit %s EXPTIME %s add+ ver- show- update+\n", $1, $1, $2);}' > ./tmp.cl
+cl < ./tmp.cl
+!rm ./tmp.cl
+\end{verbatim}
+}
+
+\input{Commandline.tex}
+
+\input{FITSFiles.tex}
+
+\input{Spectroscopy.tex}
+
+%\input{SPLOTQuestions.tex}
+
+\input{ApallLPARS.tex}
+
+\input{IdentifyLPARS.tex}
+
+\input{Coordinates.tex}
+
+\input{Tasks.tex}
+
+\input{ds9.tex}
+
+\input{Statistics.tex}
+
+\input{ReducePyraf.tex}
+
+
+\section{Complex Example}  \label{sec:complexexample}
+
+\ltodo{Bolt in example}{Add the complex example here.}
+
+\input{imexamine.tex}
+
+\input{apall.tex}
+
+\input{identify.tex}
+
+%\input{dispcor.tex}
+
+\input{includes/kzin.tex}
+
+\input{FeatherNest.tex}
+
+\input{PythonGUI.tex}
+
+\input{LoginScripts.tex}
+
+\input{TOPCAT.tex}
+
+\input{IrafOverview.tex}
+
+
+\section*{TODO: Roundup these things}
+
+Get the "?" commands into include files, wrap with prose.
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+  IRAF/PyRAF                     Generic Python
+ ---------------     -------------------------------------
+    ~/.iraf.aliases
+    login.cl
+    loginuser.cl
+    pyraflogin.py
+
+    hedit            findtrace      specobserve    imarith
+    hselect          fixheader      fakedispersion hedit  
+    imhead           fixgain                              
+    imarith          fitserial                        
+    imexamine        trim                                 
+    imsurfit         airmass                              
+    zerocombine      iraffind                             
+    darkcombine      hlp2pdf                              
+    flatcombine
+    apall
+    identify
+    response
+    sensfunc
+    splot
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\subsection{Tricks}
+
+\ltodo{bash tricks}{add the bash tricks}
+
+An example of things to import into a fresh PyRAF section.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+import sys
+import os
+import io
+import datetime
+import numpy as np
+from astropy.io import fits
+from pyraf      import iraf                 # make sure
+
+home = iraf.envget('HOME')                  # demo using 
+sys.path.append(home+'/iraf')               # mixed mode iraf/python
+
+addpaths           = ':' + os.getenv('HOME')+'/anaconda3/envs/iraf27/bin/python' 
+os.environ['PATH'] = os.environ['PATH'] + addpaths
+sys.path           = [os.getenv('HOME')+'/anaconda3/envs/iraf27/bin/python']+sys.path
+
+from pyraflogin3 import *                   # my hacked up functions etc.
+from pyraf.gki import printPlot             # printPlot() 'print' bug.
+
+print("$HOME/iraf/pyrafstartup.py complete.")
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\section{Perspective}
+
+IRAF/PyRAF is a current snapshot of code that began in 1986
+\cite{1986SPIE..627..733T}, development was halted sometime around
+2013-2016 and resumed and extended by The IRAF Commuinity at the
+present time. Popular with the professional astronomy community of the
+tim, it continues the tradition of Unix based analysis tools. Unix
+heavly influenced the structure of the IRAF CL/ECL commands, and did
+an elegant re-factoring of Python 2.x for progress beyond ECL.  For
+those comfortable in a Unix command-line environment and used to
+writing their own scripts will feel at home. Interesting retrospective
+may be found in \cite{FITSBirthday}.
+
+It is important to remember GUI menu structures live in your
+brain as a byzantine structure that is no more complex than
+remembering how to knit together scripts within scripts to
+perform specific tasks. The GUI environment offers little in
+a way to fine tune processing to meet specific aspects of
+astronomical images.
+
+if you expect to pour data into the top of a black box and have
+a published result drop out the bottom -- IRAF is not for you.
+
+Once a script is developed for a particular instrument, it can be
+easily copied slightly altered to meet the needs of a night's
+observations and provides a complete audit trail of processing for the
+dataset.
+
+In short -- you are better off using an open process based on open
+source code that you manipulate to meet a site's and night's needs
+than using a black box.  It's your reputation that rides on the line.
+
+This document presents many nominal albeit very twisted ways to use
+IRAF/PyRAF/\dhl{.ecl}\footnote{Extended command language (ecl)
+  superseded command language (cl); cl is often linked back to ecl
+  anyway.} together with your own bash, cl, Astropy and
+straight python code to meet your reduction and analysis needs.
+Scripts here also make use of the \dhl{!bash excape},
+and custom \dhl{.pyraf} files.
+
+While Python scripts may be written to be consistent between 2.7.x and 3.x
+with the introduction of Pyraf3, it is best to leave the old world
+behind and convert your handful of Python2.7 scripts to Python 3.x.
+
+There are times when we want to get something done with more power,
+and that requires bouncing out to a separate shell.
+
+This document utilizes the Anaconda release of Python. If you roll your own,
+you are on your own. 
+
+This project takes a ``tight view'' of the overall system layout. The
+\dhl{!} character within PyRAF is an escape -- it presents the 
+``rest of the line'' to the bash shell. 
+
+PyRAF is based on the IRAF \dhl{ecl} command processor. PyRAF is a
+hack of the GNU/Python readline that allows a rather suprising and
+blended match to ecl's base command structure.
+
+Here I use tricks to make a \dhl{.cl} file, say foo.cl, then use a line
+like \dhl{cl < foo.cl} to do my bidding. This is a recursive use of cl!
+
+For the machine used to take the data, we use the expedency of
+creating a "Desktop" directory called \dhl{Today}. All the camera and
+other software may be configured to use this location. At the end of
+the night this is renamed to be the local date of sunset at the
+observatory and stored.
+
+Backup. Yup. Your best friend is storing your data to the cloud.
+
+Simply move (\dhl{mv}) ``Today'' to the proper Observations repository
+under a RawData directory and rename to the directory to be the
+observatory site and date of sunset of the site. See \ref{figure:dirlayout}.
+
+Now, backup that up somewhere else.
+
+And Backup once again, preferably to someone else's machine.
+
+Are you sick of backuping? You will be physically ill when you wished
+had actually done it. I have a shot foot or two to prove it.
+
+
+
+%% APPENDIXEND
+%% use a bibitem approach to the references publications etc.
+%% (wg-bibitem)
+
+\section{Glossary}
+
+\printglossaries
+
+\clearpage
+%%\addcontentsline{toc}{section}{References}
+\renewcommand*{\refname}{Bibliography and References}
+\bibliographystyle{aasjournal}	% bibliographystyle{apalike} and \usepackage{natbib}
+\bibliography{BonMots}	% expects file "MasterBib.bib"
+
+
+%%\clearpage
+
+%%\begin{thebibliography}{80}
+%%\usepackage{natbib}   %% bibitems
+%%\end{thebibliography}
+
+
+%% (wg-texdoc-endnotes)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Support for endnotes
+\begingroup
+\renewcommand{\notesname}{\textcolor{red} {Action Items:}}
+\parindent 0pt
+\parskip 2ex
+\phantomsection
+\addcontentsline{toc}{section}{	extcolor{red} {Action Items:}}
+\def\enotesize{\normalsize}
+\theendnotes
+\endgroup
+\section*{~}  \label{sec:index}
+\addcontentsline{toc}{section}{Index}
+%\printindex
+\input{BonMots.ind}
+
+\end{document}
+%% 
+%% % stuff hidden from view.
+%% \input{extras.tex}
+%% /home/wayne/play/sasiraf/doc/BonMots
+%% 

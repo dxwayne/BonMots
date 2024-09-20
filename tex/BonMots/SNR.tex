@@ -1,0 +1,62 @@
+\section{Spectral SNR} \label{sec:Spectral SNR}
+\ltodo{SNR}{Beef this up a lot}
+\begin{quote}
+
+
+Hello,In order to compute the SNR for a pixel in a 1D spectrum you
+need an estimate of the uncertainty in the measured flux. 
+
+This can be hard, particularly if the spectrum has been dispersion and
+flux calibrated. There are two typical ways to estimate this.
+
+One is for data taken on a 2D detector with known noise
+characteristics. For example CCDs characterized by a readout noise and
+a gain. This is a challenge because most 2D calibration operations
+(dark subtraction, flat fielding, etc) modify the noise
+characteristics and the uncertainties are not propagated by the
+software (such as CCDPROC). So what is done in this case is estimate
+an uncertainty using a noise model during the extraction of a 1D
+spectrum from the 2D format. This is what APEXTRACT does in the "sigma
+band". This is a spectrum recorded with the extracted spectrum based
+on assuming a simple readout noise and gain with Poisson statistics is
+correct for the each 2D pixel and then propagating this during the 2D
+extraction. In summary, the uncertainty is estimated from the 2D
+statistics and all pixels that contribute to the 1D spectrum value.The
+second method is to estimate the uncertainty from the statistics of
+the 1D pixels around the region of each pixel. 
+
+The problem here is that this only makes sense with continuum regions
+since lines should not contribute to the standard deviation of
+pixels. In this case, which is conceptually easier and more
+independent of modeling and previous calibration operations, usually
+the best you can do is a typical noise value for all pixels and the
+SNR is then the ratio of the measured spectrum divided by this noise
+value at all wavelengths.
+
+The latter is what is done with SPLOT and the 'm' key. The former
+depends on using APEXTRACT as briefly mentioned in previous
+postings. This discussion only gives you ideas for how to possibly
+determine the SNR. To make a SNR spectrum there are a number of ways,
+though these require several steps and possible some scripting to
+automate. The tasks that might prove useful are CONTINUUM SARITH or
+IMEXPR MIMSTAT.
+
+The goal here is to determine either a single value or spectrum for
+the standard deviation with lines and any continuum slopes
+removed. Once your have that you use SARITH to compute the SNR
+spectrum.I realize this is a recipe but hopefully you can devise an
+image processing recipe or script appropriate for your data and
+needs.
+
+Yours, Frank Valdes 
+
+An error band is an associated spectrum produced by the APEXTRACT
+package tasks when extracting a 1D spectrum from a 2D format. It is
+obtained when the parameter "extras" is "yes" and variance "weighting"
+or "cleaning" is used. The spectrum is stored in a "multispec" format
+which is a 3D image where the lines in the first "band" [*,*,1] are
+the 1D spectra and the associated data is in the higher dimensional
+bands. One of these would be the sigma spectra.
+
+Frank Valdes \url{https://iraf.net/forum/viewtopic.php?showtopic=136062}
+\end{quote}

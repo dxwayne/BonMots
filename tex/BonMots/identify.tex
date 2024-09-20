@@ -1,0 +1,25 @@
+\section{IRAF identify task}
+
+Identify, well described by its help file, has few tricks of use for spectroscopy.
+
+The main trick is to trim all the spectra for a camera to tight blue and red extents.
+This helps to avoid a sub-issue of polynomial fitting -- x values that carry no
+information. 
+
+\ltodo{identify}{Fill in more tricks.}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+With Identify - use lables to denote the lines.
+do a snap
+screencapture the image
+gimp make the bg transparent, and the colors agree with seeing the lines.
+Then add this as launcher:
+
+
+/usr/bin/pqiv -c  /home/wayne/Pictures/TonyCalsAlphaWhite.png
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

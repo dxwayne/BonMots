@@ -1,0 +1,38 @@
+\section{IRAF Response Task}
+
+The twodspec.longslit.response task \index{IRAF!response task} takes a flat
+image and helps to normalize a raw 2D spectrum to be flat across the trace.
+
+
+
+\subsection{Fitting and Analysis}
+
+The choice of function (spline1,spline3, legendre, chebyshev) and order has
+a material impact on flat corrections. During the interactive phase,
+the ``graphics key'' can be changed.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+{\color{deered}
+\begin{verbatim} 
+g	Redefine graph keys.  Any of the following data types may be along
+	either axis.
+	    x  Independent variable	y  Dependent variable
+	    f  Fitted value		r  Residual (y - f)
+	    d  Ratio (y / f)		n  Nonlinear part of y
+
+h-l	Graph keys.  Defaults are h=(x,y), i=(y,x), j=(x,r), k=(x,d), l=(x,n)
+\end{verbatim}
+}
+\endgroup
+%% \end{Verbatim}
+
+The graphic keys (h,i,j,k,l) can be \dhl{repurposed} with the following
+few keystrokes:
+
+\llbox{g}  \llbox{i} \llbox{x} \llbox{,} \llbox{f} \\llbox{CR}
+
+will now render the graph to show fitted value by x.
+
+

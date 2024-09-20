@@ -1,0 +1,96 @@
+\section{Writing your own tasks}
+
+Tasks live in a package, they have their own parameter file.
+
+
+\subsection{Using Python}
+
+
+\goal Sometimes it is convient to roll your own task. Here are the steps
+to write the task in Python, and include it as a new cl task. When
+developing an official task, it is handy to generate the initial
+states for the task specific variables. To do this we will develop
+a task that given the package name and the task name generate the
+variable list in 'cl' format:
+
+\example gencl twodspec apall
+\vspace{-.15cm}
+{\color{red}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+output:
+    twodspec.apall.input                     = 'NeonArgon_Light_001.fits'
+    twodspec.apall.output                    = ''
+    twodspec.apall.apertures                 = '1'
+    twodspec.apall.format                    = 'multispec'
+    twodspec.apall.references                = ''
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+\prose Hey, auto-write the cl file contents to set the variables
+for a package.task.
+
+\exercise The code:
+\vspace{-.25cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   create a .par file in the home\$uparm directory
+   \item   create the python def for the code
+   \item   tie the function into the readline command processor using iraf.IrafTaskFactory()
+  method
+   \item   test with \dhl{epar gencl}
+\end{enumerate}
+
+\takeaway Adding this code the pyraflogin.py script in ~/.iraf we now have a
+new way to generate the cl code.
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+
+gencl_fname = iraf.osfn("uparm$gencl.par")  # the param file
+# generate the gencl par file if not one alread. Viva Sticky!
+# show home   /home/wayne/.iraf/
+# show uparm  home$uparm/
+if(not os.path.islink(gencl_fname)):        # force the parm file if first time
+    with open(gencl_fname,'w') as f:
+        print("""pkg,s,a,'imstat',,,'package name'
+task,s,a,'',,,,'iraf task to generate'
+mode,s,h,'al'
+""",file=f)
+
+##############################################################################
+# gencl - For a package's task -- generate the cl to initialize that package.
+# This should be done when the task has been fully explored in interactive
+# mode to guarantee the values match the instrument and its data.
+##############################################################################
+def gencl(pkg,task):
+    """Generate a sequence of cl assignments based on current lpars for the package's
+    task.
+    e.g.: gencl iraf.twodspec apall
+    """
+    prefix = pkg + '.' + task + '.'
+    m     = globals()['iraf']
+    ifunc = getattr(m,task)
+    d     = {}
+    for p in ifunc.getParList():
+        n = p.name
+        v = p.__dict__['value']
+        if(type('str') is type(v)):
+            v = f"'{v}'"
+        if(type(v) is type(iraf.yes)):
+            v = f'iraf.{v}'                     # yes or no
+        print(f"{prefix+n:40s} = {v}")
+
+# gencl
+_=iraf.IrafTaskFactory(prefix='',taskname='gencl', suffix='', pkgbinary=None,
+       value=gencl_fname, function=gencl)
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

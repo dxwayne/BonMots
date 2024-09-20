@@ -1,0 +1,93 @@
+\section{Unix User Tidbits}
+
+\ltodo{Networking}{Beef this up a lot!}
+
+This section discusses basic Unix use commands and some exoteric aspects
+of the Unix file system.
+
+\subsection{Environment Variables}
+
+Both bash and IRAF/PyRAF use environment variables, though the syntax varies
+between bash and IRAF. \index{Unix!environment variables}
+
+set
+export
+
+IRAF environment variables follow a convention of the text first and
+the dollar sign at the end.
+
+show
+
+\index{IRAF/PyRAF!environment variables}
+
+
+\subsection{Basic Commands} \lable{sec:BasicUnixCommands}
+
+ls
+cat
+less
+ps
+grep
+sed
+awk
+tr
+
+
+\subsection{Basic Shell Programming} \label{sec:BasicShellProgramming}
+
+tesing
+   if [ ... ] and [[ ... ]]
+do done
+for ... in; 
+printf
+exit
+case ...
+
+
+
+
+
+
+\subsection{Networking}  \label{sec:UnixUserNetworking}
+
+In Ye Olden Days, the \dhl{ifconfig} command was the go to tool to
+query information and perform some control over networks. This
+was replaced by the \dhl{ip} command as complexity of networking
+grew.
+
+The new \dhl{ip} command vs the old \dhl{ifconfig} is listed below.
+The \dhl{ss} \index{network!ss sockets} command investigates the mind
+numbing details about sockets.
+
+The programs: arp, ifconfig, netstat and route are in the \dhl{apt install net-tools}
+package.
+
+\begin{table}[h!]
+\centering
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+\begin{tabular}{| l | l |}
+\hline
+ifconfig command & New ip command   \\
+\hline
+arp -a                              & ip neigh    \\ 
+arp -v                              & ip -s neigh    \\ 
+arp -s 192.168.1.1 1:2:3:4:5:6      & ip neigh add 192.168.1.1 lladdr 1:2:3:4:5:6 dev eth1    \\ 
+arp -i eth1 -d 192.168.1.1          & ip neigh del 192.168.1.1 dev eth1    \\ 
+ifconfig -a                         & ip addr    \\ 
+ifconfig eth0 down                  & ip link set eth0 down    \\ 
+ifconfig eth0 up                    & ip link set eth0 up    \\ 
+ifconfig eth0 192.168.1.1           & ip addr add 192.168.1.1/24 dev eth0    \\ 
+ifconfig eth0 netmask 255.255.255.0 & ip addr add 192.168.1.1/24 dev eth0    \\ 
+ifconfig eth0 mtu 9000 i            & ip link set eth0 mtu 9000    \\ 
+ifconfig eth0:0 192.168.1.2         & ip addr add 192.168.1.2/24 dev eth0    \\ 
+netstat                             & ss    \\ 
+netstat -neopa                      & ss -neopa    \\ 
+netstat -g                          & ip maddr    \\ 
+route                               & ip route    \\ 
+\hline
+\end{tabular}
+\endgroup
+\caption[Net-tools vs IProute2]{A ifconfig vs ip command quick summary.}
+\label{table:ifconfigvsipcommand}
+\end{table}

@@ -1,0 +1,96 @@
+\clearpage
+\section{IRAF Statistics}
+\index{statistics}
+
+The basic approach to statistics with IRAF is a bit different from what you
+will see in textbooks. Most textbooks in statistics refer to farm animals,
+crops etc. Here we are dealing with a mix of photon arrival statistics
+(Poisson) together with things that 
+
+
+\subsection{Gaussian Distribution}
+
+Also called the ``normal distribution''. \index{Gaussian distribution}
+
+
+\begin{subequations}
+\begin{align}
+f(x) &= \frac{1}{\sqrt{2\pi\sigma^2} } e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+\end{align}
+\end{subequations}
+
+where:  $\mu$ is the mean, and $\sigma$ is the variance. The distribution is
+``normalized'' by subtracting from each observation the true mean, or the expected
+value.
+
+\clearpage
+In general the terms used are:
+
+\begin{subequations}
+\begin{align}
+    \textrm{mean} &= \bar{x} \;=\; \frac{1}{N}\sum_{1}^{N} x_{i} \\
+\textrm{with:~ ~ ~}  y = x - \bar{x} \notag \\
+\textrm{variance} &= \frac{1}{(N-1)}\;\sum_{1}^{N} y_{i}^{2} \\
+  \textrm{stddev} &= \sqrt{\textrm{variance}} \\
+    \textrm{skew} &= \frac{1}{(N-1)}\;\sum_{1}^{N} \frac{y_{i}}{\sigma}^{3} \\
+\textrm{kurtosis} &= \left(  \frac{1}{(N-1)}\;\sum_{1}^{N} \frac{y_{i}}{\sigma}^{4} \right) -3
+\end{align}
+\end{subequations}
+
+The ``mode'' \cite{wiki-stetson} is the most frequent value in a
+dataset. This is hard to determine when high-precision floating point
+numbers are used. A little algebra on Pearson's use gives the form
+promoted by Stetson and the one that appears in IRAF.
+
+\begin{subequations}
+\begin{align}
+mode &= 3\times(median) - 2\times (mean),
+\end{align}
+\end{subequations}
+
+In IRAF and as promoted by Peter Stetson the values are not 'precise'.
+One gets  used to these things.
+
+The "median" is the "middle value" of a sorted set. If the count of
+items in the set are odd this results in a clear winner. If the count
+is even, the dividing point falls between two value -- the
+\dhl{WARNING} average is returned.
+
+
+\index{statistics!mean}\index{statistics!skew}\index{statistics!stddev}
+\index{statistics!variance}\index{statistics!kurtosis}
+
+There are cases where the statistics are more important, and a task will
+use a more customized approach.
+
+\textbf{\emph{Help:}} imstatistics
+
+\subsection{Mode}
+
+Mode is the most frequent value. What does that mean with discrete
+noisy floating point numbers? The common way, in counting statistics,
+is to bin find the bin with the most counts. It is often the case with
+sensors where the distribution is NOT
+Unimodal\index{statistics!unimodal} but the superposition of two
+distributions. This can be seen with basic histograms where the shape
+is not symmetric.
+
+Stetson, in some places, uses Pearson's trick to computes the mode.
+For unimodal distributions, $(2\bar(x) - \rm{mode})/3$. 
+
+When Iraf wants a better estimate, it fits a 2nd order polynomial to
+the data, determines the peak and reports that value.
+
+
+\subsection{SNR Statistics T.B.D.}
+
+T.B.D.
+
+\subsubsection{Photometry Statistics T.B.D.}
+T.B.D.
+
+\subsubsection{Spectroscopy Statistics T.B.D.}
+T.B.D.
+
+
+

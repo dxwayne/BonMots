@@ -1,0 +1,38 @@
+vardef turtle@# expr pr = 
+    if known @#: 
+        @# := @# -- point infinity of @# shifted pr
+    else:
+        @# := pr
+    fi
+enddef;
+
+beginfig(1)
+  vardef draw_I_shape (expr base, depth, width, tf ,tw) =
+    save p;
+    path p;
+    turtle.p base ;
+    turtle.p (width, 0);
+    turtle.p (0, tf);
+    turtle.p -(1/2(width-tw), 0);
+    turtle.p (0, depth - 2 * tf);
+    turtle.p ((width - tw) / 2, 0);
+    turtle.p (0, tf);
+    turtle.p -(width, 0);
+    turtle.p -(0, tf);
+    turtle.p ((width - tw) / 2, 0);
+    turtle.p -(0, depth - 2 * tf);
+    turtle.p -((width - tw) / 2, 0);
+    p := p--cycle;
+    draw p;
+    p
+  enddef;
+
+  u = 0.1mm;
+  path P;
+  P = draw_I_shape (origin, 248u, 124u, 8u, 5u);
+
+  draw origin -- point 6 of P withcolor red;
+  draw P scaled 1/2 rotated -20 shifted (42, 32) withcolor blue;
+
+endfig;
+end

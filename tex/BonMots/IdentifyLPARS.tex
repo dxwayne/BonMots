@@ -1,0 +1,66 @@
+\section{Identify}
+
+Some import aspects for small telescope science relates
+to the camera's pixel size. Measure and change here as needed.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+        crval = ""              Approximate coordinate (at reference pixel)
+        cdelt = ""              Approximate dispersion
+        (nsum = "10")           Number of lines/columns/bands to sum in 2D images
+       (match = 10.0)           Coordinate list matching limit
+ (maxfeatures = 50)             Maximum number of features for automatic identification
+      (zwidth = 100.0)          Zoom graph width in user units
+       (ftype = "emission")     Feature type
+      (fwidth = 9.0)            Feature width in pixels
+     (cradius = 19.0)           Centering radius in pixels
+   (threshold = 10.0)           Feature threshold for centering
+      (minsep = 10.0)           Minimum pixel separation
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Usually a night will have the same approximage \dhl{crval} and
+\dhl{crpix} values.  After the first solution, these may be entered
+for second/subsequent solutions.
+
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+lpar identify
+       images = "comp.0001.fits" Images containing features to be identified
+        crval = ""              Approximate coordinate (at reference pixel)
+        cdelt = ""              Approximate dispersion
+     (section = "middle line")  Section to apply to two dimensional images
+    (database = "database")     Database in which to record feature data
+   (coordlist = "near.dat")     User coordinate list
+       (units = "angstroms")    Coordinate units
+        (nsum = "10")           Number of lines/columns/bands to sum in 2D images
+       (match = 10.0)           Coordinate list matching limit
+ (maxfeatures = 50)             Maximum number of features for automatic identification
+      (zwidth = 100.0)          Zoom graph width in user units
+       (ftype = "emission")     Feature type
+      (fwidth = 9.0)            Feature width in pixels
+     (cradius = 19.0)           Centering radius in pixels
+   (threshold = 10.0)           Feature threshold for centering
+      (minsep = 10.0)           Minimum pixel separation
+    (function = "chebyshev")    Coordinate function
+       (order = 5)              Order of coordinate function
+      (sample = "*")            Coordinate sample regions
+    (niterate = 1)              Rejection iterations
+  (low_reject = 3.0)            Lower rejection sigma
+ (high_reject = 3.0)            Upper rejection sigma
+        (grow = 0.0)            Rejection growing radius
+   (autowrite = no)             Automatically write to database
+    (graphics = "stdgraph")     Graphics output device
+      (cursor = "")             Graphics cursor input
+     (aidpars = "")             Automatic identification algorithm parameters
+        (mode = "al")           
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

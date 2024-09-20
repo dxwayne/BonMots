@@ -1,0 +1,9 @@
+\section{XQuartz}
+
+XQuartz provides X-Server capability to Mac computers.
+
+For example, on Mac hosts running XQuartz, open the XQuartz
+Preferences menu, and in the Security tab check the "Allow connections
+from network clients" box. Then, quit XQuartz and restart it. From a
+new X terminal run these commands to start up the container with an X
+connection:

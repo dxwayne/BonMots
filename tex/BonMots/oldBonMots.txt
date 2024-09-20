@@ -1,0 +1,48 @@
+
+{\color{verbcolor}
+\begingroup \fontsize{8pt}{8pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+mkdir -p ../PreAnalysis
+cd ../PreAnalysis
+# start a logfile the single redirect kills the file.
+!(echo Analysis `jpldatetime` |  > logfile)
+cl < ~/iraf/fit2fits.cl
+cl < ~/iraf/remove_cosmic_rays.cl
+cl < ~/iraf/fixheaders.cl
+
+# make a note of the time we started this
+!(echo Analysis `jpldatetime` |  >> logfile)
+# make a master zero
+hselect *fits $I "(IMAGETYP ?= 'bias')" > l.l
+!rm zmaster.fits
+imcombine @l.l zmaster.fits combine=median
+
+hselect c_*fits $I "(IMAGETYP ?= 'object')" > l.l
+imarith @l.l - zmaster.fits z_//@l.l
+
+# e.g.: for 600 second darks make a d_600_dmaster.fits master dark
+hselect z_c_*fits $I "(IMAGETYP ?= 'dark') && EXPTIME=600" > l.l
+!rm d_600_master.fits
+imcombine @l.l dmaster.fits combine=median
+
+# for SII filers make a master sky flat a,b,c,d describe the  location for the statistics section
+# This combines PyRAF and cl by calling: iraf.imstat to get a working mode
+# and iraf.imarith to do the image normalization
+hselect z_c_*fits $I "(IMAGETYP ?= 'flat') && FILTER ?= 'SII'" > l.l
+!rm f_SII_SKYFLAT.fits
+imcombine @l.l f_SII_SKYFLAT.fits combine=median scale=mode statsec='[a:b,c:d]'
+ourmode=int(iraf.imstat('f_SII_SKYFLAT.fits[a:b,c:d]',Stdout=1,fields='mode',format=no)[0])
+iraf.imarith(operand1='f_SII_SKYFLAT.fits',op='/',operand2=ourmode,result='n_SII_flat.fits')
+
+# dome flats.. don't scale lamps should be constant.
+hselect z_c_*fits $I "(IMAGETYP ?= 'flat') && FILTER ?= 'SII'" > l.l
+!rm f_SII_SKYFLAT.fits
+imcombine @l.l f_SII_SKYFLAT.fits combine=median statsec='[a:b,c:d]'
+ourmode=int(iraf.imstat('f_SII_SKYFLAT.fits[a:b,c:d]',Stdout=1,fields='mode',format=no)[0])
+iraf.imarith(operand1='f_SII_SKYFLAT.fits',op='/',operand2=ourmode,result='n_SII_flat.fits')
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}

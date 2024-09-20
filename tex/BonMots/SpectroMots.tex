@@ -1,0 +1,519 @@
+\documentclass[letter,11pt,oneside]{article}
+% /home/wayne/play/sasiraf/doc/BonMots/BonMots.tex
+%%% HEREHEREHERE
+% Fancyhdr... http://tug.ctan.org/tex-archive/macros/latex/contrib/fancyhdr/fancyhdr.pdf
+%% APPENDIXes
+
+
+
+%% APPENDIXEND
+% git/ASTR3510_2019/doc/BonMots.tex
+%%% (occur "[ ]*\\(\\\\input\\|\\<include\\\\>\\)")
+% dependencies
+%%\input{Spectroscopy.tex}
+%% %\input{SPLOTQuestions.tex}
+%% \input{ApallLPARS.tex}
+%% \input{IdentifyLPARS.tex}
+%% \input{ds9.tex}
+%% \input{Statistics.tex}
+%% \input{imexamine.tex}
+%% \input{includes/kzin.tex}
+%% \input{Glossary.tex}
+%% \input{extras.tex}
+
+%%\documentclass[11pt,twocolumn]{article}
+%%\usepackage[inline]{asymptote}   %% Inline asymptote diagrams
+%%\usepackage{wglatex}             %% Use this one and kill others.
+\usepackage{color}                %% colored letters {\color{red}{{text}}
+\usepackage[paperheight=7.31in,paperwidth=9.5in,
+  footskip=.05in,margin=.75in,
+  includehead,includefoot,heightrounded
+]{geometry}
+
+\usepackage{fancyhdr}              %% headers/footers
+\usepackage{fancybox}              %% headers/footers
+\usepackage{dirtree}
+%%\usepackage{fancyvrb}            %% headers/footers
+\usepackage{datetime}              %% pick up tex date time
+\usepackage{lastpage}              %% support page of ...lastpage
+\usepackage{times}                 %% native times roman fonts
+\usepackage{textcomp}              %% trademark
+\usepackage{amssymb,amsmath}       %% greek alphabet
+\usepackage{parskip}               %% blank lines between paragraphs, no indent
+\usepackage{shortvrb}              %% short verb use for tables
+\usepackage{lscape}                %% landscape for tables.
+\usepackage{longtable}             %% permit tables to span pages wg-longtable
+\usepackage{url}                   %% Make URLs uniform and links in PDFs
+%%\usepackage{enumerate}           %% Allow letters/decorations for enumerations
+\usepackage{enumitem}              %% Allow letters/decorations for enumerations
+\usepackage{endnotes}              %% Enhance footnotes/endnotes
+\usepackage{listings}              %% Make URLs uniform and links in PDFs
+\pdfadjustspacing=1                %% force LaTeX-like character spacing
+%%\usepackage{geometry}            %% allow margins to be relaxed
+%%\usepackage{wrapfig}             %% permit wrapping figures.
+%%\usepackage{subfigure}           %% images side by side.
+%%\geometry{margin=1in}            %% Allow narrower margins etc.
+\usepackage[T1]{fontenc}           %% Better Verbatim Font.
+\renewcommand*\ttdefault{txtt}     %%
+\usepackage{natbib}   %% bibitems
+
+%% include background image (wg-document-page-background)
+
+\usepackage{graphicx}            %% Include pictures into a document
+%% (wg-texdoc-inserttikz)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PAGE SIZE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+
+\fancyhf{}
+%\cfoot{{\tiny Page \thepage \hspace{1pt}}}
+
+
+
+
+
+\def\documentisdraft{NOTDRAFT}
+
+%% (wg-texdoc-isdraft)
+
+
+\def\drafttest{DRAFT}
+\def\wgdocdate{06 Oct, 2018}
+\def\wgdocdatetime{\wgdocdate at \currenttime}
+\ifx\documentisdraft\drafttest
+\usepackage[left]{lineno}   %%%%%%%%%%%%% DRAFT
+\usepackage{draftwatermark}
+%%\SetWatermarkScale{5.0}
+%%\SetWatermarkColor[gray]{0.3}
+\fi
+
+%% (wg-texdoc-insert-fancy-headers)
+
+\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
+\usepackage{makeidx}             %% Make an index uncomment following line
+\makeindex                       %%.. yeah this one, too. index{key} in text
+%%
+
+
+\newcommand{\crreturn}{\raisebox{1.2pt}{\setlength{\fboxsep}{2pt}\ensuremath{\hookleftarrow}}}
+%\newcommand{\llbox}[1]{\color{verbcolor}{\Ovalbox{#1}}}
+
+\newcommand{\home}{\raisebox{.5pt}{\char`~}}
+
+
+\makeatletter
+\newcommand\llbox[1]{%
+  \@tfor\@ii:=#1\do{%
+    {\color{verbcolor}\Ovalbox{\strut\@ii}}%
+  }%
+}
+\makeatother
+
+\definecolor{verbcolor}{rgb}{0.6,0,0}
+\definecolor{darkred}{rgb}{0.6,0,0}
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\newcommand\debate[1]{\textcolor{darkgreen}{DEBATE: #1} \marginpar{\textcolor{red}{DEBATE} }}
+\newcommand{\dhl}[1]{{\color{verbcolor}{\texttt#1}}}
+\newcommand{\dhlv}[1]{{\color{verbcolor}{#1}}}
+\newcommand{\ltodo}[2]{\marginpar{\textcolor{red}{ACTION: #1}\endnote{#2}}}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
+\newcommand{\menu}{\ensuremath{\;\rightarrow\;}}
+
+%https://tex.stackexchange.com/questions/472/how-can-i-have-two-or-more-distinct-indexes
+% make index for examples, etc.
+\newcounter{teachcounter}
+\newcommand{\goal}{%
+  \stepcounter{teachcounter}%
+  \textbf{\emph{Goal \theteachcounter:}~}}
+
+\newcommand{\exercise}[1][] {\textbf{\emph{Exercise \theteachcounter #1:}~ }}
+\newcommand{\example}  {\textbf{\emph{Example \theteachcounter :}~ }}
+\newcommand{\prose}    {\textbf{\emph{Prose \theteachcounter :}~ }}
+\newcommand{\takeaway} {\textbf{\emph{Take Away \theteachcounter :}~ }}
+
+%%(wg-add-inline-images)  %% add inline images to the mix
+
+
+
+%%Begin User Definitions: Hint: \~{}/.latex.defs and  latex.defs
+%%End User Definitions:
+%%(wg-texdoc-adjust-paper-width)
+%% (wg-texdoc-insert-hypersetup)
+
+%%% PDF Fields uncomment \usepackage[bookmarks]{hyperref} above.
+\hypersetup{
+colorlinks=true,
+linkcolor=blue,
+citecolor=red,
+urlcolor=blue,
+pdfauthor = {Copyright(c) 2018-22. All rights reserved. Wayne Green},
+pdftitle = {PyRAF/IRAF/Unix Now with Community 2.17 and PyRAF 3 “Spectroscopy Bon Mots”},
+pdfsubject = {Collection of Notes for IRAF},
+pdfkeywords = {Phoptometry, Spectrography,IRAF},
+pdfcreator = {LaTeX with hyperref package},
+pdfproducer = {dvips + ps2pdf}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+%% (wg-latex-pretty-title-page)
+%% (wg-texdoc-titleblock)
+\pagenumbering{gobble}   %ignore page numbers for a while
+
+\pagecolor{yellow}
+
+\title{\vspace{2.5cm}
+{\huge DRAFT} \\
+PyRAF/IRAF/Unix \emph{``Spectroscopy Bon Mots''}\\
+{\color{darkred}{Now! With Community 2.17 and PyRAF 3}}}
+\author{\vspace{-0.5cm} Wayne Green}
+\date{\vspace{-0.5cm} \today}
+\maketitle
+
+
+\begin{abstract}
+{\color{darkgreen}
+\begin{quote}
+~
+
+
+``I am not young enough to know everything.'' {\small \emph{Oscar
+    Wilde}\footnote{The ``bon mot'' or good word was a wicked weapon
+of words weilded by Oscar Wilde -- to whome the turn of phrase ``bon
+mot'' is often attributed.}}
+
+~
+
+``When it comes to backups there are two types of people: those that do
+and those that will.'' {\small \emph{unknown}}
+
+~
+
+``Never work on raw data -- only copies.'' {\small \emph{me}}
+
+~
+
+``I always check my work.'' {\small \emph{Pinocchio}}
+\end{quote}
+}
+\end{abstract}
+\clearpage
+\pagecolor{white}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% table of contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{roman}   % i,ii,etc
+\pagenumbering{gobble}   %ignore page numbers for a while
+\pdfbookmark[0]{Table of Contents}{MyTOC} % if usepackage{hyperref} in use.
+
+
+\tableofcontents \label{sec:contents}
+%\listoffigures
+\listoftables
+
+\clearpage
+
+
+\vskip 2cm
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{images/Overview1.png}
+%\caption{Basic Pipeline Steps} %% \caption{{\tiny{citation}}}
+\label{figure:basicpipeline}
+\end{figure}
+
+\clearpage
+
+\setcounter{section}{0}
+
+\ifx\documentisdraft\drafttest
+\linenumbers    %%%%%%%%%%%%% DRAFT
+\fi
+
+\clearpage
+\pagenumbering{arabic}
+\fancyfoot[ELF,OLF]{Go to: \hyperref[sec:contents]{Contents}}
+\fancyfoot[ERF,ORF]{Go to: \hyperref[sec:index]{Index}}
+\fancyfoot[ECF,OCF]{Page \thepage}
+
+
+\section*{Overview}
+
+This extension of the IRAF/PyRAF Bon Mots Document covers spectroscopy
+for small telescope spectrographs. The original document is where the
+basics of nomencalture and ideas about organizing data and using
+IRAF/PyRAF in general are covered.
+
+
+\section{Reducing Spectra}
+
+Here we assume the dispersion is along rows, crossing columns (lines).
+This is a DISPAXIS=1 mode.
+
+Pacakges included via the \dhlv{$\sim$/iraf/loginuser.cl} file:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+# load some packages at startup time for photometry
+noao
+imred
+crutil
+ccdred
+obsutil
+
+# load some basic packages for spectral analysis
+twodspec
+apextract
+onedspec  
+
+# set up to do intereactive images
+images
+tv     
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\input{SpectroStandards.tex}
+
+
+%% APPENDIX
+\appendix \renewcommand \thesection{\Alph{section}}
+
+\section{Apall task}
+
+This task combines several steps into one command. It is possible to 
+set the task to run in a non-interactive mode. Provided the instrument
+and conditions do not change the approach will work.
+
+The task is divided into basic areas:
+
+General parameters: the input/output file names, the sub-steps to be
+performed, use of interactive mode etc.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   Apall General Parameters
+   \item   Default Aperture Parameters
+   \item   Default Background parameters
+   \item   Aperture Centering Parameters
+   \item   Automatic Finding and Ordering Parameters
+   \item   Recentering Parameters
+   \item   Resizing Parameters
+   \item   Tracing Parameters
+   \item   Extraction Parameters
+\end{enumerate}
+
+The basic steps are:
+   Examine a basic spectrum image and determine a ``line'' location where
+   the continuum is bright
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   Identify all apertures and fit the upper and lower bounds.
+   \item   Enter the background mode:
+   \item   Clear \llbox{Z} then set two segments on either side of the trace,
+      as close to the trace as possible without picking up and of the glare
+      or wings of the trace.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   Left side, left edge:\llbox{s}
+   \item   Left side, right edge:\llbox{s}
+   \item   Right side, left edge:\llbox{s}
+   \item   Right side, right edge:\llbox{s}
+\end{enumerate}
+
+
+      To remove the segments and start over, use the \llbox{z} command for\\
+      each.
+   
+   \item   Fit the segments for background \llbox{b}. \\
+         Repeat until good fit, then\\
+      \llbox{q} to return to the aperture fitting.
+   \item   \llbox{q} to contunue.
+\end{enumerate}
+
+At this point, the trace is identified and extracted. If in interactive mode,
+a graphics window contains the fit, and the points are shown as little ``+''
+marks. Some will be well away from the fit. Using the \llbox{d} key, it is
+possible to mark undesired points - they turn into an asterisk (``*''). Hit
+the \llbox{f} to refit, reexamine the residual (lower part of the upper right
+of the display).
+
+If needed a segment may be added. This is done with two \llbox{s} keys:
+one to the left most acceptable part of the trace, the other at the right most
+location. To remove the segment use \llbox{z} commnad. (This follows the same
+convention of fitting the background stipes above).
+
+
+
+
+
+
+
+
+\section{Apall Settings for second/subsequent files in sequence}
+
+Combining spectra is best done by reducing each spectrum indvidually
+and then spectrally combining \dhl{scombine} the sequence into one final
+spectrum.
+
+First: using the full interactive settings, get the first spectrum reduced
+to your satisfaction. This will require:
+
+trimming images to remove noise
+Setting the trace, background, and fitting the best polynomial for the task.
+
+Then adjust the parameters.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+lpar apall
+        input = "comp.fits"     List of input images
+        nfind = 1               Number of apertures to be found automatically
+      (output = "")             List of output spectra
+   (apertures = "1")            Apertures
+      (format = "multispec")    Extracted spectra format
+  (references = "z_t_a10015_Nova_1.fits") List of aperture reference images
+    (profiles = "")             List of aperture profile images
+                                
+ (interactive = yes)            Run task interactively?
+        (find = yes)            Find apertures?
+    (recenter = yes)            Recenter apertures?
+      (resize = yes)            Resize apertures?
+        (edit = yes)            Edit apertures?
+       (trace = yes)            Trace apertures?
+    (fittrace = yes)            Fit the traced points interactively?
+     (extract = yes)            Extract spectra?
+      (extras = yes)            Extract sky, sigma, etc.?
+      (review = yes)            Review extractions?
+                                
+        (line = 2560)           Dispersion line
+        (nsum = 9)              Number of dispersion lines to sum or median
+                                
+                                # DEFAULT APERTURE PARAMETERS
+                                
+       (lower = )               Lower aperture limit relative to center
+       (upper = )               Upper aperture limit relative to center
+   (apidtable = "")             Aperture ID table (optional)
+                                
+                                # DEFAULT BACKGROUND PARAMETERS
+                                
+  (b_function = "chebyshev")    Background function
+     (b_order = 9)              Background function order
+    (b_sample = "-50:-40,40:50") Background sample regions
+  (b_naverage = -3)             Background average or median
+  (b_niterate = 3)              Background rejection iterations
+(b_low_reject = 3.0)            Background lower rejection sigma
+(b_high_rejec = 3.0)            Background upper rejection sigma
+      (b_grow = 3.0)            Background rejection growing radius
+                                
+                                # APERTURE CENTERING PARAMETERS
+                                
+       (width = 22.0)           Profile centering width
+      (radius = 10.0)           Profile centering radius
+   (threshold = 15.0)           Detection threshold for profile centering
+                                
+                                # AUTOMATIC FINDING AND ORDERING PARAMETERS
+                                
+      (minsep = 5.0)            Minimum separation between spectra
+      (maxsep = 100000.0)       Maximum separation between spectra
+       (order = "increasing")   Order of apertures
+                                
+                                # RECENTERING PARAMETERS
+                                
+  (aprecenter = "")             Apertures for recentering calculation
+      (npeaks = INDEF)          Select brightest peaks
+       (shift = yes)            Use average shift instead of recentering?
+                                
+                                # RESIZING PARAMETERS
+                                
+      (llimit = INDEF)          Lower aperture limit relative to center
+      (ulimit = INDEF)          Upper aperture limit relative to center
+      (ylevel = 100.0)          Fraction of peak or intensity for automatic width
+        (peak = no)             Is ylevel a fraction of the peak?
+         (bkg = yes)            Subtract background in automatic width?
+      (r_grow = 5.0)            Grow limits by this factor
+   (avglimits = no)             Average limits over all apertures?
+                                
+                                # TRACING PARAMETERS
+                                
+      (t_nsum = 10)             Number of dispersion lines to sum
+      (t_step = 10)             Tracing step
+     (t_nlost = 9)              Number of consecutive times profile is lost before quitting
+  (t_function = "chebyshev")    Trace fitting function
+     (t_order = 25)             Trace fitting function order
+    (t_sample = "*")            Trace sample regions
+  (t_naverage = 1)              Trace average or median
+  (t_niterate = 0)              Trace rejection iterations
+(t_low_reject = 2.0)            Trace lower rejection sigma
+(t_high_rejec = 2.0)            Trace upper rejection sigma
+      (t_grow = 0.0)            Trace rejection growing radius
+                                
+                                # EXTRACTION PARAMETERS
+                                
+  (background = "average")      Background to subtract
+      (skybox = 2)              Box car smoothing length for sky
+     (weights = "none")         Extraction weights (none|variance)
+        (pfit = "fit1d")        Profile fitting type (fit1d|fit2d)
+       (clean = yes)            Detect and replace bad pixels?
+  (saturation = 3500.0)         Saturation level
+   (readnoise = "1")            Read out noise sigma (photons)
+        (gain = "1.")           Photon gain (photons/data number)
+      (lsigma = 4.0)            Lower rejection threshold
+      (usigma = 4.0)            Upper rejection threshold
+     (nsubaps = 1)              Number of subapertures per aperture
+        (mode = "al")           
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+
+\clearpage
+%%\addcontentsline{toc}{section}{References}
+\renewcommand*{\refname}{Bibliography and References}
+\bibliographystyle{abbrvnat}	% bibliographystyle{apalike} and \usepackage{natbib}
+\bibliography{BonMots}	% expects file "MasterBib.bib"
+
+
+%%\clearpage
+\addcontentsline{toc}{section}{Index}
+\printindex %% www.cs.usask.ca/resources/tutorials/latex/notes/toc-index.pdf
+ \label{sec:index}
+
+%%\begin{thebibliography}{80}
+%%\usepackage{natbib}   %% bibitems
+%%\end{thebibliography}
+
+
+%% (wg-texdoc-endnotes)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Support for endnotes
+\begingroup
+\renewcommand{\notesname}{\textcolor{red} {Action Items:}}
+\parindent 0pt
+\parskip 2ex
+\phantomsection
+\addcontentsline{toc}{section}{	extcolor{red} {Action Items:}}
+\def\enotesize{\normalsize}
+\theendnotes
+\endgroup
+
+
+
+\end{document}

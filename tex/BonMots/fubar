@@ -1,0 +1,370 @@
+-*- mode: compilation; default-directory: "/usr3/titan18/home/sasiraf/doc/BonMots/" -*-
+Compilation started at Sat Aug 17 23:16:53
+pdflatex BonMots.tex 
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./BonMots.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-01-21>
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+Style option: `fancybox' v1.4 <2010/05/15> (tvz)
+`dirtree' v0.32, 2012/12/11 (jcc)))
+For additional information on amsmath, use the `?' option.
+Writing index file BonMots.idx
+LaTeX Warning: Unused global option(s):
+    [letter].
+(./BonMots.aux)
+[Loading MPS to PDF converter (version 2006.09.02).]
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(./BonMots.out) (./BonMots.out)
+nts/map/pdftex/updmap/pdftex.map}] (./BonMots.toc
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.24 ...}{\numberline {8}Observing}{20}{section.8}
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.46 ...gher Level Stategies}{50}{subsection.15.1}
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.67 ...}Reducing the Spectra}{66}{subsection.E.1}
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.90 ...L.1}Imexamine Details}{83}{subsection.L.1}
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.111 ...ntsline {section}{Index}{140}{appendix.T}
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.216 \clearpage
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.228 \clearpage
+                 [7 <./images/Overview1.png (PNG copy)>]
+less on input line 238.
+
+less on input line 239.
+
+less on input line 240.
+
+Package natbib Warning: Citation `2000asqu.book.....C' on page 1 undefined on i
+nput line 280.
+
+Package natbib Warning: Citation `1990BAAS...22..935V' on page 1 undefined on i
+nput line 289.
+
+Package natbib Warning: Citation `2019zndo...2530958J' on page 1 undefined on i
+nput line 290.
+
+Package natbib Warning: Citation `2006hstc.conf..437G' on page 2 undefined on i
+nput line 305.
+
+Package natbib Warning: Citation `PyrafProgrammersGuide' on page 2 undefined on
+ input line 305.
+
+Package natbib Warning: Citation `FITSBirthday' on page 2 undefined on input li
+ne 314.
+
+Underfull \hbox (badness 10000) in paragraph at lines 375--375
+[][]\T1/ptm/m/n/10.95 ACTION:
+Underfull \hbox (badness 10000) in paragraph at lines 375--375
+\T1/ptm/m/n/10.95 Ex-am-ple
+Underfull \hbox (badness 10000) in paragraph at lines 375--375
+\T1/ptm/m/n/10.95 of Mar-gin
+
+Package natbib Warning: Citation `McIlroy1978' on page 4 undefined on input lin
+e 415.
+
+Package natbib Warning: Citation `freeman1975software' on page 5 undefined on i
+nput line 438.
+
+
+
+
+
+Package natbib Warning: Citation `2006hstc.conf..437G' on page 10 undefined on 
+input line 683.
+
+pdfTeX warning: pdflatex (file ./images/Overview-eps-converted-to.pdf): PDF inc
+lusion: found PDF version <1.7>, but at most version <1.5> allowed
+
+[11 <./images/Overview-eps-converted-to.pdf>]
+
+Package natbib Warning: Citation `astropy:2013' on page 13 undefined on input l
+ine 799.
+
+Package natbib Warning: Citation `astropy:2018' on page 13 undefined on input l
+ine 799.
+
+Package natbib Warning: Citation `astropy:2022' on page 13 undefined on input l
+ine 800.
+
+Package natbib Warning: Citation `fitsverify-1' on page 13 undefined on input l
+ine 813.
+
+Overfull \hbox (28.69228pt too wide) in paragraph at lines 858--863
+\T1/ptm/m/n/10.95 PyRAF uses [] /.iraf/login.cl[] to man-age sys-tem level com-
+mands and should not be edited -- ex-cept to en-sure that []\T1/txtt/m/n/10.95 
+c\T1/ptm/m/n/10.95 l < "home$/iraf/loginuser.cl"[]
+Overfull \hbox (27.37506pt too wide) in paragraph at lines 885--885
+[][] 
+
+
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+Overfull \hbox (7.47728pt too wide) in paragraph at lines 1208--1210
+[][][]\T1/txtt/m/n/10.95 (cd Observations/YYYYmmDD; mkdir -p RawData; cd RawDat
+a; rsync <from somewhere> .; chmod -w -R *[][]\T1/ptm/m/n/10.95 ). 
+Overfull \hbox (31.38103pt too wide) in paragraph at lines 1215--1220
+\T1/ptm/m/n/10.95 ([][][]\T1/txtt/m/n/10.95 cd Observations/YYYYmmDD; mkdir -p 
+PreAnalysis; cd PreAnalysis; cp -pr ../RawData/* .; chmod +w -R .[][]\T1/ptm/m/
+n/10.95 ) 
+
+
+LaTeX Warning: Reference `app:PutItTogether' on page 23 undefined on input line
+ 1284.
+
+Package natbib Warning: Citation `FITSBirthday' on page 23 undefined on input l
+ine 1303.
+
+Package natbib Warning: Citation `1993ASPC...52..173T' on page 23 undefined on 
+input line 1305.
+
+Package natbib Warning: Citation `2006hstc.conf..437G' on page 23 undefined on 
+input line 1319.
+
+
+
+
+
+
+
+
+Package natbib Warning: Citation `IRAFMotherLoad' on page 31 undefined on input
+ line 1631.
+
+Package natbib Warning: Citation `SBFITSEXT' on page 31 undefined on input line
+ 1631.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+LaTeX Warning: Float too large for page by 25.79411pt on input line 1772.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Package natbib Warning: Citation `2006ASPC..351..735K' on page 48 undefined on 
+input line 2448.
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2685--2685
+[][]\T1/ptm/m/n/10.95 ACTION:
+
+Package natbib Warning: Citation `Kahan-Needle-Angles' on page 52 undefined on 
+input line 2715.
+
+Package natbib Warning: Citation `2000A&AS..143....9W' on page 52 undefined on 
+input line 2718.
+
+Package natbib Warning: Citation `2005ASPC..347...29T' on page 52 undefined on 
+input line 2719.
+
+Package natbib Warning: Citation `1994ASPC...61..215B' on page 52 undefined on 
+input line 2721.
+
+Package natbib Warning: Citation `2011ascl.soft12019C' on page 52 undefined on 
+input line 2721.
+
+Package natbib Warning: Citation `2012AN....333..505G' on page 52 undefined on 
+input line 2722.
+
+Package natbib Warning: Citation `robitaille_thomas_2017_1237692' on page 52 un
+defined on input line 2722.
+
+
+
+
+
+
+Overfull \hbox (266.90384pt too wide) in paragraph at lines 2920--2920
+[]\T1/txtt/m/n/10.95 !cat l.l | awk -e '/./ {printf("hedit %s EXPTIME del+ ver-
+ show- update+\nhedit %s EXPTIME %s add+ ver- show- update+\n", $1, $1, $2);}' 
+> ./tmp.cl[] 
+(./Commandline.tex
+
+
+
+
+
+
+
+
+
+
+Overfull \hbox (492.8369pt too wide) in paragraph at lines 304--304
+[]\T1/txtt/m/n/10 !ds9 -tile mode row a10001_AD_Leo_East_Calibration_300s_20220
+212_052528m1.fits       a10002_AD_Leo_East_Calibration_300s_20220212_080927m1.f
+its a10003_AD_Leo_West_Calibration_300s_20220212_090214m1.fits &[] 
+
+
+LaTeX Warning: Float too large for page by 603.67041pt on input line 112.
+) (./IdentifyLPARS.tex
+
+
+
+
+
+
+
+
+
+
+
+
+
+Overfull \hbox (261.83757pt too wide) in paragraph at lines 3044--3044
+[]\T1/txtt/m/n/10 alias pyraf="(export PYTHONSTARTUP=$HOME/iraf/pyraflogin.py; 
+export PATH=$PATH:$HOME/iraf/smtsci/bin:$PATH; $HOME/anaconda3/envs/astrocondai
+raf/bin/pyraf -s; )"[] 
+Underfull \hbox (badness 10000) in paragraph at lines 3051--3051
+[][]\T1/ptm/m/n/10.95 ACTION:
+Underfull \hbox (badness 10000) in paragraph at lines 3051--3051
+\T1/ptm/m/n/10.95 Bolt in
+(./imexamine.tex
+
+
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 211--211
+[][]\T1/ptm/m/n/10.95 ACTION:
+Underfull \hbox (badness 10000) in paragraph at lines 211--211
+\T1/ptm/m/n/10.95 imexam
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--60
+
+Underfull \hbox (badness 10000) in paragraph at lines 9--9
+[][]\T1/ptm/m/n/10.95 ACTION:
+) (./includes/kzin.tex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Overfull \hbox (351.08731pt too wide) in paragraph at lines 1435--1435
+[]    \T1/txtt/m/n/10 s1       = """apall input=%s output=%s format="multispec"
+ b_niterate = 7  b_sample = "-15:-7,7:15" t_function = "chebyshev" t_order = 7 
+t_niterate = 3 clean+""" % (sci, sci)[] 
+
+
+
+Package natbib Warning: Citation `2005ASPC..347...29T' on page 135 undefined on
+ input line 3.
+
+Package natbib Warning: Citation `2004ASPC..314..293Y' on page 135 undefined on
+ input line 6.
+)
+
+Underfull \hbox (badness 10000) in paragraph at lines 3109--3109
+[][]\T1/ptm/m/n/10.95 ACTION:
+
+Package natbib Warning: Citation `1986SPIE..627..733T' on page 137 undefined on
+ input line 3145.
+
+Package natbib Warning: Citation `FITSBirthday' on page 137 undefined on input 
+line 3153.
+
+
+
+No file BonMots.bbl.
+No file BonMots.ind.
+(./BonMots.ent) 
+AED: lastpage setting LastPage
+
+Package natbib Warning: There were undefined citations.
+(./BonMots.aux)
+LaTeX Warning: There were undefined references.
+ )
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/te
+Output written on BonMots.pdf (148 pages, 449566 bytes).
+Transcript written on BonMots.log.
+Compilation finished at Sat Aug 17 23:16:53

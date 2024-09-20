@@ -1,0 +1,310 @@
+%\subsection
+\section{Spectroscopy}
+
+The installation of the spectrograph requires focusing the instrumend
+and adjusting the grating to cause the desired spectral range to fall 
+onto the sensor.
+
+The critical step is to focus of the collimator to guarantee parallel
+angle's of incidence. The next step is to assure the science camera
+is focused at infinity, as each wavelength of the dispersion beam
+is parallel is collimated in its own unique way. The dispersion is
+a continuous function that is discretely sampled by each pixel. The
+pixel is its own sensor, with a starting wavelength and a small delta
+wavelength. 
+
+Spectroscopic reduction builds on the standard reduction approach by
+subtracting suitable zero and dark images. For CMOS, use a
+surface-smoothed (imsurfit) \index{IRAF!imsufit} image. For newer
+CCDs and CMOS cameras, dark frames add noise.
+
+The file types are:
+
+\begin{table}[h!]
+%\phantomsection
+%\addcontentsline{toc}{section}{ TOC CAPTION}
+% \setlength{\belowcaptionskip}{6pt} % adjust space under caption abovecaptionskip
+% \renewcommand{\arraystretch}{1.3} % adjust line spacing
+%\small{
+%\begin{minipage}{.8\textwidth}     % for footnotes in table.
+%\caption[TOC]{Image Types}
+\centering
+\begin{tabular}{| l | l |}
+%\MakeShortVerb{\|}
+%\multicolumn{n}{fmt}{text for merged cols}
+\hline
+IMAGETYP  & Purpose   \\
+\hline
+focus             & setup    \\ 
+zero              & remove image noise    \\ 
+dark              & remove image noise    \\ 
+calibration (cal) & provide wavelength calibration    \\ 
+reference         & provide flux calibration    \\ 
+flat              & instrument response, remove fringing, longslit work    \\ 
+%% ones-based: \cline{a-b}
+\hline
+%%\DeleteShortVerb{|}
+\end{tabular}
+%%\end{minipage}    %% for footnotes  r@{.}l 
+\caption[TOC]{Image Types}
+\label{table:ImageTypes}
+%%} % end small etc
+\end{table}
+
+\newpage
+In general, a matched set of images is required for each science image
+reduction
+
+Basic Steps:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+ll t_*Bias*fits > /dev.null
+!rm -f zeromaster.fits s_zeromaster.fits  # remove or additional extension added (bad)
+zerocombine @l.l output=zeromaster.fits combine=median scale=mode
+imsurfit input=zeromaster.fits output=s_zeromaster.fits 
+      xorder=1 yorder=3 border=10 cross_terms=yes
+imean = float(iraf.imstat(images='@l.l',fields='mean',format=iraf.no,Stdout=1)[0])
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\subsection{Reducing the Spectra}
+
+It is recommended that for each new target, a matched set of comparison
+and flat images be taken. This keeps the distortions of temperature
+expansion, flexure, and optical axis shifts in line -- all dependent
+on the orentation of the telescope and the resulting gravity vector.
+If a rotator is used, then the rotator will shift the impact of the
+gravity vector.
+
+The flat is added to the system using an internal flat. It does no
+good to slew to the location of the dome flat screen as the telescope
+orientation will differ from that of the target.
+
+For simplicity the file names match their purpose.
+
+The main ideas:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   flat.fits take the flat exposure
+   \item   comp.fits take the comparison exposure
+   \item   sci.fits  the science exposure
+\end{enumerate}
+
+The goal is to extract the trace and add its data to the database for
+the file. (The file names do need to be different for more than one
+spectra -- again the use of flat/comp/sci is to keep the discussion
+clear). Then using the dispersion trace from the science, extract the
+pixels corresponding to the science trace from the flat, and also from
+the comp. We differ from most IRAF discussions here by extracting an
+additional spectrum from a flat.
+
+\begin{figure}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+{\color{darkred}
+\begin{verbatim} 
+    sys.path.append(os.getenv('HOME') + "/iraf") # our helper path
+    import pyraflogin3                           # import our helpers
+\end{verbatim}
+}
+\endgroup
+%% \end{Verbatim}
+\caption{Use our pyraflogin3 script -- stored alongside login.cl and
+loginuser.cl.}
+\label{fig:pyraflogin3}
+\end{figure}
+
+
+\begin{figure}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+{\color{darkred}
+\begin{verbatim} 
+    apall     sci.fits output = sci.0001.fits (sci.ms.fits) # get disp
+    apall     comp.fits ref=sci interactive=no # comp.0001.fits
+    apall     flat.fits ref=sci interactive=no # flat.0001.fits 
+    identify  comp.0001.fits coordlist=...      # per usual
+    hedit     sci.0001.fits REFSPEC1=comp.0001.fits add+ update+ ver- show-
+    dispcor   sci.0001.fits cal_sci.0001.fits # add the WCS to the file.
+\end{verbatim}
+}
+\endgroup
+%% \end{Verbatim}
+\caption{The basic extraction steps for a star's observation.}
+\label{fig:SpecRedSteps}
+\end{figure}
+
+
+Next move to the reference star's set of files and reduce per the
+sequence in figure \ref{fig:SpecRedSteps}. Here we presume the slit
+position is different -- hence the need for the comp and flat files to
+be taken at this new location with new circumstances of temperature
+and flexure.
+
+So now we have two flat values. We may now choose to iterate,
+wavelength-bin by wavelenght-bin, and adjust the science target's
+spectrum to the reference star's spectrum. This makes for a flux to
+flux basis -- just like correcting for vignetting in photometry.
+
+\begin{figure}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+{\color{darkred}
+\begin{verbatim} 
+with fits.open('refflat.0001.fits'), fits.open('sciflat.0001.fits') as sci,ref:
+   refdata = ref[0].data
+   scidata = sci[0].data
+   corrsci = sci.data / (refdata/scidata)
+   newfits('corrsci.0001.fits',corrsci, scidata[0],header)
+\end{verbatim}
+} % color
+\endgroup
+%% \end{Verbatim}
+\caption{Use python to flat the science target to the reference target.}
+\label{fig:FlatSciRef}
+\end{figure}
+
+There are some 'hidden' commands:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+    :/title Object and dateobs
+    :/subtitle Instrument
+    :/comment Observer/etc
+    :/sysid no
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+General workflow:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Make directories
+   \item   Move RawData into the workspace
+   \item   Copy in any necessary files into usw/
+\end{enumerate}
+
+
+DISPAXIS
+
+trim images
+
+
+apall
+
+- fitting:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+#g <newline> one of H,J,K,L to redefine newline
+#then choose two of these separated by a comma
+    d  Ratio (y / f)
+    f  Fitted values
+    r  Residuals of fit (y - f)
+    n  Nonlinear part of data (linear component of fit subtracted)
+    x  Indepedent variable
+    y  Dependent variable (data being fit)
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\subsection{Steps}
+
+Fix the gain of the image, with ASI296 camera drop the padded
+values, and use a gain of 66000. This brings the science back
+by about 2\%.
+
+Fix the headers:
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+    hedit *fits DISPAXIS 1 add+ update+ ver- show-
+    hedit *fits GAIN <right value>  add+ update+ ver- show-
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+Trim image of excess X low values where QE is way too low, using the
+python script. This will write a logical/physical WCS into the header.
+
+\subsection{Focus}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+!ds9 -tile mode row a10001_AD_Leo_East_Calibration_300s_20220212_052528m1.fits       a10002_AD_Leo_East_Calibration_300s_20220212_080927m1.fits a10003_AD_Leo_West_Calibration_300s_20220212_090214m1.fits &
+
+
+#start ds9 
+imexamine  
+# j on a comp line (graphics window up)
+# :epar  # save and quit
+## naverage 11
+## center,bacground - yes
+## width 10   wings of the fit.
+## xorder 0  median fit the background
+## rplot 31  (big pixels gets by with less)
+## point mode: show each sample as point, or draw a curve (szmarker 1 for small pts)
+
+
+
+Package: TV, task jimexam
+
+autoscale   h           Adjust number of histogram bins to avoid aliasing
+background  jkr.        Subtract background for radial plot and photometry?
+center      jkr.        Find center for radial plot and photometry?
+eparam      cehjklrsuv. Edit parameters
+naverage    cjkluv      Number of columns, lines, vectors to average
+radius      r.          Radius of object aperture for radial plot and photmetry
+round       cehjklruv.  Round axes to nice values?
+rplot       jkr.        Radius to plot in 1D and radial profile plots
+sigma       jk          Initial sigma for 1D gaussian fits
+width       jkr.        Width of background region
+x [min max] chjklruv.   Range of x to be plotted (no values for autoscaling)
+y [min max] chjklruv.   Range of y to be plotted (no values for autoscaling)
+
+banner      cehjklrsuv. Include standard banner on plots?
+box         cehjklruv.  Draw box around graph?
+
+
+logx        chjklruv.   Plot x axis logrithmically?
+logy        chjklruv.   Plot y axis logrithmically?
+majrx       cehjklruv.  Number of major tick marks on x axis
+majry       cehjklruv.  Number of major tick marks on y axis
+marker      chjklruv.   Marker type for graph
+minrx       cehjklruv.  Number of minor tick marks on x axis
+minry       cehjklruv.  Number of minor tick marks on y axis
+pointmode   chjkluv     Plot points instead of lines?
+szmarker    chjklruv.   Size of marks for point mode
+ticklabels  cehjklruv.  Label ticks?
+title       cehjklrsuv. Optional title for graph
+unlearn     cehjklrsuv. Unlearn parameters to default values
+xlabel      cehjklrsuv. Optional label for x axis
+xorder      jkr.        X order of surface for background subtraction
+ylabel      cehjklrsuv. Optional label for y axis
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+
+%%\input{includes/splot.tex}

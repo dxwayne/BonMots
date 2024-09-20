@@ -1,0 +1,134 @@
+\section{Create a IRAF Standard Star}
+
+The calibration files consist of lines with wavelengths in Angstroms,
+calibration magnitudes, and bandpass widths in Angstroms. The
+magnitudes are converted to absolute flux per unit frequency using the
+parameter fnuzero defined by:
+
+\begin{subequations}
+\begin{align}
+F_{\nu} &= F_{\nu_{0}} \times\; 10^{-0.4\; m}
+\end{align}
+\end{subequations}
+
+where $F_{\nu}$ is the flux in $ergs/cm2/s/hz$; $F_{\nu_{0}}$; and $m$ is the table
+reported magnitude. 
+
+Thus, fnuzero is the flux at magnitude zero. The flux units are
+determined by this number. The default value was chosen such that Vega
+at 5556 Angstroms has a magnitude of 0.048 and a flux of 3.52e-20
+ergs/cm2/s/hz. This is the same value that was used by all previous
+versions of this task.
+
+5500.00    7.51  50.
+
+% (iv (setq tmp (* -0.4 7.51  )))    -3.004  
+3.4292660E-9  ergs/cm2/s/A
+
+% (ive (setq tmp (/ constant-c  5.554e-5  )))    5.397776e+14
+
+\subsection{The synphot Directory}
+
+StSCI released an Astropy version of Synphot. Lets see if that works
+for us.
+
+\dhl{conda install synphot -c conda-forge}
+
+The values are in ``photlam'' or photons per $\lambda$. 
+
+The energy is:
+
+\begin{subequations}
+\begin{align}
+E &= h\nu \\
+  &= \frac{c}{\lambda}
+\end{align}
+\end{subequations}
+
+The table entry in stsdas/lib/synphot/vega\_98\_to\_04.dat
+
+          5550.     3.4292660E-9
+
+\url{https://astro.uni-bonn.de/~sysstw/lfa_html/iraf/noao.onedspec.standard.html}
+
+\url{https://synphot.readthedocs.io/en/latest/index.html#a-brief-history}
+
+\url{https://specutils.readthedocs.io/en/stable/api/specutils.analysis.template_logwl_resample.html#specutils.analysis.template_logwl_resample}
+
+\subsection{Flux Calibration Files}
+
+There are two types of flux calibration files used by the task
+STANDARD.
+
+Standard Star Calibration Files
+
+This type of file is any file that does not contain the parameter
+"type" with a value of "blackbody". The only other parameter used by
+this type of calibration file is the "units" parameter for the
+wavelength units. If the units are not specified then the wavelengths
+default to Angstroms. All older calibration files will have no
+parameter information so they are interpreted as standard star
+calibration files with wavelengths in Angstroms.
+
+The calibration files consist of lines with wavelengths, calibration
+magnitudes, and bandpass widths. The magnitudes are $m_AB$ defined as
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+m_AB(star) = -2.5 * log10 (f_nu) - 48.60
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+where $f_nu$ is in$ erg/cm^2/s/Hz$. The $m_AB$ calibration magnitudes are
+converted to absolute flux per unit frequency using the parameter
+fnuzero of the STANDARD task. This conversion is defined by
+
+$Fnu = fnuzero * 10. ** (-0.4 * magnitude)$
+
+Thus, fnuzero is the flux at $m_AB$ of zero. The flux units are
+determined by this number. The default value was chosen such that Vega
+at 5556 Angstroms has a magnitude of 0.048 and a flux of 3.52e-20
+ergs/cm2/s/Hz.
+
+Blackbody Calibration Files
+
+This type of file has the comment parameter "type" with a value of
+"blackbody". It must also include the "band" and "weff" comment
+parameters. If no "units" comment parameter is given then the default
+units are Angstroms.
+
+The rest of the file consists of lines with wavelengths, $m_AB$ of a
+zero magnitude star (in that band magnitude system), and the bandpass
+widths. The $m_AB$ are defined as described previously. Normally all the
+$m_AB$ values will be the same though it is possible to adjust them to
+produce a departure from a pure blackbody flux distribution.
+
+The actual $m_AB$ calibration magnitudes for the star are obtained by the relation
+
+$m_AB(star) = mag + m_AB(m=0) - 2.5 * log10 (B(weff,teff)/B(w,teff))$
+
+where m is the magnitude of the star in the calibration band,
+$m_AB(m=0)$ is the calibration value in the calibration file
+representing the magnitude of a m=0 star (basically the $m_AB$ of Vega),
+weff is the effective wavelength for the calibration file, and teff is
+the effective temperature of the star. The function B(w,T) is the
+blackbody function in $f_nu$ that provides the shape of the
+calibration. Note how the normalization is such that at weff the last
+term is zero and $m_AB(star) = m + m_AB(m=0)$.
+
+The $m_AB(star)$ computed using the calibration values and the blackbody
+function are then in the same units and form as for the standard star
+files. The conversion to $f_nu$ and the remaining processing proceeds in
+the same way as for standard star calibration data.
+
+The parameters Imag and teff are specified by the user when running the STANDARD task.
+
+Note that it is important that the flux values are in magnitudes. If
+the fluxes are not given in magnitudes, as occurs with some files
+imported from other sources, the STANDARD task will behave
+incorrectly.
+
+

@@ -1,0 +1,36 @@
+\section{Coordinates}
+
+\subsection{Image}
+
+Here an image is considered to be a raw or pre-reduced image from a sensor.
+The senaor reports values (x,y) in terms of its chip readout direction. The
+image may contain one of more of overscans of columns and/or rows and a
+sub-area with the data. The image may be padded. \index{Coordinates!physical}
+\index{Coordinates!logical}
+
+The region of interest of the image, where the science data resides, may
+span the entire image or may consist of a section. Common sections include
+BIASSEC, TRIMSEC, DATASEC etc.  \index{Coordinates!BIASSEC} \index{Coordinates!TRIMSEC}
+\index{Coordinates!DATASEC}.
+
+\subsection{Sections}
+
+A section consists of two ranges of values, one for X and one for Y. They
+appear as ASCII text within the header. The section is enclosed by square
+brackets (\dhl{[]}) with the X and Y range separated by a comma. The
+start and end of the region are inclusive, are enumerated starting with
+1 (FORTRAN Convention), and up to and including NAXISi. The range may include
+a wildcard character (\dhl{*}) taken to mean all or at least the rest of
+the value range. Given NAXIX1=1000 and NAXIS2=700, some examples of a
+section are:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+[1:800,300:500]  # say the trace area of a spectra.
+[1:*,*]          # equilavent to [*,*]
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+

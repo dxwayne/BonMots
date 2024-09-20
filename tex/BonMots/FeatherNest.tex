@@ -1,0 +1,85 @@
+% BonMots
+
+\section{Install/Feather the Nest} \label{sec:InstallFeatherNest}
+
+If you have previously installed IRAF, rename (mv) your directory to
+the side \dhl{mv \$HOME/iraf \$HOME/mmDDyyyy-iraf }.
+
+To install the IRAF 2.18 NOIRLab edition \index{Install IRAF} \index{IRAF!install}
+you really must install the package off your home directory.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+cd $HOME
+git clone https://github.com/iraf-community/iraf.git
+cd iraf
+./install
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+There are \dhl{TWO} directories to pay attention to:
+\dhl{\$HOME/.iraf} and \dhl{\$HOME/iraf}.
+
+Install the \dhl{pyraf3} package:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+cd $HOME/.iraf
+python3 -m venv ./venv; 
+cd venv;
+source bin/activate;
+echo "made a new env at $(pwd) and activated it.";
+pip3 install pyraf
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+Then, \dhl{cd \$HOME/iraf} and use github to clone our helpers right into
+the  \dhl{cd \$HOME/iraf} directory.
+
+Install the provided login.cl into \dhl{\$HOME/.iraf} (note: it's ``dot''iraf).
+
+ltodo{iraf login}{Brew up a flexmkiraf script to handle these chores.}
+
+There are a number of helper files that need to be edited and copied
+into various places within the filesystem. This is best done by hand
+so you learn about the files and may maintain precise control over
+their content.
+
+Review and modify the \dhl{.cl} files as you copy them.
+
+- The \dhl{bin} directory:
+
+  -- \dhl{iraffind} - locate iraf files using the Unix find command the -iname
+     switch and a full / partial part of the file's name. Pipe to \dhl{grep -v}
+     as needed to winnow spuriuos results.
+
+  -- \dhl{hlp2pdf} - convert help files into pdfs where possible. IRAF help pages
+     use their own markup language. This script is a last-resort where one maynot
+     find the one of about 1350 \dhl{.hlp} files.
+
+\subsection{Site specific files}
+
+A few site specific files should be changed, or modified. One is the
+\dhl{obsdb.dat} file with details about the observatory satisfying the
+\dhl{iraf.observarory} format and the \dhl{observat[ory] mysite} command.
+Another is a file describing cameras and filters used by the site. These
+are thorny.\index{key files!obsdb.dat}
+
+
+
+\subsection{Files Summary}
+
+/usr/lib/iraf/noao/imred/ccdred/ccddb/kpno/camera.dat - map internal IMAGETYPs
+to iraf vocabulary. Surprising! \index{key files!camera.dat}
+
+ccddb/kpno has exmample files for use with KPNO instruments. The
+content and format is informative.
+
+

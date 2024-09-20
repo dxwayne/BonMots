@@ -1,0 +1,205 @@
+% BonMots/ReduceSpectra.tex
+\section{Reduce Spectral Sequence}
+
+A sequence consists of three images, a comparison lamp, a flat and a science target star.
+This section does not deal with reduction of a extended source across a long slit.
+
+The files, (a10234) is a serial number added to as a prefix to the images
+taken, in order specified by the DATE-OBS keyword):
+
+   \dhl{a10234\_Comp.fits} \\
+   \dhl{a10235\_Flat.fits} \\
+   \dhl{a10236\_Vega.fits}
+
+The very first thing to do is to use \dhl{epar apall} to check the
+apall parameters. We aim to produce a spectrum with 4 bands:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item  The reduced spectrum
+   \item  The extracted spectrum sans any corrections
+   \item  The sky background information
+   \item  The variance for the spectrum.
+\end{enumerate}
+
+Parameters are shown and discussed in section \ref{sec:Apalllpars} and in
+\ref{fig:ApallParameters}.
+
+
+First extract the star's trace from the a10234\_Vega.fits file. This creates
+a file in the database directory called:
+
+\dhl{apa10234\_Vega}
+
+with contents shown in figure \ref{fig:ApextractStar}.
+
+Use the command:
+
+\dhl{apall a10236\_Vega.fits} 
+
+Be prepared to do several manual steps, and to answer a few questions.
+
+
+Find apertures for Vega_Light_003? ('yes'): \llbox{CR} \\
+Number of apertures to be found automatically (1): \llbox{CR} \\
+Resize apertures for Vega_Light_003? ('yes'): \llbox{CR} \\
+Edit apertures for Vega_Light_003? ('yes'): \llbox{CR} \\
+
+Window Pops Up, showing the sum across the rows of all the data.
+This gives a clear indiciation of where the trace's aperture
+is to be defined. Use:
+
+- \llbox{m} to mark an aperture
+- \llbox{d} to delete an aperture
+- \llbox{u} for the upper and \llbox{l} for the lower sides of the aperture.
+- \llbox{w}-\llbox{e}-\llbox{e} to zoom into the image to get a clear idea
+   of where to set the extents for the aperture.
+- \llbox{w}-\llbox{a} to zoom all the way back out.
+
+\subsection{Fit the Aperture}
+-\llbox{t} - trial trace
+-\llbox{s}-\llbox{s}  set segment limits on trace
+-\llbox{f} do the fit, check residuals
+-\llbox{d} remove few bad points
+-\llbox{w}-\llbox{e}-\llbox{e} and \llbox{w}-\llbox{a} allow zooming in to
+find bad points
+-\llbox{f}-\llbox{q} do the final fit and move on to next step.
+
+
+\textbf{\emph{Note:}} The questions are often asked in the command window, with the
+answer accepted within the GUI/Display for the apall task.
+
+
+The next trick is to use the trace math in the \dhl{apa10234\_Vega} and
+extract the corresponding pixels from the comp lamp and the flat lamp.
+
+This is done with 
+
+
+\subsection{Background Fit}
+
+The background is the area just above and just below the trace
+where the sky background is extracted. With spectrographs with
+extreme smile (curved nature of the spectral lines, evicenced
+by the calibration image, is pronounced) blurs the sky contamination.
+Keep the area about the same as the combined distance between u-l
+used to set the trace's width. 
+
+\llbox{z}-\llbox{z} - remove the two segments \\
+\llbox{s}-\llbox{s} - set the left segment \\
+\llbox{s}-\llbox{s} - set the right segment \\
+\llbox{f} - fit for background \\
+
+\llbox{h}-\llbox{l}	Graph keys.  Defaults are h=(x,y), i=(y,x), j=(x,r), k=(x,d), l=(x,n)
+
+\llbox{q}
+
+
+
+\subsection{Trace aperture}
+
+\dhl{Trace apertures for Vega_Light_003?} \\
+\dhl{Fit traced positions for Vega_Light_003 interactively?} \\
+\dhl{Fit curve to aperture 1 of Vega_Light_003 interactively} \\
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item  \llbox{s}-\llbox{s} - sets segment to define fit extents
+   \item  \llbox{d} - remove any errant points
+   \item  \llbox{f}   fit the aperture
+   \item  \llbox{q} move on to the next step
+\end{enumerate}
+
+
+\subsection{Update the Database}
+
+Little to do here, except let IRAF do its thing. Questions appear
+in the command window, answers go into the text area on bottom
+of graphics area.
+
+
+\dhl{Write apertures for Vega_Light_003 to database} \\
+\dhl{Extract aperture spectra for Vega_Light_003?} \\
+\dhl{Review extracted spectra from Vega_Light_003?} \\
+\dhl{Review extracted spectrum for aperture 1 from Vega_Light_003?}
+
+A preview (not splot) shows the result.
+
+\llbox{q} finish, move to next job.
+
+Good idea to \dhl{splot} the result, and double check residuals.
+
+
+\figure{begin}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+{\color{green}
+\begin{verbatim} 
+# Thu 22:38:41 11-May-2023
+begin   aperture Vega_Light_006 1 3300. 2034.009
+        image   Vega_Light_006
+        aperture        1
+        beam    1
+        center  3300. 2034.009
+        low     -3299. -4.322676
+        high    2952. 5.233746
+        background
+                xmin -78.09895
+                xmax 68.85063
+                function chebyshev
+                order 13
+                sample  -78.09895:-64.55042 51.1333:68.85063
+                naverage 1
+                niterate 3
+                low_reject 3.
+                high_reject 3.
+                grow 0.
+        axis    2
+        curve   17
+                1.
+                13.
+                1490.
+                5330.
+                4.210632
+                -3.841412
+                5.277158
+                -3.067528
+                0.8136517
+                -1.038884
+                -0.2787266
+                -0.003336905
+                0.06488369
+                0.1270491
+                0.04203865
+                0.04923941
+                0.008242447
+\end{verbatim}
+}
+\endgroup
+%% \end{Verbatim}
+\caption{Contents of a star's aperture extraction.}
+\label{fig:ApextractStar}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%

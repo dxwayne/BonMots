@@ -1,0 +1,57 @@
+\section{Spectrum Flat Fields}
+
+Consider a slit of width $W$, and length $L$ being illuminated by an
+internal collection of lamps with intensity $I$ proximal to the
+slit\footnote{The lamps will move with the spectrograph and will not
+  turely represent the beam from the OTA.}. Take n number of positions
+$p$ along the slit.
+
+
+Hi Frank,
+
+Greetings from India! 
+
+Our new 2 meter telescope has started and we have been trying
+observations with its Imaging Spectrograph to observe many of our
+CFLIB stars. While reducing the spectroscopic data for the red part
+(one grism has range 600-850nm) and we see a lot of fringes (since its
+a thin CCD). Can you suggest an IRAF task which can effectively remove
+the fringes -- (you had done it for our CFLIB spectra)?
+
+I have attached a .ms.fites file of HR5501 IRAF std star which shows
+the effect of fringes in the red side.
+
+Looking forward to your reply,
+
+Regs Ranjan
+
+
+The usual steps for handling fringing is to remove it during flat
+fielding.  So the flat field is first processed by CCDPROC and then a
+"response" flat is created using the task RESPONSE.  The idea in this
+task is to fit a smooth function of wavelength for the average flat
+(automatically generated from the 2D flat) and then divide each pixel
+in the 2D flat with the appropriate function value.  The key is to use
+a fitting order which is high enough to remove the general shape of
+the flat field lamp but not so high as to fit the fringing.  By
+dividing by the low order fit the general shape of the flat field will
+not be applied to the science exposures but the higher frequency
+fringing will be divided out of the science data.  The response flat
+you generate is then applied using CCDPROC with the response flat
+specified as the flat instead of the original flat.
+
+Note that if you are going to do flux calibration then it really
+doesn't matter if the shape of the flat field spectrum is introduced
+to the science data since the flux calibration step will handle that.
+
+So in that case you can either just skip RESPONSE and directly divide
+by the flat field (in CCDPROC) or use a very low order function like a
+constant to just normalize the flat field.
+
+There is no other regular way to handle the fringing other than
+dividing by a flat field.  It would be possible to divide by the
+extracted flat field.  In other words you could do the flat fielding
+and fringe removal in 1D instead of in 2D.
+
+Cheers,
+Frank

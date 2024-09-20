@@ -1,0 +1,118 @@
+\section{CMOS Chips}
+
+CMOS sensors have a few extra details of operation, the
+effective-gain, a pedistal\index{keywords!PEDISTAL}, and need to
+calculate the GAIN \index{keywords!GAIN}.
+
+In general a EGAIN of 1 is desirable with these cameras. The dark
+noise is a bit higher, but the dynamic range \index{CMOS!dynamic range}
+is better. A larger pedistal is required ($\sim$ 3000). This needs
+to be stated.
+
+% Jim Grubb ASI294
+
+From \url{https://astronomy-imaging-camera.com/faqhttps://astronomy-imaging-camera.com/faq} section on amp glow:
+
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   pixels are charged at start, photons deplete that charge
+   \item   actual gain on pixel
+   \item   A pixel is a very complex structure:
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   at least one, often many, ADC
+   \item   clock generators and power supply regulators
+\end{itemize}
+   \item   on-die processing
+   \item   secondary processor
+   \item   DDR buffer
+\end{itemize}
+
+Common wisdom is to set the EGAIN value to 120
+Add a pedistal of 3000 in one case.
+
+
+Have to qualify the general values for GAIN and RDNOISE
+
+Calibrated sensors (voltages not light)
+Can not use last night's cal images.
+
+Exercises related to pattern and PRNU (ha) noise.
+
+Post software assumptions (darks, flats etc).
+
+Flats - pixel variation
+        Dust, optical and vignetting
+
+
+
+ 
+
+\begin{quote}
+When it comes to CMOS cameras, ``amp glow'' is usually not from an
+amplifier. CMOS sensors are usually “fully integrated” which means
+that, unlike a CCD, readout electronics are included on the sensor die
+along with all the pixels themselves. Each sensor has at least one,
+often many, ADC (analog to digital conversion) and CDS (noise
+reduction) units on it. There are also other support circuits on the
+sensor die itself these days ... clock generators and power supply
+regulators and such. These support circuits can generate heat or may
+even emit NIR light, both of which can cause glows. Additionally, many
+modern CMOS sensors include high performance image processing as part
+of the sensor package, either in the form of on-die processing or a
+secondary processor that is directly integrated into the sensor by
+attaching it (often to the reverse side of the sensor.) This
+processing circuitry can often generate heat that may produce glows.
+
+\hskip{2cm }\url{https://astronomy-imaging-camera.com/faq}
+\end{quote}
+
+\subsection{QHY 600M}
+>51ke- Full Well at 3.76um, >80ke- at extend mode at 3.76um
+
+-USB3.0
+-2.5 FPS, full frame, 16-bit images
+-4.0 FPS, full frame, 8-bit image
+-Support for ROI at higher frame rates
+
+
+\begin{table}[h!]
+%\phantomsection
+%\addcontentsline{toc}{section}{ TOC CAPTION}
+% \setlength{\belowcaptionskip}{6pt} % adjust space under caption abovecaptionskip
+% \renewcommand{\arraystretch}{1.3} % adjust line spacing
+%\small{
+%\begin{minipage}{\textwidth}     % for footnotes in table.
+%\caption[TOC]{Well Capacites QHY 600M}
+\centering
+\begin{tabular}{| l | l | l | l |}
+%\MakeShortVerb{\|}
+%\multicolumn{n}{fmt}{text for merged cols}
+\hline
+Full Well Capacity      &  1x1, &   2x2,  &    3x3    \\ 
+\hline
+Standard Mode           &  >51ke-&  >204ke-&  >408ke-    \\ 
+Extend Full Well Mode   &  >80ke- & >320ke-&  >720ke-    \\ 
+%% ones-based: \cline{a-b}
+\hline
+%%\DeleteShortVerb{|}
+\end{tabular}
+%%\end{minipage}    %% for footnotes  r@{.}l 
+\caption[TOC]{Well Capacites QHY 600M}
+\label{table:WellCapacitesQHY600M}
+%%} % end small etc
+\end{table}
+
+Telescope Interface: M54/0.75
+
+
+
+
+
+
+
+
+
+
+
+%

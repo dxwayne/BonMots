@@ -1,0 +1,42 @@
+\section{Using ds9 and a real database}
+
+ds9 will attach to mysql. There is legacy code here from an old project
+that does just that. However, MySQL\texttrademark requires a lot of
+system-dependent administration and imposes undue compute burdens.
+
+The easier path is to create a SQLite3 database. This is can be done
+in memory (real fast and very temporary) or it can be its own format
+file. This file may be 'dumped', munged, and imported elsewhere.
+
+The trick is to attach the SQLite3 tcl package. This is tricky.
+This example is within the ds9's anaconda virtual python package.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+lappend ::auto_path {/home/wayne/anaconda3/envs/iraf27/lib}
+package require sqlite3
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\textbf{\emph{Prose:}} Hey, ds9 you sourced my file that adds the path
+to SQLite3 within the anaconda \dhl{iraf27} virtual python
+environment. The next 'package' statement loads \dhl{sqlite3} into the
+mix.
+
+Now we are free to use all the power that database offers without
+the administration stuff.
+
+Conventions are in order.
+
+For each database we create, we prepend a \dhl{ds9db_} to the file
+name to let the system track them down later. We like to leave
+lots of databases, one each for the area where ds9 is being used.
+This lets you archive and share just the stuff related to the
+observations/project you have.
+
+The \dhl{sasiraf/ds9} has a sqlite3.ini file with a collection of
+pre-made handy functions -- like \dhl{jpldate} that returns ddMonYYYY.
+Hack this to taste.

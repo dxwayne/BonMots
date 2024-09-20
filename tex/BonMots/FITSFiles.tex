@@ -1,0 +1,114 @@
+\section{FITS Files} \label{sec:FITSFiles}
+
+Consult the FITS standard (HaHa), as FITS stands for ``\dhl{F}lexible
+\dhl{I}mage \dhl{T}ransport \dhl{S}ystem''.  OK, people, its
+\dhl{FLEXIBLE}.
+
+Use Fitsverify \cite{fitsverify-1} before publishing.
+
+Files uses ASCII character. Sorry Fran\c{c}ios. No \dhl{UNICODE}!
+
+Headers have ``n'' card blocks, each block has 36 cards. Blank cards
+are filled with 0x20. The old FITS spec permitted NULL (0x00)
+characters, \dhl{BUT THIS IS NOT PERMITTED NOW}.
+
+The last card in the 'deck', is in a block, and starts with END and
+has 80-3=77 0x20 characters.  The rest of the cards, to bring the
+block count to 36 are 80 times 0x20 characters.
+
+At the end of that is where data starts.
+
+Data is stored Big Endian until the end of the extent. The count of byte
+is determined by the product of NAXISn values times the BSIZE keyword.
+
+Get used to it. It's the way it works.
+
+There are no guard values, etc. Think magnetic tape for storage of card decks.
+A 2000 card deck, one box of cards, is heavy. Sufferable but still heavy.
+
+Header cards are 80 columns precisely -- think old computer punch card. \footnote{You have
+not lived until you use a card punch for hours.}
+
+The card consists of a KEYWORD of up to 8 characters. The keyword starts in column
+1 and is padded with 0x20 (ASCII space) chacacters.
+
+
+
+There are several types of FITS files.
+
+\begin{table}[h!]
+%\phantomsection
+%\addcontentsline{toc}{section}{ TOC CAPTION}
+% \setlength{\belowcaptionskip}{6pt} % adjust space under caption abovecaptionskip
+% \renewcommand{\arraystretch}{1.3} % adjust line spacing
+%\small{
+%\begin{minipage}{.8\textwidth}     % for footnotes in table.
+%\caption[TOC]{Very Basic Definition for FITS Files}
+\centering
+\begin{tabular}{| l | l |}
+%\MakeShortVerb{\|}
+%\multicolumn{n}{fmt}{text for merged cols}
+\hline
+Type  & Desciption   \\
+\hline
+IMAGE                     & 1D NAXIS = 1, and NAXIS1 has data    \\ 
+                          & Image 2D NAXIS=2 and NAXIS1=rows, NAXIS2=columns    \\ 
+                          & Cube 3D+ Image; NAXIS=3, NAXISn=rows,columns,time    \\ 
+TABLE                     & Contains tabular data with a set of columns, and    \\ 
+                          & specified number of rows.    \\ 
+Multi-Extenson-Fits (MEF) & A case where extensions are concatenated together to    \\ 
+                          & form one file. Special header keywords apply.    \\ 
+%% ones-based: \cline{a-b}
+\hline
+%%\DeleteShortVerb{|}
+\end{tabular}
+%%\end{minipage}    %% for footnotes  r@{.}l 
+\caption[FITS Types]{Very Basic Definition for FITS Files}
+\label{table:VeryBasicDefinitionforFITSFiles}
+%%} % end small etc
+\end{table}
+
+The files consists of extents. One extent for a basic image file.
+The format is a header section followed by a data section.
+
+
+
+\ltodo{Add BIB/WEB info}{Add the references for the files.}
+
+Some things to keep in mind:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item  Keep file names short, it really helps. 
+   \item  Load up the header, not the filename.
+   \item  Avoid non-ASCII characters, and things like minus signs, more than one period,
+etc. 
+\end{enumerate}
+
+
+There are plenty of sources for detailed information about fits files.
+
+In this context, the important thing to remember is FITS files can contain
+``EXTENTS''. IRAF may create an EXTENT during certain operations.
+
+The task \dhl{zerocombine} will add the recent effort to the end of the
+zeromaster.fits file -- causing that file to create errors with non-obvious
+error messages later on in the process. Here you see the file(s) are
+removed before the operation.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+!rm rawzeromaster.fits zeromaster.fits
+zerocombine @l.l output=rawzeromaster.fits combine=average scale=none reject=minmax
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+\subsection{Fitsverify}
+
+The fitsverify task, available from HEASARC, can be made to be a \dhl{foreign task}
+and test fits files for validity.
+

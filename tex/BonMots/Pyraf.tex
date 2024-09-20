@@ -1,0 +1,114 @@
+\section{Pyraf}
+
+The new PyRAF community edition has made significant changes to the
+overall architecture.
+
+pip3 install -r irafrequirements.txt
+
+
+First remove all the packages -- the order is important due to dependencies:
+sudo dpkg --remove xgterm                        2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo dpkg --remove python3-pyraf                 2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo dpkg --remove iraf-noao                     2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo dpkg --remove iraf                          2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo apt autoremove -y libwpe-1.0-1              2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo apt autoremove -y libwpebackend-fdo-1.0-1   2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo apt autoremove -y python3-pyraf             2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo apt autoremove -y iraf-noao                 2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo apt autoremove -y xgterm                    2>&1 | tee  /home/wayne/iraf-install.txt 
+sudo apt autoremove -y iraf                      2>&1 | tee  /home/wayne/iraf-install.txt 
+
+
+sudo dpkg -S python3-pyraf  
+sudo dpkg -S iraf-noao
+sudo dpkg -S iraf
+
+
+sudo update
+
+# now reinstall one at a time.
+sudo apt install -y iraf xgterm      > /home/wayne/iraf-install.txt 2>&1
+tail /home/wayne/iraf-install.txt
+sudo apt install -y python3-pyraf   >> /home/wayne/iraf-install.txt 2>&1
+tail /home/wayne/iraf-install.txt
+sudo apt install -y xgterm          >> /home/wayne/iraf-install.txt 2>&1
+tail /home/wayne/iraf-install.txt
+
+
+As of 2024-09-18T20:17:14-0600 
+
+The readthedocs.io literature identifies some of these things.
+\url{https://pyraf.readthedocs.io/en/latest/#installation}
+
+first is the addition of 
+
+\verb=set use_new_imh no= needs to be added to loginuser.cl
+
+This alters the parser to recognize the trick of
+
+\verb=t_//@l.l= to prepend \verb=t_ to= all files in the file-list.
+
+\subsection{New PyRAF graphics}
+
+
+A few items:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+import keyword;
+print(keyword.kwlist)
+
+[ 'False', 'None', 'True', 'and', 'as', 'assert', 
+  'async', 'await', 'break', 'class', 'continue', 
+  'def', 'del', 'elif', 'else', 'except', 'finally', 
+  'for', 'from', 'global', 'if', 'import', 'in', 'is', 
+  'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 
+  'return', 'try', 'while', 'with', 'yield' ]
+
+
+
+del and print default to python.
+
+delete (longer abbreviation or whole word) uses iraf delete command.
+
+The keywords in the list above require PY prepended to the word.
+
+help(topic) is the pythonic help access
+help topic is the iraf help access
+
+for any iraf .cl task, say imcoords
+
+print(iraf.imcoords.getCode()) # returns the code in the cl script.
+
+epar is tck/tk implementation.
+
+PyRAF Graphics and Image Display
+
+PyRAF now has its own built in graphics kernel.
+
+stdplot
+
+xgterm and xterm rely on stdgraph and stdkern
+
+
+
+
+
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\subsection{Anaconda3}
+
+
+conda create -n python3.10
+... [Y] yes
+conda activate python3.10
+conda install pyraf
+
+
+%
