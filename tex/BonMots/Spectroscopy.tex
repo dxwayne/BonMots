@@ -1,3 +1,5 @@
+\renewcommand{\footerfilename}{Spectroscopy.tex}
+
 %\subsection
 \section{Spectroscopy}
 
@@ -127,12 +129,14 @@ loginuser.cl.}
 %%\begin{Verbatim} [commandchars=\\\{\}]
 {\color{darkred}
 \begin{verbatim} 
-    apall     sci.fits output = sci.0001.fits (sci.ms.fits) # get disp
-    apall     comp.fits ref=sci interactive=no # comp.0001.fits
-    apall     flat.fits ref=sci interactive=no # flat.0001.fits 
-    identify  comp.0001.fits coordlist=...      # per usual
-    hedit     sci.0001.fits REFSPEC1=comp.0001.fits add+ update+ ver- show-
-    dispcor   sci.0001.fits cal_sci.0001.fits # add the WCS to the file.
+    apall     sci.fits        output = sci.0001.fits (sci.ms.fits) # get disp
+    apall     comp.fits       ref=sci interactive=no               # comp.0001.fits
+    apall     flat.fits       ref=sci interactive=no               # flat.0001.fits 
+    identify  comp.0001.fits  coordlist=...                        # per usual
+    hedit     sci.0001.fits   REFSPEC1  comp.0001.fits add+ update+ ver- show-
+    hedit     flat.0001.fits  REFSPEC1  comp.0001.fits add+ update+ ver- show-
+    dispcor   sci.0001.fits   cal_sci.0001.fits                    # WCS to file.
+    dispcor   flat.0001.fits  cal_sci.0001.fits                    # WCS to file.
 \end{verbatim}
 }
 \endgroup

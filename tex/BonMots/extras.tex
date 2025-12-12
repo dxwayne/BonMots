@@ -1,4 +1,6 @@
 
+\renewcommand{\footerfilename}{extras.tex}
+
 
 \section{Wildcards}
 
@@ -47,11 +49,12 @@ It is possible to pick groups of characters from a string.
 
 {\color{verbcolor}{\verb#!ls -1 c_*fits | tee in.list | sed -e 's/^/c_/' > out.list#}}
 
-is a one-liner for PyRAF that finds all cosmic-ray files (by our convention),
-uses {\color{verbcolor}{\verb#tee#}} to save a copy in a file called in.txt,
-then uses sed to prepend the {\color{verbcolor}{\verb#c_#}} to each line
-which saves the modified name into a file called {\color{verbcolor}{\verb#out.list#}}.
-No interactive editing needed!
+is a one-liner for PyRAF that finds all cosmic-ray files (by our
+convention), uses {\color{verbcolor}{\verb#tee#}} to save a copy in a
+file called in.txt, then uses sed to prepend the
+{\color{verbcolor}{\verb#c_#}} to each line which saves the modified
+name into a file called {\color{verbcolor}{\verb#out.list#}}.  No
+interactive editing needed!
 
 Regular expressions appear in the python module {\color{verbcolor}{\verb#re#}}.
 They are quite powerful.
@@ -244,7 +247,7 @@ to learn and understand...
 5  files somewildcardexpression > in.l
 6  !sed -e 's/^/out_/' < in.l >out.l
 7  hselect c_*fits %I "(IMAGETYP ?= flat && FILTER ?= 'HA')" > l.l
-8  imarith @l.l / norm_flatHa.fits f_//@l.l
+8  imarith @l.l / norm_flatHa.fits f_@l.l
 9  !vi -es -c "%s/ /_/g" -c "%s/./_/g" -c "%s/_f\([a-z]\+\)/f\1"-c "w" -c "q" outfile
 
 10 !ls -1 [a-z]*fits | sed -e 's/\(^.*$\)/crmedian \1 c_\1/' > crall.cl

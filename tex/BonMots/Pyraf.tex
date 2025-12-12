@@ -1,8 +1,28 @@
+\renewcommand{\footerfilename}{Pyraf.tex}
+
 \section{Pyraf}
+
+Currently the reduction package is running in a docker file.
+
+\begin{tcolorbox}[title=Pyraf alias entry for bash]
+\begin{verbatim}
+function pyraf { export LOCALDATA=$(pwd);
+                 export SPECDATA=$HOME/Observations/reduce;
+                 cd /home/git/external/PyrafDocker/Compose/pyraf;
+                 sudo xhost +local:docker;
+                 docker compose run --remove-orphans pyraf /bin/bash;
+               }
+\end{verbatim}
+\end{tcolorbox}
 
 The new PyRAF community edition has made significant changes to the
 overall architecture.
 
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
 pip3 install -r irafrequirements.txt
 
 
@@ -46,7 +66,7 @@ first is the addition of
 
 This alters the parser to recognize the trick of
 
-\verb=t_//@l.l= to prepend \verb=t_ to= all files in the file-list.
+\verb=t_@l.l= to prepend \verb=t_ to= all files in the file-list.
 
 \subsection{New PyRAF graphics}
 
@@ -109,6 +129,34 @@ conda create -n python3.10
 ... [Y] yes
 conda activate python3.10
 conda install pyraf
+
+
+%
+\subsection{Basic Structural Details}
+
+After the basic PyRAF start, 
+iraf. ... has 708 things instantiated.
+
+
+
+dir()
+show home
+
+   GTK3Agg, GTK3Cairo, GTK4Agg, GTK4Cairo, MacOSX, nbAgg, notebook, QtAgg,
+   QtCairo, TkAgg,     TkCairo, WebAgg,    WX,     WXAgg, WXCairo,  Qt5Agg,
+   Qt5Cairo
+
+MPLBACKEND
+MPLCONFIGDIR
+PYTHONPATH
+
+
+
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
 
 
 %

@@ -1,10 +1,21 @@
+
+\renewcommand{\footerfilename}{MultiSpec.tex}
+
 \section{Multispec Spectra}
 
 These images have a NAXIS of 3 or 4, where:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
 NAXIS1 - BAND1 reduced image
 NAXIS2 - BAND2 raw image
 NAXIS3 - BAND3 sky that results in reduced = raw image - sky
 NAXIS4 - BAND4 variance (apall.weights = 'variance' specified.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
 
 1D spectra consist of just the BAND1 image.
 

@@ -2,6 +2,5 @@
 \begin{theglossary}\glossaryheader
 \glsgroupheading{N}\relax \glsresetentrylist %
 \glossentry{noise}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{43}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{124}}}%
+		\setentrycounter[]{page}\glsnumberformat{97}}}%
 \end{theglossary}\glossarypostamble

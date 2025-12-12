@@ -1,10 +1,44 @@
+
+\renewcommand{\footerfilename}{identify.tex}
+
 \section{IRAF identify task}
 
 Identify, well described by its help file, has few tricks of use for spectroscopy.
 
-The main trick is to trim all the spectra for a camera to tight blue and red extents.
-This helps to avoid a sub-issue of polynomial fitting -- x values that carry no
-information. 
+The main trick is to trim all the spectra for a camera to tight blue
+and red extents.  This helps to avoid Runge phenomenon with polynomial
+fitting -- trim to exclude $X$ values that carry no information.
+
+A critical thing to remember is that a astronomical spectrum represents flux generated
+by discrete number of elements (and a few other aspects, like temperature, the local
+gravity field, the B field, etc) that are combined together. One region of the
+spectrum is not necessarily informed by any adjacent (different element) information.
+So, using mathematics that starts with phrases like ``given a continuous function, ...''
+we run into the problem that each element spans a finite distance in the independent
+axis. 
+
+All this translates into adding noise to the very quantities we want to describe.
+
+\subsection{Get the linelist right} \ref{identify_linelist}
+
+The linelist \index{identify!linelist} contains a list of the line position
+in angstroms together with the name of the line. Do a hand-fit of the lamp
+the old fashioned way, guess/fit etc. Using the \llbox{D} key to delete
+poorly matched lines, save and exit the function. Under the \dhl{database}
+location, find the file you just created. Within that file is the list of
+lines, their angstrom values, and a confidence of the fit. Using well fit
+lines, develop the \dhl{practical line list}.
+
+A decent, concise but accurate, list of line that can be practically fit,
+the \dhl{reidentify} step will be successful. 
+
+\subsection{Trick - print the plot of well fitted lines}
+
+During the identify step, the \dhl{user coordinates} command will overlay
+prose onto the graph. This makes identification by hand easier later. 
+
+
+
 
 \ltodo{identify}{Fill in more tricks.}
 

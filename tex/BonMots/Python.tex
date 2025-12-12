@@ -1,7 +1,12 @@
+\renewcommand{\footerfilename}{Python.tex}
+
 \section{Python}
 
 Origninal PyRAF was written in python 2.7. The new PyRAF3 now uses python
-up to 3.7.
+up to 3.10.
+
+There are various PyRAFs floating around. This necessitates the use of
+python virtual environments. \index{Python!virtual environments}
 
 \subsection{Changes}
 
@@ -40,3 +45,76 @@ constant. Formating is achieved with a suffix starting with a colon
 and followed by a C-like printf string. Details are in Python's PEP 498.
 
 \ltodo{2.7x to 3.x Conversions}{Flesh out the {2.7x to 3.x Conversions}
+
+
+\subsection{Python Basics}
+
+idle3 -- for python 3.
+
+\subsection{Python Specifics}
+
+Read,Eval,Print,Loop  (REPL))
+
+PyRAF makes use of ``frozen modules''. These are pre-compiled, 
+
+
+Python global environment
+   Important for the system
+   Important for wide-spread use
+
+Python Virtual Env:
+   Download from python.org, get version.
+   Customize installation
+   Don't add the version to the PATH
+
+The python will be put into the global env, but it is managable.
+
+
+\subsection{Build Details}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+python -m sysconfig | grep 'CONFIG_ARGS
+
+# within python
+import sysconfig
+sysconfig._CONFIG_VARS['CONFIG_ARGS'] ; # show the configuration 
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\subsection{Python Hacks to Support IRAF/PyRAF}
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+
+home = os.getenv("HOME")
+with open(home + '/PythonReport.txt','w') as f: 
+   for e in os.getenv().items():
+      print(e,file=f)
+   print("######### CONFIG VARIABLES ##############")
+   for p in sysconfig.get_config_vars():
+      print(p,file=f)
+
+
+
+IRAFARCH=linux64
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+
+
+
+
+
+
+%

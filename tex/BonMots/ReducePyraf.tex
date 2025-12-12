@@ -1,3 +1,5 @@
+\renewcommand{\footerfilename}{ReducePyraf.tex}
+
 \section{Reduce.pyraf Control File} \label{sec:ReducePyrafControlFile}
 
 \begingroup \fontsize{10pt}{10pt}
@@ -79,7 +81,7 @@ ll *fits *fit
 hedit *fits DISPAXIS 1                                    # can't hurt non-spectral files.
 
 ############################### TRIM THE FILES ##############################
-!if [ "$TRIMSEC" != ' ' ; then trim -s $(TRIMSEC) $(cat l.l) ; fi  # trim makes t_//@l.l output!
+!if [ "$TRIMSEC" != ' ' ; then trim -s $(TRIMSEC) $(cat l.l) ; fi  # trim makes t_@l.l output!
 
 ll *fits
 !fitserial *fits
@@ -93,7 +95,7 @@ zerocombine @l.l output=rawzeromaster.fits combine=average scale=none reject=min
 imsurfit input=rawzeromaster.fits output=zeromaster.fits
 
 ####################### zero subtract all the other files ###################
-imarith @l.l - zeromaster.fits z_//@l.l
+imarith @l.l - zeromaster.fits z_@l.l
 !rm -f fixneg.cl n_*fits                                  # replace px < 0
 ll z_t_*fits
 !for ffile in $(cat l.l) ; do printf "imexpr 'a <= 0 ? 75.0 : a' n_%s  a=%s\n" "$ffile" "$ffile" >> fixneg.cl; done;
