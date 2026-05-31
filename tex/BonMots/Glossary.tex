@@ -12,6 +12,8 @@ using RDNOISE, GAIN, and ``sensitivity noise''. Note: RDNOISE and GAIN\\
 and intensity (I) are in ADU (DN) and require scaling by GAIN.  The\\
 ``sensitivity noise'', taken from flats, is a ``fraction''.}}
 
+% \newglossaryentry{}{name={},description={}}
+
 \newglossaryentry{analysis}{name={analysis},description={Action performed on a fully reduced file.}}
 
 \newglossaryentry{apall}{name={apall},description={A IRAF task used to define apertures, extract the trace, determine and subtract background information, and to describe the trace using various fitting math functions: spline, spline3, chebyshev, legendre.}}
@@ -20,25 +22,31 @@ and intensity (I) are in ADU (DN) and require scaling by GAIN.  The\\
 
 \newglossaryentry{background}{name={background},description={Noise, light pollution, spectral lines from city lamp sources, etc. Subtracted from source information in an image and characterized by its own noise statistics.}}
 
-\newglossaryentry{band}{name={band},description={In IRAF, a subsets of information related to the data. In multispec spectra, band 1) is the final signal; 2) the raw signal before corrections; 3) the sky area; and 4) the SNR for the data.}}
+\newglossaryentry{band}{name={band},description={A dimension of multiple axis images, NAXIS >= 3. In IRAF, a subsets of information related to the data. In multispec spectra, band 1) is the final signal; 2) the raw signal before corrections; 3) the sky area; and 4) the SNR for the spectra.}}
 
 \newglossaryentry{beam}{name={beam},description={A record from a separate optical path/sensor combination that may appear in certain instrument's spectral images.}}
 
 \newglossaryentry{calibration}{name={calibration},description={The act of assigning a \textbf{\emph{W}}orld \textbf{\emph{C}}oordinate \textbf{\emph{S}}ystem to data.}}
 
+\newglossaryentry{cl}{name={cl},description={IRAF ``Command Language'', the basis for IRAF scripting. Superceded by Extended Command Language (ecl), then by PyRAF -- where IRAF commands can be intermingled with python.}}
+
 \newglossaryentry{combine}{name={combine},description={In IRAF the combination of data from two or more images.}}
 
-\newglossaryentry{command}{name={command},description={Incomputing, an imperative subject to qualification by parameteres, to accept data from a source (stdin), and send results to an output (stdout). }}
-
-\newglossaryentry{commands}{name={commands},description={One or more command imperatives. They may be collected together into a 'script' and replayed  to affect at a later time.}}
+\newglossaryentry{command}{name={command},description={In computing, an imperative subject to qualification by parameteres, to accept data from a source (stdin), and send results to an output (stdout). }}
 
 \newglossaryentry{database}{name={database},description={An organized collection of data and inter-relationships stored in a management framework. Popular databases include Maria DB, PostgreSQL, etc.}}
 
 \newglossaryentry{default}{name={default},description={A value used for a parameter, when no overide is provided.}}
 
+\newglossaryentry{dispaxis}{name={dispaxis},description={The DISPAXIS keyword sets the expected direction of a spectrum's dispersion axis. 1='follow rows'; 2='follow columns'; 3=datacube. This is set with \dhl{epar apextract} command.}}
+
+\newglossaryentry{ecl}{name={ecl},description={IRAF ``Extended Command Language'', Extended replacement for Command Language (ecl).}}
+
 \newglossaryentry{FITS}{name={fits},description={\textbf{\emph{F}}lexible \textbf{\emph{I}}mage \textbf{\emph{T}}ransport \textbf{\emph{S}}ystem Several forms: SIMPLE, \textbf{\emph{M}}ultiple \textbf{\emph{E}}xtension \textbf{\emph{F}}ile (MEF), Cube.}}
 
 \newglossaryentry{flat}{name={flat},description={A special image file used to capture the vignetting profile, dust, and other defects unrelated to a source as seen by a sensor.}}
+
+\newglossaryentry{foreign}{name={foreign},description={A foreign command is declared in login.cl at  logunuser.cl at startup. You can add your local commands to this list.}}
 
 \newglossaryentry{function}{name={function},description={A name for an algorithm and its encapsulating logic. Used together with general logic forms tasks and programs.}}
 
@@ -66,15 +74,19 @@ and intensity (I) are in ADU (DN) and require scaling by GAIN.  The\\
 
 \newglossaryentry{observations}{name={observations},description={A set of data, usually taken during one section on one date, at one site, of one or multiple targets; together with calibration and other instrumentation data.}}
 
-\newglossaryentry{package}{name={package},description={A collection of parameters, tasks, help files within IRAF.}}
+\newglossaryentry{package}{name={package},description={A collection of tasks, parameters, and help files within IRAF that must be loaded to access.}}
 
 \newglossaryentry{parameters}{name={parameters},description={The information in the form of switches on a command line, values in a parameter file, etc that inform and alter the way a task proceeds with its actions.}}
 
-\newglossaryentry{pixels}{name={pixels},description={A single element of a sensor. }}
+\newglossaryentry{pixel}{name={pixel},description={``Pixel Element'': the  single/smallest discrete element of a sensor. }}
+
+\newglossaryentry{procedure}{name={procedure},description={A separately compiled/interpreted collection of cl/ecl statements appearing as a subroutine.}}
 
 \newglossaryentry{profile}{name={profile},description={In IRAF, a list of aperture profile images, the shape of data like a Point Spread Function for a star, a gaussian fit 'profile' centered around a point of interest, the general shape of a descriptive curve. }}
 
-\newglossaryentry{pyraf}{name={pyraf},description={The newest, latest and probably final version of cl -- the IRAF command language.}}
+\newglossaryentry{program}{name={program},description={A collection of procedures, interpreted/compiled with the CL/ECL interface. May be processed with SPP to produce native executables or implemented with another language and used as a ``\dhl{foreign task}''}}
+
+\newglossaryentry{PyRAF}{name={pyraf},description={The newest, latest and probably final version of cl -- the IRAF command language.}}
 
 \newglossaryentry{pyraflogin}{name={pyraflogin},description={A user supplied file, containing data, functions and tasks for use with PyRAF.}}
 
@@ -94,13 +106,19 @@ and intensity (I) are in ADU (DN) and require scaling by GAIN.  The\\
 
 \newglossaryentry{standard}{name={standard},description={A short-hand way to refer to a standard (pre measured and described) reference star.}}
 
-\newglossaryentry{stdout}{name={stdout},description={Unix: the file stream where nominal messages are written, as to the terminal or redirected to a file.}}
+\newglossaryentry{stdin}{name={stdout},description={Unix: the file stream supplying input to agents reading the standard input stream. The sequence \dhl{grep < l.l} searches each line of l.l using the grep command.}}
+
+\newglossaryentry{stderr}{name={stdout},description={Unix: the file stream where error messages are written, to the terminal or redirected to a file.}}
+
+\newglossaryentry{stdout}{name={stdout},description={Unix: the file stream where nominal messages are written, to the terminal or redirected to a file.}}
 
 \newglossaryentry{task}{name={task},description={A 'function' within a package within IRAF.}}
 
 \newglossaryentry{target}{name={target},description={See OBJNAME.}}
 
-\newglossaryentry{trace}{name={trace},description={The path of a star's image across a sensor in the same beam.}}
+\newglossaryentry{trace}{name={trace},description={The path of a star's image across a sensor in the same beam. This usually follows a curve due to astigmatisms.}}
+
+\newglossaryentry{whitespace}{name={whitespace},description={A character, usually non-printing like space, tab etc, used to separate lexical parts of a line into individual tokens. The meaning of a token is taken from the surrounding context.}}
 
 \newglossaryentry{Unix}{name={Unix},description={The operation system, a play on words from the Multics operating system. The OS of IRAF.}}
 

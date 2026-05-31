@@ -3,7 +3,7 @@
 %%% HEREHEREHERE
 % Fancyhdr... http://tug.ctan.org/tex-archive/macros/latex/contrib/fancyhdr/fancyhdr.pdf
 %% APPENDIXes
-
+% cleantex && pdflatex BonMots.tex && makeglossaries BonMots && pdflatex BonMots.tex && evince BonMots.pdf
 %% APPENDIXEND
 % git/ASTR3510_2019/doc/BonMots.tex
 %%% (occur \"[ ]*\\(\\\\input\\|\\<include\\\\>\\)\")
@@ -53,14 +53,11 @@
 %%\usepackage{subfigure}           %% images side by side.
 %%\geometry{margin=1in}            %% Allow narrower margins etc.
 \usepackage[T1]{fontenc}           %% Better Verbatim Font.
-\usepackage{makeidx}             %% Make an index uncomment following line
 \usepackage{comment}             %% comment out large chunks
 \usepackage{tcolorbox}
+\usepackage{makeidx}             %% Make an index uncomment following line
 \makeindex                       %%.. yeah this one, too. index{key} in text
 
-\usepackage{glossaries}            %% make a glossary
-\makeglossaries
-\input{Glossary.tex}
 
 \renewcommand*\ttdefault{txtt}     %%
 %\usepackage{cite}
@@ -93,9 +90,16 @@
 %%\SetWatermarkColor[gray]{0.3}
 \fi
 
+
+\usepackage{makeidx}             %% Make an index uncomment following line
+\makeindex                       %%.. yeah this one, too. index{key} in text
+\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
+\usepackage{glossaries}            %% make a glossary
+\makeglossaries
+\input{Glossary.tex}
+
 %% (wg-texdoc-insert-fancy-headers)
 
-\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
 
 %%
 
@@ -176,7 +180,7 @@ pdfproducer = {dvips + ps2pdf}}
 
 \pagecolor{yellow}
 %\vspace{-1.5cm}
-\title{\vspace{2.0cm}
+\title{\vspace{0.5cm}
 {\huge DRAFT} \\
 PyRAF/IRAF/Unix \emph{``Bon Mots''}\\
 {\color{darkred}{PyRAF does not work for you,\\
@@ -195,7 +199,7 @@ it works with you!}}}
 of words weilded by Oscar Wilde -- to whom the turn of phrase ``bon
 mot'' is often attributed.}}
 \\
-``Pay very close attention to the noise, the signal will take care if itself''
+``If you pay very close attention to the noise, the signal will take care if itself.''
 {\small \emph{Wayne Green}}
 \\
 ``When it comes to backups there are two types of people: those that do
@@ -228,7 +232,7 @@ and those that will.'' {\small \emph{unknown}}
 
 \clearpage
 
-Quick Overview of the file system we recommend. This example is used throughout.
+Quick Overview of the file system layout we recommend. This example is used throughout.
 \index{directory structure}
 
 \vskip 2cm
@@ -268,8 +272,8 @@ Quick Overview of the file system we recommend. This example is used throughout.
 \clearpage
 \input{CriticalConcepts.tex}
 \clearpage
-\input{Typography.tex}
 
+\renewcommand{\footerfilename}{BonMots.tex}
 \section{Set up the machine}
 
 For Ubuntu, the packages ``iraf'' and ``python3-pyraf'' need to be installed and
@@ -277,21 +281,31 @@ ready to go.
 
 This basic setup will be augmented.
 
-It is necessary to create a {\textasciitilde{}/.iraf} directory and add
-the git clone's loginuser.cl and pyraflogin3.py programs. These are
-biased towards reducing longslit small-telescope spectra.
+It is necessary to create a {\textasciitilde{}/.iraf} directory and
+add the git clone's loginuser.cl and your custom
+pyraflogin3.py\footnote{\url{https://github.com/The-SMTSci/SMTSCI-iraf.git}}
+programs. These are biased towards reducing longslit small-telescope
+spectra.
 
 Create a {\textasciitilde{}/bin} directory and populate with the bin
 files from the git clone.
 
 The {\textasciitilde{}/bin} directory has to be included with the path.
 
-Unix starts each window, and endows the environment based on the
-{\textasciitilde{}/.bashrc} file.  If
-{\textasciitilde{}/.bash\_aliases} exists it will be loaded. Copy the
-dot.bash\_aliases to {\textasciitilde{}/.bash\_aliases} and copy the
-dot.pyraf.aliases to {\textasciitilde{}/.pyraf.aliases}' (Git does not allow
-for hidden files to be saved).
+When Unix starts a bash shell, it moves to the home directory you have
+registered when the account was created (/etc/passwd file). It looks
+for initialization files, like \dhl{.bashrc}. In that file, it tests to
+see if you created a \dhl{.bash.aliases} file -- and if found it will
+'source' that file. Sourcing the file means all the action, like
+exporting variables and declaring functions will in inserted into
+the current shell. In your .bash.aliases file, you can add your
+own tests for additional files (like \dhl{.pyraf.aliases}!) and it
+will source them as well.
+
+From the SMTSCI-iraf.git environment, copy the dot.bash\_aliases to
+{\textasciitilde{}/.bash\_aliases} and copy the dot.pyraf.aliases to
+{\textasciitilde{}/.pyraf.aliases}' (Git does not allow for hidden
+files to be saved).
 
 Reduction steps discussed here will use at least these scripts:
 
@@ -307,11 +321,13 @@ trim
 %% \end{Verbatim}
 fitsls
 
-
-
 \section*{Overview}
 
-IRAF/PyRAF is in transition, with several packages showing variations in thier
+I do not use IRAF/PyRAF for photometry. I use Sextractor instead, together
+with Astrometry.net and PostgreSQL. That said, this document focuses on
+spectroscopy.
+
+IRAF/PyRAF is in transition, with several packages showing variations in their
 installation. There is no easy way to identify an installation from its
 files. In all cases, iraf uses a \dhl{login.cl} file. The location of that
 file helps to determine the overall setup of the environment.
@@ -331,6 +347,10 @@ for backup and reduction. We have IRAF/PyRAF installed on the RPi to
 facilitate focus and quick tests of the images.
 
 \subsection{Directory Layout}
+
+Data is in two quintessential places: 1) The computer that collects the data
+from the instrument, and 2) the computer you are using to reduce the data.
+
 
 There are two quintessential things about data: 1) preserve the data
 and metadata and 2) be able to audit processing of the data.
@@ -376,7 +396,7 @@ and sub-directories to manage the files.
 .4 Reduce - Major IRAF/NonIraf reduction.
 .4 Analysis - Major IRAF/NonIraf analysis.
 .2 Desktop.
-.3 Today - where all ``tonights'' observations go.
+.3 Today - where all ``tonight's'' observations go.
 }
 \label{figure:dirlayout}
 \end{figure}
@@ -386,7 +406,7 @@ and sub-directories to manage the files.
 The directory \dhl{usw} is used in lieu of the Unix \dhl{etc} like
 files. The phrase \dhl{usw} \dhl{und so wieder} ``and so again'' is a
 rough German language equivalent for et cetera. \index{usw}  In Unix \dhl{etc}
-contains loosely related information. For example puruse \dhl{/etc},
+contains loosely related information. For example peruse \dhl{/etc},
 where the system keeps configuration information of a global level. It
 is so overloaded that something unique to our purposes is desired.
 
@@ -394,7 +414,7 @@ With this layout, the \dhl{{\textasciitilde}/Observations/usw}
 directory contains side files of importance your overall personal
 observing strategy. Files, like ds9 region files, special catalog
 files, general tools, (well,,,, etc) are stored here. Make
-subdirectories that hold common information for different sites or
+sub-directories that hold common information for different sites or
 instruments. Copy similar data into a nightly structure as needed.
 
 Data is taken at night. Use \dhl{dates} that reflect the date of sunset
@@ -471,7 +491,7 @@ The steps are:
 \begin{itemize}
 \addtolength{\itemsep}{-0.5\baselineskip}
    \item   Make an ``Observations'' directory for the night, and create a RawData directory, and
-a \dhl{usw} direcrory.
+a \dhl{usw} directory.
    \item   Copy the template \dhl{pyraf.reduce} file into \dhl{usw}. 
    \item   Open the \dhl{pyraf.reduce} in the editor and start the commands/audit trail.
    \item   Properly archive the data.
@@ -507,16 +527,16 @@ are necessary in each sequence.
 
 The steps are roughly:
 
-Interactivly use apall for the middle of the science images. You can re-run apall
+Interactively use apall for the middle of the science images. You can re-run apall
 for the other two in non-interactive mode. (Yes, make sure the step is done right).
 
 Next using the middle image as a reference, use apall,
 non-interactive, to extract the matching trace pixels from the cal and flat images.
 
-Use the \dhl{indetify} step with the cal to get the WCS information for the
+Use the \dhl{identify} step with the cal to get the WCS information for the
 files in the sequence. 
 
-Apply the WCS with \dhl{dispcor}. 
+Apply the WCS with \dhl{disport}. 
 
 % HEREHEREHERE
 
@@ -524,14 +544,66 @@ Apply the WCS with \dhl{dispcor}.
 
 \section{IRAF ``at-files'' or ``@'' Tricks}
 
-During the 1980 command lines were growing longer and longer. We simply
-had more files to work with. So rather than having to type in a long
-list of files the ``seldom-used'' at-cost symbol ``{\color{verbcolor}{\verb#@#}}''
-was conscripted to mean a ``file'' that contained a ``list-of-files''
-with  ``one-filename-per-line''. The command interpreters were hacked to pause, open
-that file, and load up paremeter the developing list (argv for you C programmers) with the contents of that file. Hey,
-it works, and we love it.
-\ltodo{rework}{The load up paremeter the developing list parts needs rethinking}
+The \dhl{at cost} \llbox{@} symbol has been co-opted by IRAF to indicate
+use a file where each line is a filename for the command to operate upon.
+It is a 'list-of-files' type file.
+
+Some practitioners recommend using lists and a text editor to manage
+cases where work is done to a set of input files, that are save with a new
+with a new name. To do this they use \dhl{ls} to make a list. Then edit the
+list and add/change the name for the change. This is very tedious.
+
+The steps we usually follow are to make the master files. If you
+prepend a single letter to the old filename you can perform trimmig,
+cosmic ray correction, zero subtraction, dark subtraction,
+flat-fielding quite quickly.
+
+Lets set the IMAGETYP for the files to be something that matches the IRAF
+vocabulary.
+
+It is created along the lines of:\\
+~~~\dhl{! ls -1 *Zero*fits > l.l}\\
+taken then used along the lines of: \\
+~~~hedit @l.l IMAGETYP zero add+ update+ del- ver- show-
+
+to set the file type of the 'zero exposure files' to have a FITS keyword
+IMAGETYP set to 'zero' to satisfy the \dhl{zerocombine} command requirements.
+The IRAF vocabulary follows:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+# NAME                IRAF VOCABULARY
+OBJECT                  object
+DARK                    dark
+"PROJECTOR FLAT"        flat
+"SKY FLAT"              other
+COMPARISON              other
+ZERO                    zero                    # New software
+#BIAS                   zero                    # Old software
+"DOME FLAT"             flat
+MASK                    other
+FOCUS                   object
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+The ``\dhl{trick}'' is to set all files to \dhl{object}, then set the subset
+to their proper names. 
+
+
+
+During the 1980 command lines were growing longer and longer. We
+simply had more files to work with. So rather than having to type in a
+long list of files the ``seldom-used'' at-cost symbol
+``{\color{verbcolor}{\verb#@#}}'' was conscripted to mean a ``file''
+that contained a ``list-of-files'' with ``one-filename-per-line''. The
+command interpreters were hacked to pause, open that file, and load up
+the developing parameter list (argv for you C programmers) with the
+contents of that file. Hey, it works, and we love it.
+\ltodo{rework}{The load up paremeter the developing list parts needs
+  rethinking}
 
 IRAF users were tired of editing things every time they turned around,
 and string operators were in IRAF's code, so the idea of using
@@ -604,7 +676,7 @@ name. Its content will change rapidly during the script's execution. If
 you see one in a directory listing, remove it -- it is only a residual file.
 This saves on all the in.txt and out.txt and other blah.blah.blah.txt files.
 
-IRAF uses a {\color{verbcolor}{\verb#@filename#}} by taking a
+\gls{IRAF} uses a {\color{verbcolor}{\verb#@filename#}} by taking a
 filename, one-per-line from a ``file of filenames''. It is usually
 pronounced ``an at file''. The IRAF command {\color{verbcolor}{\verb#files -1 *Bias*fits > l.l#}}
 or a Unix command sent to the system
@@ -864,7 +936,7 @@ NGC7218: {\color{verbcolor}{\verb#mkdir -p ~/Planning/NGC7218/usw#}}.
 then {\color{verbcolor}{\verb#cd ~/Planning/NGC7218/usw#}}
 or simply {\color{verbcolor}{\verb#cd !$#}}. Start ds9.
 
-Analysis \menu Image Servers \menu DSS .... choose plates, fill in the
+\Gls{analysis} \menu Image Servers \menu DSS .... choose plates, fill in the
 dialog using {\color{verbcolor}{\verb#ngc 7281#}} and let SIMBAD look
 up the coordinates -- or enter the coordinates directly. Acquire (use
 a 45-arcminute field). Once the image loads, you verify it is
@@ -1193,7 +1265,8 @@ avoid the inevitable floating point roundoff, especially with sine.
 
 Tools like SIMBAD \cite{2000A&AS..143....9W}, TOPCAT
 \cite{2005ASPC..347...29T}, the Aladin\footnote{It is pronounced Al -
-  A - Din not like the Disney movie. I asked a french astronomer.}
+  A - Din not like the Disney movie. I asked a french astronomer. Add CDS to search-engine queries
+to disambiguate.}
 \cite{1994ASPC...61..215B,2011ascl.soft12019C} App (not the online
 applet), Glue \cite{2012AN....333..505G,robitaille_thomas_2017_1237692}.
 
@@ -1406,7 +1479,7 @@ cl < ./tmp.cl
 
 %\input{SPLOTQuestions.tex}
 
-\input{ApallLPARS.tex}
+%\input{ApallLPARS.tex}
 
 \input{IdentifyLPARS.tex}
 
@@ -1419,6 +1492,7 @@ cl < ./tmp.cl
 \input{Statistics.tex}
 
 \input{ReducePyraf.tex}
+\renewcommand{\footerfilename}{BonMots.tex}
 
 
 \section{Complex Example}  \label{sec:complexexample}
@@ -1444,6 +1518,7 @@ cl < ./tmp.cl
 \input{TOPCAT.tex}
 
 \input{IrafOverview.tex}
+\renewcommand{\footerfilename}{BonMots.tex}
 
 
 \section*{TODO: Roundup these things}

@@ -25,3 +25,29 @@ and "gmag" < 16
 \endgroup
 %% \end{Verbatim}
 
+
+\subsection{Use SIMBAD Script Submission Query from Website}
+
+Given a list of stars, get certain parameters. Shown here is to get the
+coordinates in decimal format, common additional names, the spectral
+classification, list of fluxes, complete list of known/suspected
+types.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+format object f1 "(%COO(2d;A , D),'%MAIN_ID', '%IDLIST(A;HD,WDS,HIP,HD)' ,'%SP(s)', '%FLUXLIST(;N=F,)','%OTYPELIST')"
+
+query id HD 269858
+query id HD 50896
+query id HD 62910
+query id HD 63099
+query id HD 68273
+...
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+

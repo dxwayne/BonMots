@@ -1,10 +1,41 @@
 \renewcommand{\footerfilename}{ReduceSpectra.tex}
 
 % BonMots/ReduceSpectra.tex
-\section{Reduce Spectral Sequence}
+\section{Reduce A Night of Spectra}
 
-A sequence consists of three images, a comparison lamp, a flat and a science target star.
-This section does not deal with reduction of a extended source across a long slit.
+The night usually consists of focus images, zeros, darks -- where applicable, flats
+and sequences around a target. The files that come from the science computer will
+be lacking some keywords, and may require changing others.
+
+For spectra it is critical to set the \gls{dispaxis} right. DISPAXIS=1 means the
+dispersion follows rows, where DISPAXIS=2 means it follows columns. 
+
+Zeros, darks and flats are combined using the ``median'' combine
+method. Median combining takes the middle-most value from an array. This
+avoids cosmic rays hits as they are shoved to one end of that array!
+Three files are made: \dhl{zeromaster.fits}, \dhl{darkmaster.fits}, and
+\dhl{flatmaster.fits}. Note lots of people use masterxxxx, but tab completion
+is easier by putting the type first. z\mousebox{TAB} gets the job done.
+
+Zero exposures are supposed to measure predominatly Gaussian noise associated
+with the manufacturing of the chip.  Dark and Light exposures involve Poission
+statistics -- related to the arrival rate and spacing of photons. Therefore
+it is necessary to take the zeromaster from each dark image prior to making
+the darkmaster.
+
+If you insist on averaging, use lots of images. Averaging adds any
+cosmic-ray noise. Most cosmic ray removal algorithms get most, but not
+always all of the noise. Note: CMOS images have some issues. See
+\ref{section:CMOSChips} for details.
+
+A \dhl{sequence} consists of a subbset of files for the target star and a subset
+of files for the reference star. Slewing the telescope changes the gravity
+vector through the instrument distorting images by a a pixel or two. This
+amounts to several angstroms of error for small telescopes.
+
+The flat is \dhl{NOT TREATED LIKE PHOTOMETRIC} flats. More on that in
+\ref{section:SpectrumFlatFields}
+
 
 The files, (a10234) is a serial number added to as a prefix to the images
 taken, in order specified by the DATE-OBS keyword):

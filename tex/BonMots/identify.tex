@@ -5,7 +5,35 @@
 
 Identify, well described by its help file, has few tricks of use for spectroscopy.
 
-The main trick is to trim all the spectra for a camera to tight blue
+The key is to fine tune the parameters (epar/lpar etc) for the instrument. A bit of
+work once, perhaps a few fine tweaks for a bad night.
+
+Create a line list that matches your instrument. This can be done with a long list,
+an initial (tedious) extraction. Then the lines that were actually used are listed
+in the database entry for that file. Take that list and make a new list to use going
+forward. Note: The list changes when the bulb changes -- usually with night-to-night
+power supply fluxuations or when it is physically swapped out.
+
+The short list makes auto line matching much faster.
+
+
+Initial Conditions:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   All files related to a calibration lamp image should start with the same starting
+   $(X<Y)$ coordinates.
+   \item   extract a trace from each file of the science sequence. This produces a 1D-fits image.
+   \item   apply identify to the middle file of that sequence.
+   \item   This produces a mapping of $(X) \rightarrow (lambda)$. 
+   \item   Use this identify file, with re-identify for the other spectra of the sequence. The
+     assuption is that the shifts are small -- they can be constrained with the lparams.
+\end{enumerate}
+
+
+
+Start with the main trick of trimming all the spectra for a camera to tight blue
 and red extents.  This helps to avoid Runge phenomenon with polynomial
 fitting -- trim to exclude $X$ values that carry no information.
 
@@ -57,3 +85,15 @@ Then add this as launcher:
 \end{verbatim}
 \endgroup
 %% \end{Verbatim}
+
+\subsection{Fine Details}
+
+If you trim your images to the same starting pixel/wavelength you can specify that starting
+position with the crval and cdelt values. These can be observed in the header of a final
+output file and fed-back into this mix.
+
+Traces are usually best in the middle of the spectrum -- where the brightest features are
+located. 
+
+database is where the answers are stored. There naming convention is pretty consistent.
+

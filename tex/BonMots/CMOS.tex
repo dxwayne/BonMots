@@ -1,23 +1,42 @@
 \renewcommand{\footerfilename}{CMOS.tex}
-\section{CMOS Chips}
 
-CMOS sensors have a few extra details of operation, the
-effective-gain, a pedistal\index{keywords!PEDISTAL}, and need to
-calculate the GAIN \index{keywords!GAIN}.
+\section{CMOS Chips}  \label{section:CMOSChips}
 
-In general a EGAIN of 1 is desirable with these cameras. The dark
-noise is a bit higher, but the dynamic range \index{CMOS!dynamic range}
-is better. A larger pedistal is required ($\sim$ 3000). This needs
-to be stated.
+Remember we want to count photons. Good CCD cameras have a well-depth in excess
+of 65535 and require the accumulated charge to be attenuated. This factor
+was/is recorded with the GAIN keyword. Most raw images are 16-bit representation
+of the total value.
 
-% Jim Grubb ASI294
+CMOS cameras typically have well-depths less than 65535 photons. Thus CMOS
+GAIN should be 1.
 
-From \url{https://astronomy-imaging-camera.com/faqhttps://astronomy-imaging-camera.com/faq} section on amp glow:
+CMOS chips are different from CCD chips significant ways. In most science cameras,
+each pixel is a gate sequence that is shunted to a buffer/amplifier for each column.
+This avoids the ``bucked brigade'' (row shift/transfers) common to CCDs. However
+this make the keyword GAIN behave in a weird way due to the behavior of that
+column infrastructure. Ideally CMOS gain should be an array.
+
+The keyword GAIN \index{IRAF!GAIN} \index{CMOS!GAIN} has significance in IRAF.
+CMOS cameras report a GAIN value for the total output of the system together with
+an OFFSET. These keywords should be changed to CMOSGAIN and CMOSOFFS to move
+the values to the side. Set the IRAF GAIN to 1.0.
+
+The capture and saving of CMOS data follows roughly:
 
 \begin{itemize}
 \addtolength{\itemsep}{-0.5\baselineskip}
-   \item   pixels are charged at start, photons deplete that charge
-   \item   actual gain on pixel
+   \item   Pixels are cleared at the start of the exposure. A latching buffer
+     captures the start level of the pixel. 
+   \item As the exposure proceeds, electrons are accumulated. One
+     aspect of GAIN occurs in this step.
+   \item When the exposure stops, a second buffer latches the new value. The
+     difference between the two are taken and a second aspect of GAIN occurs.
+   \item  That value is held, the chip reads out each pixel by gating its value
+     onto a column bus - this feeds into an AMP at the end of the column, then int
+     an ADC (Analog to Digital Converter) with a third aspect of GAIN.
+   \item  The ADC outputs a 10/12/14/16 bit value that is buffered, digitally in
+     camera memory. The next exposure can start, and the computer can read this data
+     while the new exposure is formed.
    \item   A pixel is a very complex structure:
 \begin{itemize}
 \addtolength{\itemsep}{-0.5\baselineskip}
@@ -29,25 +48,8 @@ From \url{https://astronomy-imaging-camera.com/faqhttps://astronomy-imaging-came
    \item   DDR buffer
 \end{itemize}
 
-Common wisdom is to set the EGAIN value to 120
-Add a pedistal of 3000 in one case.
+CMOS chips have different modes of operation.
 
-
-Have to qualify the general values for GAIN and RDNOISE
-
-Calibrated sensors (voltages not light)
-Can not use last night's cal images.
-
-Exercises related to pattern and PRNU (ha) noise.
-
-Post software assumptions (darks, flats etc).
-
-Flats - pixel variation
-        Dust, optical and vignetting
-
-
-
- 
 
 \begin{quote}
 When it comes to CMOS cameras, ``amp glow'' is usually not from an
@@ -68,7 +70,7 @@ processing circuitry can often generate heat that may produce glows.
 \hskip{2cm }\url{https://astronomy-imaging-camera.com/faq}
 \end{quote}
 
-\subsection{QHY 600M}
+\subsection{QHY 600M/268M}
 >51ke- Full Well at 3.76um, >80ke- at extend mode at 3.76um
 
 -USB3.0
@@ -103,8 +105,6 @@ Extend Full Well Mode   &  >80ke- & >320ke-&  >720ke-    \\
 \label{table:WellCapacitesQHY600M}
 %%} % end small etc
 \end{table}
-
-Telescope Interface: M54/0.75
 
 
 

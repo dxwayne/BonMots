@@ -1,16 +1,45 @@
-
 \renewcommand{\footerfilename}{FlatFielding.tex}
 
-\section{Spectrum Flat Fields}
+\section{Spectrum Flat Fields} \label{section:SpectrumFlatFields}
+
+Flats help correct for differences in illumination along the slit and
+fringing introduced by an interferrence pattern usually caused by the
+small thickness of the cover-window of the sensor. The slit postion
+comes from putting on star at one postion, another star at a different
+position and expecting them to be reduced to the same flux values.
+Another use case is: \dhl{comaprison of the same target, different
+  night, different slit position}.
+
+\subsection{The assumptions of spectrographic flats}
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   The lamp matches the sky.
+   \item   The flux level meets SNR needs.
+   \item   The flat image has the same distortions (flexure and thermal expansion)
+  at all times.
+   \item   Artifacts like ``smile'' and ``tilt'' are managable.
+\end{enumerate}
+
+The model we use:
+
+Each $(X,Y)$ in pixel/device coordinates maps to a $(\lambda,W^{\prime})$
+
 
 Consider a slit of width $W$, and length $L$ being illuminated by an
 internal collection of lamps with intensity $I$ proximal to the
-slit\footnote{The lamps will move with the spectrograph and will not
-  turely represent the beam from the OTA.}. Take n number of positions
-$p$ along the slit.
+slit\footnote{The lamps will move with the spectrograph and will
+approximate, but not truly represent the beam from the OTA.}. Take \dhl{$n$}
+number of positions $p$ along the slit. Say a column vector of distances,
+each position represents the polychromatic light from the slit and
+a small variation of light due to vignetting.
 
 
-Hi Frank,
+
+
+
+Hi Frank [Valdes, NOAO],
 
 Greetings from India! 
 
@@ -21,13 +50,12 @@ CFLIB stars. While reducing the spectroscopic data for the red part
 a thin CCD). Can you suggest an IRAF task which can effectively remove
 the fringes -- (you had done it for our CFLIB spectra)?
 
-I have attached a .ms.fites file of HR5501 IRAF std star which shows
+I have attached a .ms.fits file of HR5501 IRAF std star which shows
 the effect of fringes in the red side.
 
 Looking forward to your reply,
 
-Regs Ranjan
-
+<AUTHOR>
 
 The usual steps for handling fringing is to remove it during flat
 fielding.  So the flat field is first processed by CCDPROC and then a
