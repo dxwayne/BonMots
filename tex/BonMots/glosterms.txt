@@ -1,0 +1,58 @@
+$\sigma = \sqrt{\left(\frac{<\tt{I
+%%\section{Glossary
+FITS
+GAIN
+IMAGETYP
+IRAF
+MEDIAN
+MODE
+NAXIS
+OBJNAME
+Python
+Unix
+WCS
+\\
+\def\footerfilename{Glossary.tex
+``sensitivity noise'', taken from flats, is a ``fraction''.
+analysis
+and intensity (I) are in ADU (DN) and require scaling by GAIN.  The\\
+apall
+apertures
+background
+band
+beam
+calibration
+combine
+command
+commands
+database
+default
+flat
+function
+header
+hedit
+histogram
+noise
+noise which scales with the intensity.''\\
+object
+observations
+package
+parameters
+pixels
+profile
+pyraf
+pyraflogin
+regions
+rejection
+science
+scombine
+sigma
+spectra can be described by fixed gaussian noise, a poissonian noise\\
+spectrum
+standard
+stdout
+target
+task
+trace
+using RDNOISE, GAIN, and ``sensitivity noise''. Note: RDNOISE and GAIN\\
+which scales with the square root of the intensity, and a sensitivity\\

@@ -1,0 +1,123 @@
+\renewcommand{\footerfilename}{Apple.tex}
+
+\section{Apple MacOS Mx Processors}
+
+IRAF was developed in the age of command line processing at the time when the
+GUI interfaces were starting to emerge. The X11 standard used two programs,
+the nomenclature was reversed from today's meanings. The X-server was a 
+simple user program operating somewhere on the network -- either within
+the localhost or a remote node. The X-Client was a generic program that
+understood X-widget and X-gadget\footnote{A gadget handles the drawing
+of something where  gadget with a window-manager wrapper is referred to
+as a widget} and the content for that widget was prepared by the X-Server,
+broken-down into simple commands, and sent across a communication link
+to the X-client. The X-client then 'rendered' the result for the user.
+This converted massive images of screens down to very small packets.
+The X-server and X-client agreed on a widget-set. So I could design a
+box around text -- and the X-Server only had to supply the handful of
+characters in one packet.  Highly efficent, to the point that complex
+CAD operations could be handled over a 1200 baud modem. I did that.
+It was a bit painful but dooable. 
+
+Now IRAF comes along and uses X11 to help with this process. At the
+time it was made, fonts were few and far between. Terminals were
+the rage, and the \dhl{termcap} file entries handled how the program
+sent/recieved and rendered results. This was more to help the computer
+talk to a terminal that with a direct connection. Similar files existed
+for plotters and graphics. Properitary protocols abounded, but played
+close enough to the Unix termcap and other -cap files to be workable.
+The FITS format was nailed down fairly early and did not have to
+waiver much. Astronomers do not care about these details, they want
+to load a 'program' and use it.
+
+We have strayed from this ease of installation and use.
+
+The current Linux file system -- applicable to all platforms,
+calls for a \dhl{/opt} directory for a 'vendor', under which
+that vendor is able to put all of its files/programs. 
+
+To this end IRAF does is a specialized program suite within an
+extremely narrow market. It is unworthy of having its nitch in /etc.
+
+/opt/iraf-xxx/etc is a perfectly good place to live.
+
+See \url{https://refspecs.linuxfoundation.org/FHS_3.0/fhs-3.0.pdf} and
+\url{https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html} for
+details of the filesystem.
+
+The \dhl{/usr} directory is essentially reserved for system wide,
+common programs. We require Python virtual environments at this time.
+
+
+
+This note sequence relates to trying to install a working IRAF/PyRAF onto 
+a Macbook 2024 M4 machine under Sequoia OS. 
+
+The community edition does not install and work, and in the process liters
+the main system directories with many files. 
+
+The NOIRLabs edition, installs but the epar command does not work.
+
+Numerous additions to IRAF/PyRAF have been made, mainly with an eye to
+improved graphics. There are differences with the Python readline command
+that is a bit noxious.
+
+Currently various editions pollute 
+
+\subsection{NOIRLabs on Mac M4}
+
+There have been significant changes with the placement of  the basic
+user's iraf directory, its contents and questionable changes to login.cl.
+
+
+
+
+
+In the past, login.cl only handled what the main iraf system needed
+to operate -- with flexibility deferred to loginuser.cl.
+
+The M1,M2,M3 and now M4 processors are supported by IRAF Comminuty, but with a 
+great deal of difficulties.
+
+
+\subsection{Apple Oddities}
+
+
+\subsubsection{BASH}
+
+Use \dhl{type -f <commandname>} to see what kind of file/alias/function
+\dhl{commandname} might be,
+
+Use \dhl{echo \$BASH\_VERSINFO} to have the shell self-report what version
+it is. This is handy in the event some alias has put you in a weird place.
+For example: starting pyraf under /opt/homebrew/bin/bash (version 5.2.37(1)-release
+and the using the \dhl{! echo  \$BASH\_VERSINFO} you find yourself back in
+the system bash. Where this switch takes place is unknown to me 2025-04-18T12:13:30-0600,
+\ltodo{bash}{Figure out the switch in bash versions after starting pyraf.}
+
+
+
+The Apple Bash is Version 3.2.57(1)-release, where the current Bash is in the 
+5.1.16(1)-release range. Apple has different executables for /bin/sh and /bin/bash
+but both seem to be the same version. The /bin/sh is smaller.
+
+The IRAF-Community scripts all refer to /bin/sh
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+./unix/hlib/irafcl.sh
+./unix/hlib/mkiraf.sh
+./unix/hlib/setup.sh
+./unix/hlib/mkmlist.sh
+./unix/hlib/f77.sh
+./unix/hlib/irafarch.sh
+./unix/hlib/mkfloat.sh
+./unix/f2c/trim_f2c.sh
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+There are no scripts in pyraf.
+
+

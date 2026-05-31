@@ -1,0 +1,41 @@
+\renewcommand{\footerfilename}{QHYDetails.tex}
+
+\section{QHY Camera Details}   \label{sec:QHYDetails}
+
+This section includes information about installing QHY for Linux.
+
+
+\subsection{Raspberry Pi_
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+#sudo apt install gcc-12
+
+mkdir -p ~/github
+cd ~/github
+
+git clone --depth=1 https://github.com/KastnerRG/riffa
+
+cd ~/github/riffa/driver/linux
+
+# indtall
+sudo make setup
+sudo make install
+
+# reboot system
+
+sudo reboot
+
+#test
+
+cd ~/github/riffa/c_c++/linux/x64/sample_app
+
+make
+
+./testutil 0
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

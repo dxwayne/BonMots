@@ -1,0 +1,69 @@
+
+\renewcommand{\footerfilename}{GeminiIraf.tex}
+
+\section{Gemini North Iraf}
+
+Under anaconda, it is possible to install iraf/pyraf3 using the Gemini North site's
+instructions.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+channels:
+      - http://astroconda.gemini.edu/public
+      - conda-forge
+conda create -n geminiconda python=3.10 iraf.gemini iraf-all pyraf-all ds9 "numpy<2"
+conda install iraf.gemini=1.16.1 --no-update-deps
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+The following needs to be done:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+conda activate geminiconda
+cd ~
+mkdir iraf
+cd iraf
+mkiraf                # taken from the gemini path.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Copy valid login.cl, loginuser.cl and pyraflogin3.py to ~/iraf
+make sure the line:
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+set use_new_imt = no
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+is added to login.cl. Note Never edit this file, but in this case things are
+broken and this is require until somebody fixes graphics.
+
+
+Create an alias to get the ball rolling.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+function geminipyraf { 
+   conda activate geminiconda;
+   export iraf=/home/wayne/anaconda3/envs/geminiconda/iraf;
+   export PATH="$PATH:/usr/local/bin";             # add /usr/local/bin
+   export PATH="$PATH:/usr/local/astrometry/bin";  # include astrometry.net as needed
+   export PYTHONPATH="$HOME/.iraf:/home/wayne/Environments/pyraf/lib/python3.10/site-packages/pyraf";
+   pyraf -s;
+ }
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+

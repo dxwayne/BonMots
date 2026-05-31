@@ -1,0 +1,49 @@
+\renewcommand{\footerfilename}{Community.tex}
+
+\section{Building the Community IRAF/PyRAF}
+
+IRAF/PyRAF was converted to Community support in 2016, version on the order of 2.16.
+
+The current release, as of \today\; runs on most modern Linux and Mac machines, including
+the Mac M4 processor.
+
+\subsection{PyRAF}
+
+Getting PyRAF to run on a M4 Mac is non-trivial. These recommendations are made
+for pyraf 3.12 and later. The package absolutely requires X11. It may run inside
+a Windows enviromment using a virtualization process together with XMing etc.
+Mac requires XQuartz. \index{Apple!X11}
+
+For the Mac install the \dhl{Xcode} package, avaliable for free from Apple.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   Create a python virtual environment:
+  \dhl{/usr/lib/python3.10/python3 -m venv mypyraf}
+   \item   \dhl{. mypyraf/bin/activate} to activate the environment. 
+   \item   cd into this directory.
+   \item   git clone the community pyraf here.
+   \item   cd into the clone
+   \item   edit/replace the pyproject.toml file.
+   \item   run \dhl{pip3 install -e .}. Lots of action.
+   \item   At this time there should be a very small pyraf executable in the envrioments
+  bin directory.
+\end{enumerate}
+
+\subsubsection{Managing the pyproject.toml file}
+
+The toml files are shifhting sands. They require tuning from time to
+time.
+
+Examine the \dhl{pyproject.toml} file and remove the license statement
+and make sure:
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+[tool.setuptools_scm]
+
+\end{verbatim}
+\endgroup
+is simply blank. 

@@ -1,0 +1,47 @@
+\renewcommand{\footerfilename}{sed.tex}
+
+\subsection{Unix sed Editor} \label{sec:unixsed}
+
+The Unix \dhl{sed} \index{sed!intro} editor, used as a filter, works wonders in conjunction with
+PyRAF/IRAF.
+
+\goal Demonstrate using sed together with PyRAF to add target field to
+file, based on filename. 
+
+\prose {Hey, make a @filelist with files containing the target name. Brew up a Unix regular expresion to
+  isolate the target from a filename, then add a TARGET keyword to the header for each file.} 
+
+\takeaway {IRAFs hedit command will permit a list of files, but will only work on one header value
+at a time. We are forced to drop back to the python iraf module, using ired.hedit -- one file at a time
+-- to each the gleamed target name to that file. Skip files with no match for the target name.}
+
+\exercise{
+\begin{quote}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+# sample filename: a11102_tetMus_120s_20240320_075421m9.fits
+#                   pre     TARG     ...rest...
+#                  (a11102_)(tetMus)([^_]\+\).*)
+!sed -e 's/a\([0-9]\+_\)\([^_]\+\).*/\2/' < l.l > t.t  # grab target name from a file
+iraf.hedit.add     = iraf.yes   # hammer in the default values for this hedit
+iraf.hedit.addonly = iraf.yes
+iraf.hedit.update  = iraf.yes
+iraf.hedit.show    = iraf.no
+iraf.hedit.delete  = iraf.no
+iraf.hedit.show    = iraf.no
+iraf.hedit.verify  = iraf.no
+# match filenames with their counterpart. Python will complain if files not the same.
+for f,v in zip(open('l.l','r').read().split(),open('t.t','r').read().split()):
+    if(v != ""):
+        iraf.hedit(f,fields="TARGET",value=v)
+    else:
+        print(f"""{f} missing {v}""")
+# check out work
+hselect @l.l TARGET,$I yes
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+\end{quote}
+}

@@ -1,0 +1,41 @@
+ \section{Pyraf}
+
+Currently the reduction package is running in a docker file.
+
+\begin{tcolorbox}[colframe=red!75!white,colupper=black,title=Pyraf alias entry for bash]
+\begin{verbatim}
+function pyraf { export LOCALDATA=$(pwd);
+                 export SPECDATA=/mnt/MySharedDir;
+                 cd /home/git/external/PyrafDocker/Compose/pyraf;
+                 sudo xhost +local:docker;
+                 docker compose run --remove-orphans pyraf /bin/bash;
+               }
+\end{verbatim}
+\end{tcolorbox}
+
+Where: LOCALDATA is a directory on the host, SPECDATA may be /mnt/MySharedDir.
+This gives you the ability from within the docker, to copy files from
+a remote machine to the host machine for faster consideration.\index{PyRAF!shared directory}
+\index{shared directory}.
+
+This CDs to a local git repository where the \dhl{docker-compose.yml} file lives,
+and starts the docker container running. Note: The \dhl{sudo xhost +local:docker}
+statement allows the container to use the local X server.
+
+\ltodo{Win11}{Update for Win11 docker use.}
+
+The new PyRAF community edition has made significant changes to the
+overall architecture.
+
+The \dhl{docker-compose.yml} file ties several directories to gether.
+You may want to alter those locations for your situation.
+
+
+
+
+
+%% 229, 224, 213
+%%  (mapcar '(lambda (a) (/ a 255.0)) (list 229 224 213))
+%% (0.8980392156862745 0.8784313725490196 0.8352941176470589)
+
+

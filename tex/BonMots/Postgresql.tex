@@ -1,0 +1,232 @@
+\renewcommand{\footerfilename}{Postgresql.tex}
+
+\secton{PostgreSQL}
+
+Documentation here is based on Postgresql 14.
+
+PostgreSQL uses an OpenJDBC driver, available for download as
+described at the PostgreSQL web site. This allows TOPCAT to load/save
+tables directly from/to PostgreSQl. \index{TOPCAT!PostgreSQL}
+\index{PostgreSQL!TOPCAT}.  TOPCAT, ds9, aladin, glueviz and if the
+wind is favorable, the Chorimum browser, will allow the broadcasting
+of data between themselves using SAMP.
+\index{SAMP!TOPCAT!PostgreSQL}.
+
+\subsection{Data from TOPCAT TAP Sources}
+
+There are over 26,000 databases in VizieR. Most are not
+relative, dated, etc -- but it is possible to grab
+data related to one or more observing fields from places
+like the GAIA EDR3, etc. 
+
+This breaks down into two sub-problems:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   Get the data from wherever into TOPCAT
+   \item   Store the data from TOPCAT into PostgreSQL.
+\end{enumerate}
+
+
+Data within TOPCAT is case sensitive, for example the Johnson R filter
+and the Sloans filter 'r' are different.  These need to be
+disambiguated when the case-sensitivity is removed. Lately TOPCAT is
+add something like a \_x[a..z]* to do this, or some other means.
+So R becomes R\_x and r becomes r\_xa. 
+
+You can use the ALTER statement to achieve your naming desires.
+
+A few cases pop up where the entered column names align with
+PostgreSQL keywords, DEC is a good example. You can use
+something like DEC\_SEXA or DEC\_d to to the trick. Taylor
+the changes to match your program's requirements.
+
+It is possible, within reason, to cross-match your list of
+things by RA and Dec using the TOPCAT cross-match (with simbad)
+feature. This brings up tonnes of columns. 
+
+TOPCAT has the ability to directly query thousands of astronomical
+databases. There are several paths to this, the best is the ``Select
+From'' icon. The service and tables there in are excellent.
+
+
+
+
+
+
+Some care has to be made to avoid the column name 'dec' for Declination, as
+this is a SQL keyword. Case is not preserved making galactic longitude 'b'
+and the Johnson filter 'B' collide in name space. It is not uncommon
+to see BMag as a header. Some degree of conformance between tables is to
+be expected. SIMBAD calls things oname, otype, and it seems natural to
+extend this to include ora and odec as aliases for RA and Dec.
+
+
+/etc/postgresq/14/main
+
+/var/log/postgresql    postgresql-14-main.log
+
+
+
+TOPCAT open /usr2/home/wayne/Observations/Data/wrstars.csv
+
+
+\subsection{Administration}
+
+
+TOPCAT reports error with standard installation of PostgreSQL
+
+
+When TOPCAT saves a table, it does not add a sequence number. The
+sequence number will precisely identify a row to correct any
+mistakes etc. The best way is to save the TOPCAT table as a tmp
+name, then use a ``CREATE...SELECT'' statement to create the
+table with the desired name, add the sequence and prepare for
+life in the future. Should the table already have the name you
+want; you can simply rename the table. E.g.: TOPCAT save a
+table called rawfoo, you want foo: Create table foo as select * from
+rawfoo; Drop table if exists rawfoo; IF the table was saved as foo,
+the ALTER TABLE foo RENAME TO rawfoo; and proceed as above.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+\begin{verbatim} 
+/*****************************************************************************
+* wr_all
+*****************************************************************************/
+DROP TABLE    IF EXISTS wr_all;
+DROP SEQUENCE IF EXISTS wr_all_sequence;
+CREATE SEQUENCE         wr_all_sequence START 100000;
+
+CREATE TABLE wr_all as select * from wrall
+COMMENT ON TABLE wr_all is 'Wolf Rayet Catalog';
+
+\end{verbatim}
+\endgroup
+
+
+
+\subsection{Other PostgreSQL Tricks}
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+\begin{verbatim} 
+-- For a field named refstar, that has a ' n' at the end of the field:
+-- remove the ' n'
+update wrall_23dec set refstar = regexp_replace(refstar,' n','') where refstar like '% n';
+select * from wrall_23dec where refstar != '';
+
+
+select top 100 t1.main_id as "WR_ID", basic.main_id as "simbadname", 
+    alltypes.otypes, ids.ids
+from basic
+join alltypes      on alltypes.oidref = basic.oid
+join ids           on ids.oidref      = basic.oid
+join TAP_UPLOAD.t1 on t1.main_id      = basic.main_id
+
+-- Rename the table from some query blah to wr_types_aliases_raw
+-- TOPCAT upload wr_types_aliases_raw to postgres
+
+DROP TABLE    IF EXISTS wr_types_aliases;
+DROP SEQUENCE IF EXISTS wr_types_aliases_sequence;
+CREATE SEQUENCE         wr_types_aliases_sequence START 100000;
+
+CREATE TABLE wr_types_aliases as select * from wr_types_aliases_raw
+COMMENT ON TABLE wr_types_aliases_raw is 'Wolf Rayet Catalog alias names and types';
+
+
+-- ------------------------------------------------------------------
+-- Copy the valuable wrall_23dec table data as wr_new !!!
+-- ------------------------------------------------------------------
+
+
+DROP TABLE    IF EXISTS wr_new;
+DROP SEQUENCE IF EXISTS wr_new_sequence;
+CREATE SEQUENCE         wr_new_sequence START 100000;
+
+CREATE TABLE wr_new as select * from wrall_23dec;
+COMMENT ON TABLE wr_new is 'Wolf Rayet Catalog alias names and types';
+
+
+
+alter table wr_new add column aliases  text[];
+alter table wr_new add column types    text[];
+
+-- look at incomming raw data
+select * from wr_types_aliases_raw limit 10;
+
+-- try the function on for size
+select regexp_split_to_array(otypes,'|','e') from  wr_types_aliases_raw limit 10;
+ 
+-- update one field at a time
+UPDATE wr_new
+   SET aliases = regexp_split_to_array(b.ids,'|','e') 
+FROM wr_new as w
+LEFT JOIN wr_types_aliases_raw AS b ON w.main_id = b.wr_id
+;
+
+UPDATE wr_new
+   SET types   = regexp_split_to_array(b.otypes,'|','e')
+FROM wr_new as w
+LEFT JOIN wr_types_aliases_raw AS b ON w.main_id = b.wr_id
+;
+
+
+select * from wr_new limit 1;
+
+
+select a.main_id, b.wr_id from wrall_23dec as a
+   join wr_types_aliases_raw as b on b.wr_id = a.main_id;
+
+
+select regexp_match(array_to_string(aliases,'|'),'.*(Gaia DR3 [ 0-9]+).*') as 'Gaia' from wr_new limit 1;
+-- returns  {"Gaia DR3 524101256981955200"}
+
+from astroquery.mast import Observations
+obs_table = Observations.query_criteria(dataproduct_type=["spectrum"], obs_collection='HST', objectname='HD  93162')
+print(obs_table[0:4])
+if(o['intentType'] == 'science' and o['provenance_name'] == 'CALSTIS'):
+   print(o)
+
+data_products_by_obs = Observations.get_product_list(obs_table[1:3])
+
+# Download only the science products
+manifest = Observations.download_products(data_products_by_obs, productType="SCIENCE")
+Downloading URL https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:HST/product/z2u91502t_d0f.fits to ./mastDownload/HST/z2u91502t/z2u91502t_d0f.fits ...
+|================================================================================================================|  57k/ 57k (100.00%)         0s
+Downloading URL https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:HST/product/z2za0102t_d1f.fits to ./mastDownload/HST/z2za0102t/z2za0102t_d1f.fits ...
+|================================================================================================================|  14k/ 14k (100.00%)         0s
+
+
+\end{verbatim}
+\endgroup
+
+\subsection{Schemas}
+
+
+
+
+
+PostgreSQL uses \dhl{schema} to separate collections of tables within
+a database. Databases maintain a hard and fast separation --
+permitting several users to use the same engine with no knowledge or
+access to the others' databases.
+
+To view schemas within a database:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+\dn
+
+show search_path;
+set search_path to chile;
+
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+A schema is created with:
+

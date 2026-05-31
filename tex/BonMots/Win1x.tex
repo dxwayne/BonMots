@@ -1,0 +1,40 @@
+\renewcommand{\footerfilename}{Win1x.tex}
+
+\section{Windows 10/11}
+
+The capture program of choice is Demetra\footnote{https://www.shelyak.com/software/demetra/?lang=en}
+on the Win10/11 platform. It allows for both capture and reduction. We focus on the image
+capture part here. The main advantage is it will display the most recent image together, allow
+the ds9 equivalent of a projection\index{Demetra!projection}. 
+
+The dispersion set command: select the middle of the dispersion, then set the width.
+
+If you double-click left-mouse, you can then start high and drag a small statistics
+box over the dispersion. Cheat a bit, choose only within the bright margins of the
+trace. This will return an average. A quick-and-dirty way to make sure the exposure
+is good. It returns an average pixel value. Multiply that in your brain by the width
+of the dispersion axis -- say 20 and you have a decent guess to the SNR for the reduced
+spectrum. Adjust accordingly for roughly 10,000 x 2 = 20,000 ADU. This will assure
+a strong signal.
+
+The headers are very bad. Make sure to keep a paper logbook for each exposure. This
+convention has proved workable.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   Slew to the target.
+   \item   Enter the name of the target, sans spaces: HD12345
+   \item   Set the number of exposures to at least 3 to combat cosmic rays, and the exptime
+  to return around 20,000 adu.
+   \item   After this completes, append an \_Cal to the name
+   \item   Take the calibration lamp exposures (3x) 20 seconds.
+   \item   Slew to the reference star
+   \item   Remove the \_Cal and add the reference star: field will be HD12345\HD98765\_Ref
+  This says the reference image (target name) for the previous HD science images.
+   \item   Then use HD12345\HD98765\_Ref\Cal for the matching calibration images.\end{enumerate}
+
+
+
+This helps to combat the lack of mount's RA/Dec and a Target Name.
+

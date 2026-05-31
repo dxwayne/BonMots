@@ -1,0 +1,26 @@
+
+\renewcommand{\footerfilename}{Diagnostics.tex}
+
+\section{Diagnostics}  \label{sec:Diagnostics}
+
+\section{Installation}
+
+\subsection{IRAF's Directory Opinions}
+
+IRAF uses its own environments.
+
+IRAF environment variables are of the form \dhl{iraf\$}. Where bash
+preceeds the environment variable with a dollar-sign, IRAF appends one.
+
+Examples:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+\begin{verbatim} 
+help show
+show               # list all the commands
+show iraf          # show iraf$ variable
+show | match iraf  # list all variables containing that variable
+\end{verbatim}
+\endgroup
+

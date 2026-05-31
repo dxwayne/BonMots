@@ -1,0 +1,64 @@
+\renewcommand{\footerfilename}{PostInstall.tex}
+
+\section{Post Install, Use the Tools!}
+
+But first, how do you get out something you started.
+
+To exit PyRAF use the \dhl{.ex} as the command. To exit ecl use \dhl{logout} as the command.
+
+When in a PyRAF Graphics window (popped out green window with black background), usually
+a Capital \llbox{I} will escape. 
+
+As a next-to-the last resort, use \mousebox{Ctrl-Z} to pause the window; in the bash shell
+use \llbox{j} to list the background jobs (they are numbered); then enter \dhl{kill \%<n>}
+and this will kill the job.
+
+Sometimes these tasks hang so hard, that it requires finding the PID. Use the Unix command:
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+\begin{verbatim} 
+ps aux | grep -i pyraf
+\end{verbatim}
+\endgroup
+
+Locate the PID and use a \dhl{kill -9 <PID>} to murder the task outright.
+
+IRAF tasks cl and ecl are designed to run in a \dhl{xterm} or
+\dhl{xgterm}, PyRAF can run from a normal terminal.  The ``cl'' or
+``ecl'' commands are used to interact with IRAF in pure terms. In
+these modern times, it is possible to run \dhl{cl} from within PyRAF
+in a rather fluid way.
+
+There is no real pyraf script. 
+
+Including cl and ecl is intended to support legacy code and to support
+tedious/specialized scripting from within PyRAF.
+
+PyFAF ``is'' Python with modified command-line reader (readline). It
+pre-loads a python module ``iraf.py''. The command-line command
+``imstat'' has a corresponding wrapped IRAF command
+iraf.imstat(...). This allows you to use IRAF within python loops.  It
+is a bit messy, but crib-sheets that you develop assist. Yes it is
+messy to begin with and hard to live without later on!
+
+{\color{darkred}\begingroup \fontsize{10pt}{10pt}
+\selectfont
+\begin{verbatim} 
+export MYVENVS="$HOME/MyEnves/"
+function mypyraf { 
+   source $MYVENVS/mypyrafvenv/bin/activate;  # start the venv tune to fit.
+   export PATH="$PATH:/usr/local/bin";             # add /usr/local/bin
+   if ! [[ "$PATH" =~ "$HOME/bin" ]] ;  then       # add my local bin
+       export PATH="$PATH:$HOME/bin";
+   fi
+   if ! [[ "$PATH" =~ "local/astrometry/bin" ; then # add astrometry if I want to
+       export PATH="$PATH:/usr/local/astrometry/bin";
+   fi
+   export PATH="$PATH:/usr/local/astrometry/bin";  # include astrometry.net as needed
+   # Add my pyraflogin3 package to search path; make sure we get the env path too.XS
+   export PYTHONPATH="$HOME/.iraf:$HOME/MyEnves/mypyrafvenv/lib/python3.10/site-packages/pyraf";
+   pyraf -s;
+   }
+\end{verbatim}
+\endgroup
+}

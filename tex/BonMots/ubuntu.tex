@@ -1,0 +1,61 @@
+\renewcommand{\footerfilename}{ubuntu.tex}
+
+\section{General Ubuntu Notes}
+
+
+Canonical is company that creates, maintains, and offers support contracts for
+the Ubuntu distrubution of Debian Linux. Called a 'distro', Canonical staff 
+strive to make sure all packages are fully interoperable by matching revision
+numbers for the many constitutient components. The images tend to lag the 
+latest release levels. In addition to maintaining update integrity the distro
+allows customers to better manage Current Vunerablities and Exposures (CVEs).
+
+The steps with Ubuntu are:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   sudo apt update -- bring down the list of packages, but do not install anything.
+     this helps to assure the package version numbers are all matched.
+   \item   sudo atp upgrade -- bring (upgrade) the system's installed packages to the latest
+     level consistent with the integration for the distro.
+\end{enumerate}
+
+The update step is fast, the upgrade step may take a while.
+
+The changes are applied directly to the main distribution's file system. These are not
+buffered. 
+
+Make sure to backup the system to avoid any issues that may popup.
+
+Reboot may be necessary.
+
+\subsection{SNAP packages}
+
+Snaps are relativly contained images that provide a degree of isolation between 
+libraries that are not at the level of their host system. While not a virtual
+box they do provide a degree of self-containment. 
+
+\subsection{Linux Containeds (LXC}
+
+Linux Containers come in two flavores: LXC and LXD. The LXD (Linux
+Container Daemons) container is a 'lighter version' of the more
+complete LXC environments.
+
+\subsection{Docker}
+
+A docker is a heaver container management system. They permit full install of
+the OS together with their supported packages. They offer protection for
+browser based applications -- an online hack destroys the container, but
+a new image is easily (re)loaded and work may proceed apace. They also permit
+using packages designed for other platforms. They are lighter than a full VirtualBox,
+but have restrictions w.r.t. graphics and tedious access to their host systems' 
+resources.
+
+An example of using a Docker container is to download the Linux, Latex and
+all supporting code to support Sphinx development without needing to have
+that subsystem installed in a Python venv.
+
+
+
+
+

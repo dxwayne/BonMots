@@ -1,0 +1,49 @@
+\renewcommand{\footerfilename}{CriticalConcepts.tex}
+
+\section{Critical Concepts}
+
+
+\dhl{DO NOT EVER} use unicode. Anywhere. IRAF rendering uses specialized ASCII only fonts.\\
+\dhl{DO NOT EVER} use spaces in filenames. Professional reduction software chokes on this. \\
+\dhl{DO NOT EVER} use plus, minus, or non-ASCII (fancy UNICODE chars) in filenames, FITS headers
+etc.
+
+The \dhl{date} of an observation's dataset is specifed as the calendar date
+of sunset at the observatory in the observatory's time zone. The use
+of UT really messes things up.\
+\dhl{DO KEEP FILENAMES SHORT} The filename length essentially hardwired into IRAF is
+around 23 ASCII characters. Longer than this length messes up a lot of column headers.
+
+\dhl{DO DO DO PUT TARGET AND REFERENCE} info into the filename. You
+can then update the headers when the night's dataset is being setup
+for analysis.\
+\dhl{DO NOT USE} special characters or spaces, use underscore for
+space, \dhl{m} for minus \dhl{p} plus etc. If the software adds UT
+timestamps (FITS keyword DATE-OBS) to files, use them\footnote{Zip files in general and
+Windows does not preserve systems' dates/times with filenames reliably.}
+
+Make a directory called
+\dhl{{\textasciitilde{}/Desktop/Today}}. Hardwire this path into all
+the software that writes files somewhere during the observation. Thus,
+you do not have to visit those packages (and risk forgetting one) each
+night. At the end of the night rename to taste, move into a collection
+director; make a new directory and name it
+\dhl{{\textasciitilde{}/Desktop/Today}}. A rinse/repeat
+thing.\ \dhl{DO MAKE BACKUPS} The rule of backups is 3-2-1. This
+strategy means to make three copies, on at least two different types
+of media and store at least one to an off-site location. It is wise to
+make copies using different archive means: like tar and zip and other
+methods.
+
+Include/export as many configuration files as you can to your dataset.
+Script these things.
+
+Get as much relevant information as possible into each file's header using
+the software. Develop scripts to add other details like: Latitude/Longitude,
+site name, observers, telescope details etc. 
+
+
+\dhl{DO} keep filename length to a minimum.
+
+\dhl{DO DO DO} Have each observer keep a paper logbook, using an ink that
+does not run when wet.
