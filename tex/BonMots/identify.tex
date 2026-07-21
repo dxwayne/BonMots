@@ -5,6 +5,9 @@
 
 Identify, well described by its help file, has few tricks of use for spectroscopy.
 
+It can create a WCS using either emissin lines (in the case of a calibration lamp)
+or it may be drawn from the image's absorption features directly.
+
 The key is to fine tune the parameters (epar/lpar etc) for the instrument. A bit of
 work once, perhaps a few fine tweaks for a bad night.
 
@@ -59,6 +62,24 @@ lines, develop the \dhl{practical line list}.
 
 A decent, concise but accurate, list of line that can be practically fit,
 the \dhl{reidentify} step will be successful. 
+
+Prepare a hydrogen list to be used with absorption features.
+
+\subsection{Trick - Calibrate a calibration image}
+
+In order to extract a trace; the trace needs to be brighter than the sky and
+have a gaussian cross-section. A python program \index{python!fakedispersion}
+will draw a gaussian across the calibration image. You can then use apall to
+extract that trace. At this point you need to use the identify task to wavelength
+calibrate the file. The goal is to produce a handy plot for later reference.
+One easier way to do this is to use an A0V taken within the same context of
+the cal lamp image. Then use the absorption line method and the hydrogen.dat
+file to get a good guess of the WCS. Use nhedit to add that to the faketrace,
+then use the reidentify task together with the emission.dat file to get
+a closer approximation. Add the labels to the file, save and print that
+file. This serves as a way to disamabiguate the small features in the blue
+from Argon lines -- applied to the intensity profile from the specific cal lamp.
+
 
 \subsection{Trick - print the plot of well fitted lines}
 

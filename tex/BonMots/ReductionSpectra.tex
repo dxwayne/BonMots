@@ -1,0 +1,74 @@
+\section{Reduction of Spectra}
+
+With longslit spectroscopy, to reduce parallactic angle
+\index{slit!parallactic angle} \index{parallactic angle!slit}
+\glossary{g-parallactic-angle} the slit is usually rotated to be along
+a perpendicular line of azimuth (from the zenith to the horizon, and normal to the
+horizon). This means the coordinate system for the slit is not simply the
+declination of the object. However for a single star with a stated RA and
+Dec that point on the slit corresponds to the actual RA and Dec in the sky.
+
+The slit, grating, and other optics inside the spectrograph produce a long
+\dhl{trace} \index{trace} onto the sensor. With several objects, these traces are referred to
+as apertures. \index{spectra!aperture}. Any independent light path that produces a trace
+is referred to as a \dhl{beam}. \index{beam!spectra} \index{spectra!beam} \gls{g-beam}.
+You will see the term \dhl{band} - this will refer to the order of the spectra, or in
+the case of the multispec format different process outputs for a single trace that include
+sky noise and with the proper keywords the SNR of the trace.
+
+The steps are:
+
+
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Make an ``Observations'' directory for the night, and create a RawData directory, and
+a \dhl{usw} directory.
+   \item   Copy the template \dhl{pyraf.reduce} file into \dhl{usw}. 
+   \item   Open the \dhl{pyraf.reduce} in the editor and start the commands/audit trail.
+   \item   Properly archive the data.
+   \item   Copy the raw data into the RawData directory.
+   \item   Copy the RawData files into the PreAnalysis directory.\end{itemize}
+
+
+
+Working in the PreAnalysis directory:
+
+\begin{itemize}
+\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   fix the filenames. Remove spaces, change +/- to p/m.
+   \item   run fitserial to add a unique serial number.
+   \item   update the headers as needed, remember DISPAXIS=1 is critical.
+   \item   Alter the IMAGETYP keyword:
+   \item   Make them all IMAGETYP=object,
+   \item   then change the Zero* files to IMAGETYP=zero
+   \item   trim the images. This reduces memory requirements, critical on a Mac.\\
+  at this time the files should have a \dhl{t\_} prepended to the filename.
+   \item   create the zeromaster.fits file.
+   \item   ``zero subtract'' the zero from all the files but the Zero* files.\\
+  at this time the files will have \dhl{z\_t\_} prepended to the filename.\end{itemize}
+
+
+
+Now the fun begins.
+
+
+
+Each target, we will call a sequence. Each sequence consists
+of 3x target observations, 3x calibration lamp images (cals),
+and 3x flat images. if the instrument has any flexure, flats
+are necessary in each sequence.
+
+The steps are roughly:
+
+Interactively use apall for the middle of the science images. You can re-run apall
+for the other two in non-interactive mode. (Yes, make sure the step is done right).
+
+Next using the middle image as a reference, use apall,
+non-interactive, to extract the matching trace pixels from the cal and flat images.
+
+Use the \dhl{identify} step with the cal to get the WCS information for the
+files in the sequence. 
+
+Apply the WCS with \dhl{disport}. 
+
+% HEREHEREHERE

@@ -15,10 +15,38 @@ a continuous function that is discretely sampled by each pixel. The
 pixel is its own sensor, with a starting wavelength and a small delta
 wavelength. 
 
+The \dhl{tilt} \index{spectrograph!tilt} of the trace should be as
+parallel to the row (DISPAXIS 1) or column (DISPAXIS 2) as
+possible. The \dhl{smile} \index{spectrograph!smile} is the curvature
+of each spectral line due to astigmatisms and should be minimized. The
+\dhl{intensity} of the slit's image along the trace should be as flat
+as possible. Identify the highest intensity area and note this in the
+spectrograph's log.
+
 Spectroscopic reduction builds on the standard reduction approach by
 subtracting suitable zero and dark images. For CMOS, use a
-surface-smoothed (imsurfit) \index{IRAF!imsufit} image. For newer
-CCDs and CMOS cameras, dark frames add noise.
+surface-smoothed (imsurfit) \index{IRAF!imsufit} of the master zero
+image. For newer CCDs (Sony HAD and OnSemi's Truesense) and CMOS
+cameras, dark frames add noise. It is OK to bin CCD cameras, but
+CMOS cameras should never be binned in the camera. The CMOS binning
+is an arithmetic step unrelated to noise management. One bad pixel
+of the binned set will pollute the rest.
+
+It is wrong to pretend that the dark images contain the zero noise
+as well. The statistics are gaussian (process of building the chip)
+for zero exposures, and poission (photoelectron arrival statistics)
+in dark exposures. Gaussian noise is generally symmetric and additive,
+where poision noise is skewed, with parameters highly time dependent.
+Due to the central limit theorem, in general for counts > 25 to 30
+the poission noise becomes very gaussian like. 
+
+\begin{subequations}
+\begin{align}
+\sigma_{total} &= \sum_{n=2}^{n}  \sigma_{n}^2 \\
+\sigma_{total} &= \sum_{n=2}^{n}  w_{n}^2*\sigma_{n}^2
+\end{align}
+\end{subequations}
+
 
 The file types are:
 
@@ -38,8 +66,9 @@ The file types are:
 IMAGETYP  & Purpose   \\
 \hline
 focus             & setup    \\ 
-zero              & remove image noise    \\ 
-dark              & remove image noise    \\ 
+zero              & remove chips process (gaussian) noise    \\ 
+dark              & remove  \\
+chips electron (poission) noise    \\ 
 calibration (cal) & provide wavelength calibration    \\ 
 reference         & provide flux calibration    \\ 
 flat              & instrument response, remove fringing, longslit work    \\ 
@@ -123,20 +152,62 @@ loginuser.cl.}
 \end{figure}
 
 
+The apall parameters should be set up for the instrument. Once set, the
+IRAF command \dhl{dparam (dpar)} can be used to save the contents into
+a \dhl{.cl} script and loaded at start of the reduction steps.
+
+The key parameters for multispec output with 4 bands:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+band1 - The publishable signal
+band2 - Reduced signal before any corrections
+band3 - the sky noise
+band4 - the SNR related to the publishable signal
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+Use \dhl{scopy file.ms.fits file1d.fits bands=1} to create a reduced
+1D spectrum from the multispec image. \index{Spectrum 1D!from multispec}.
+\index{multispec!make 1D}.
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+apall.format = 'multispec'
+apall.extras = yes
+apall.background = 'fit'
+apall.skybox = 1                  # boxcar smoothing of sky
+apall.weights = 'variance'
+apall.pfit = 'fit1d'
+apall.clean = yes
+apall.saturation = INDEF          # 110% of max of expected signal
+apall.saturation = INDEF
+apall.readnoise = '0.'            # not related to exposure
+apall.gain = '1.'                 # CMOS does not properly scale
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
 \begin{figure}
 \begingroup \fontsize{10pt}{10pt}
 \selectfont
 %%\begin{Verbatim} [commandchars=\\\{\}]
 {\color{darkred}
 \begin{verbatim} 
-    apall     sci.fits        output = sci.0001.fits (sci.ms.fits) # get disp
-    apall     comp.fits       ref=sci interactive=no               # comp.0001.fits
-    apall     flat.fits       ref=sci interactive=no               # flat.0001.fits 
-    identify  comp.0001.fits  coordlist=...                        # per usual
-    hedit     sci.0001.fits   REFSPEC1  comp.0001.fits add+ update+ ver- show-
-    hedit     flat.0001.fits  REFSPEC1  comp.0001.fits add+ update+ ver- show-
-    dispcor   sci.0001.fits   cal_sci.0001.fits                    # WCS to file.
-    dispcor   flat.0001.fits  cal_sci.0001.fits                    # WCS to file.
+    apall     sci123.fits      output = sci123.ms.fits (sci.ms.fits) # get disp
+    apall     comp123.fits     ref=sci123 interactive=no             # comp.ms.fits
+    apall     flat123.fits     ref=sci123 interactive=no             # flat.ms.fits 
+    identify  comp123.ms.fits  coordlist=...                         # per usual
+    hedit     sci123.ms.fits   REFSPEC1  comp123.ms.fits add+ update+ ver- show-
+    hedit     flat123.ms.fits  REFSPEC1  comp123.ms.fits add+ update+ ver- show-
+    dispcor   sci123.ms.fits   cal_sci123.ms.fits                    # WCS to file.
+    dispcor   flat123.ms.fits  cal_sci123.ms.fits                    # WCS to file.
 \end{verbatim}
 }
 \endgroup
