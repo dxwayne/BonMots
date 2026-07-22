@@ -1,0 +1,16 @@
+#############################################################################
+# cd to local main tex directory
+# docker compose run --rm latex bash
+# pdflatex main.tex
+#############################################################################
+
+services:
+  latex:
+    image: texlive/texlive:latest
+    container_name: latex_compiler
+    volumes:
+      - .:/project
+    working_dir: /project
+    #entrypoint: ["/bin/sh", "-c"]
+    command: ["/bin/sh"]
+
