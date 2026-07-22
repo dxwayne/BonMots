@@ -1,7 +1,4 @@
-\renewcommand{\footerfilename}{protoglossary.tex}
-
-
-%%\newglossaryentry{g-analysis}{name={analysis},description={Action performed on a fully reduced file.}}
+\newglossaryentry{g-analysis}{name={analysis},description={Action performed on a fully reduced file.}}
 
 \newglossaryentry{g-apall}{name={apall},description={A IRAF task used to define apertures, extract the trace, determine and subtract background information, and to describe the trace using various fitting math functions: spline, spline3, chebyshev, legendre.}}
 
@@ -33,6 +30,8 @@
 
 \newglossaryentry{g-GAIN}{name={gain},description={A FITS value used to correct a 16-bit image pixel's value to the electron-count (inferred photon count) from a source as recorded by the sensor.}}
 
+\newglossaryentry{g-datacube}{name={data cube},description={A fits file with more than two axes. Useful with noise analisys for the same pixel across multiple exposures.}}
+
 \newglossaryentry{g-header}{name={header},description={One of two parts of a FITS image extent, carrying information in 80 character cards (extents. think computer punch card) grouped together into blocks of 36 cards. Each entry consists of a keyword, value, and comment. Special cards for HISTORY and COMMENT follow different rules. The HEADER stops with a card with the END as its keyword. Blank cards are filled with 0x20 characters (spaces) not 0x00 (NULL).}}
 
 \newglossaryentry{g-hedit}{name={hedit},description={The IRAF used to modify, extend or delete cards from a FITS header.}}
@@ -58,6 +57,8 @@
 \newglossaryentry{g-observations}{name={observations},description={A set of data, usually taken during one section on one date, at one site, of one or multiple targets; together with calibration and other instrumentation data.}}
 
 \newglossaryentry{g-package}{name={package},description={A collection of parameters, tasks, help files within IRAF.}}
+
+\newglossaryentry{g-parallactic-angle}{name={parallactic angle},description={The angle needed to rotate the slit such that the slit is perpendicular to the horizon. It follows a azimuth angle from the zenith to the horizon and is normal to the horizon}}
 
 \newglossaryentry{g-parameters}{name={parameters},description={The information in the form of switches on a command line, values in a parameter file, etc that inform and alter the way a task proceeds with its actions.}}
 
@@ -96,6 +97,4 @@
 \newglossaryentry{g-Unix}{name={Unix},description={The operation system, a play on words from the Multics operating system. The OS of IRAF.}}
 
 \newglossaryentry{g-WCS}{name={WCS},description={\textbf{\emph{W}}orld \textbf{\emph{C}}oordinate \textbf{\emph{S}}ystem: a function that maps a sensor's x,y and sometimes z axis into RA/Dec or Angstroms etc. The Z axis may contain time data by wavelength for example.}}
-
-\newglossaryentry{g-parallactic-angle}{name={parallactic angle},description={The angle needed to rotate the slit such that the slit is perpendicular to the horizon. It follows a azimuth angle from the zenith to the horizon and is normal to the horizon}}
 

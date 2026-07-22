@@ -1,0 +1,92 @@
+\section{Noise}  \label{sec:noise}
+
+
+\subsection{Bad Pixels}
+
+Bad pixels arise from cosmic rays or bad behavior of any one pixel. With CCD sensors,
+pixels can become 'dead' or stuck at one value. This usually results in a bright or
+dark full or partial column.
+
+With CMOS sensors, includesion store charge. This results in a partial report
+of the energy seen, or a report that includes that bit saved-back but inadvertantly
+added to this readout -- resulting in a high value.
+
+There is also column variances with CMOS sensors. The GAIN keyword should
+really be a vector, one value for each column or row -- depending on the
+readout direction.
+
+One test is to take a single image, and add the columns together. Then report
+the statistics on that summed array:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+from astopy.io import fits
+filename='file.fits'
+with fits.open(filename,uint=True) as f:
+   d = f[0].data
+   v = d.sum(axis=0)  # the first dim = column 
+print(f"variance {v.var()}, std {v.std{}, mean {v.mean()}}"
+nf = fits.PrimaryHDU(data,f[0].header)
+nf.writeto('colstats_'+filename,output_verify='fix',overwrite=True)
+print(f"#! ds9 {'colstats_'+filename}") # handy for ds9.
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+
+
+\subsection{Zero, Dark, Flat Consistency}
+
+Create a data cube for a collection of files. Compute the mean, median, variance and
+standard deviation across the pixels. These values can be turned into a 2D image
+file to 'see' the values in relation to themselves. 
+
+Another trick is to simply use imstat to see certain values, for example: eyeball
+the variance between zeros and flats.
+
+\subsubsection{Flat Files}
+
+The flat cube analyis
+
+For 11 files:
+
+    Flat8080B_12s_20260626_085321m1.fits
+    Flat8080B_12s_20260626_085321m10.fits
+    Flat8080B_12s_20260626_085321m11.fits
+    Flat8080B_12s_20260626_085321m2.fits
+    Flat8080B_12s_20260626_085321m3.fits
+    Flat8080B_12s_20260626_085321m4.fits
+    Flat8080B_12s_20260626_085321m5.fits
+    Flat8080B_12s_20260626_085321m6.fits
+    Flat8080B_12s_20260626_085321m7.fits
+    Flat8080B_12s_20260626_085321m8.fits
+    Flat8080B_12s_20260626_085321m9.fits
+
+made a cube using pyraflogin3 newcube.
+
+Using ds9, with a view of the cube '3 1 2' \index{ds9!Cube} a tall display is seen,
+where left to right is from frame 1 to 11 and the top is the blue
+end at 0 and the bottom is the red end at fill size of the sensor.
+The height is 6280.
+
+Use projection to move around the image to get an intuitive feel for the
+variances in the data.
+
+
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+from astropy.io import fits
+
+rawdata = []
+with fits.open('file.fits',uint=True) as f:
+   d = f[0].data
+   rawdata.append(d)
+
+cube = np.array(rawdata)
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}

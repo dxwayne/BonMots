@@ -1,0 +1,47 @@
+#############################################################################
+#
+# /home/git/external/PyrafDocker.pre/Compose/pyraf/docker-compose.yml
+#  cd /home/git/external/PyrafDocker.pre/Compose/pyraf
+# Set two env variables:
+#    SPECDATA=<localpath>    # idea is for remote mounted data via tailscale
+#    LOCALDATA=<localpath>   # copy results etc to local machine within pyraf
+# Run the docker compose script.
+#
+#  docker rm $( docker ps -f "status=exited" -q )
+#  docker compose down -v --rmi all && docker compose build --no-cache
+#  export SPECDATA=XXXXXX
+#  export LOCALDATA=XXXXXX
+#  docker compose run pyraf /bin/bash
+#
+#  docker compose config
+#  sudo xhost +local:docker
+#  docker compose up
+#
+#
+# docker compose run -it -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority -e DISPLAY=$DISPLAY -e USER=$USER pyraf /bin/bash
+#
+# A few env variables to time X11 to the host.
+# A few -v to allow the pwd where the container started to be the root of the data, or nearby
+#
+#
+#############################################################################
+services:
+  pyraf:
+    image: ubuntu:latest
+    stdin_open: true
+    tty:        true
+    build: .
+    environment:
+       - DISPLAY=$DISPLAY                                 # required by X
+       - USER=$USER                                       # required by app pyraf
+       - SPECDATA=/mnt/FS1Today                           # remote site data
+       - LOCALDATA=$HOME/Observations/Today               # a local place to copy/results
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix                     # required by X
+      - /home/wayne/.Xauthority:/root/.Xauthority         # required by X
+      - $SPECDATA:/home/data                              # Data to be analized.
+      - $LOCALDATA:/home/host                             # a host directory not mounted.
+      - $HOME/bin:/home/bin                               # loop in external utilities dir.
+      - $HOME/dockeriraf/.iraf:/root/.iraf                # place to store uparams
+
+#

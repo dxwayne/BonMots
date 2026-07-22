@@ -55,7 +55,6 @@
 \usepackage[T1]{fontenc}           %% Better Verbatim Font.
 \usepackage{comment}             %% comment out large chunks
 \usepackage{tcolorbox}
-\usepackage{makeidx}             %% Make an index uncomment following line
 \makeindex                       %%.. yeah this one, too. index{key} in text
 
 
@@ -92,9 +91,9 @@
 
 
 \usepackage{makeidx}             %% Make an index uncomment following line
-\makeindex                       %%.. yeah this one, too. index{key} in text
 \usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
 \usepackage{glossaries}            %% make a glossary
+\renewcommand{\glossarypreamble}{"Glossary of Terms"}
 \makeglossaries
 \input{Glossary.tex}
 
@@ -105,7 +104,7 @@
 
 
 \newcommand{\crreturn}{\raisebox{1.2pt}{\setlength{\fboxsep}{1.5pt}\ensuremath{\hookleftarrow}}}
-%\newcommand{\llbox}[1]{\color{verbcolor}{\Ovalbox{#1}}}
+%\newcommand{\llbox}[1]{\color{verbcolor}{\ovalbox{#1}}}
 
 \newcommand{\home}{\raisebox{.5pt}{\char`~}}
 
@@ -169,7 +168,8 @@ pdfcreator = {LaTeX with hyperref package},
 pdfproducer = {dvips + ps2pdf}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\input{protoglossary.tex}
+\makeindex                       %%.. yeah this one, too. index{key} in text
 
 \begin{document}
 \setlength{\footskip}{13.59999pt}
@@ -426,7 +426,7 @@ year (lets don't play Y2K again).
 
 This format allows the shell's text completion mechanism a quick way to move around.
 Text completion involves typing a few starter characters of the file/directory
-name then hit the \llbox{tab} key. It will advance to the next non-unique thing.
+name then hit the \llbox{{tab}} key. It will advance to the next non-unique thing.
 
 Underneath \dhl{ddMMMyyyy} is the \dhl{usw} directory for tonight's work. The
 target list, special catalog file of reference stars etc, the scheduler's
@@ -457,7 +457,7 @@ actual PyRAF (\dhl{.pyraf}), or hacked into PyRAF with the \llbox{!}
 cl prefix as you go along.
 
 \textbf{\emph{Note}}: The \dhl{.pyraf} scripts blend python and PyRAF together.
-See the complicated example of how to deal with APO NICFPS camera
+See the complicated example of how to deal with special camera
 images.
 
 \section{Basic Reductions}
@@ -482,69 +482,13 @@ That is demonstrated in to pyraflogin3.py.
 
 
 
-
-\section{Reduction of Spectra}
-
-The steps are:
-
-
-\begin{itemize}
-\addtolength{\itemsep}{-0.5\baselineskip}
-   \item   Make an ``Observations'' directory for the night, and create a RawData directory, and
-a \dhl{usw} directory.
-   \item   Copy the template \dhl{pyraf.reduce} file into \dhl{usw}. 
-   \item   Open the \dhl{pyraf.reduce} in the editor and start the commands/audit trail.
-   \item   Properly archive the data.
-   \item   Copy the raw data into the RawData directory.
-   \item   Copy the RawData files into the PreAnalysis directory.\end{itemize}
-
-
-
-Working in the PreAnalysis directory:
-
-\begin{itemize}
-\addtolength{\itemsep}{-0.5\baselineskip}
-   \item   fix the filenames. Remove spaces, change +/- to p/m.
-   \item   run fitserial to add a unique serial number.
-   \item   update the headers as needed, remember DISPAXIS=1 is critical.
-   \item   Alter the IMAGETYP keyword:
-   \item   Make them all IMAGETYP=object,
-   \item   then change the Zero* files to IMAGETYP=zero
-   \item   trim the images. This reduces memory requirements, critical on a Mac.\\
-  at this time the files should have a \dhl{t\_} prepended to the filename.
-   \item   create the zeromaster.fits file.
-   \item   ``zero subtract'' the zero from all the files but the Zero* files.\\
-  at this time the files will have \dhl{z\_t\_} prepended to the filename.\end{itemize}
-
-
-
-Now the fun begins.
-
-Each target, we will call a sequence. Each sequence consists
-of 3x target observations, 3x calibration lamp images (cals),
-and 3x flat images. if the instrument has any flexure, flats
-are necessary in each sequence.
-
-The steps are roughly:
-
-Interactively use apall for the middle of the science images. You can re-run apall
-for the other two in non-interactive mode. (Yes, make sure the step is done right).
-
-Next using the middle image as a reference, use apall,
-non-interactive, to extract the matching trace pixels from the cal and flat images.
-
-Use the \dhl{identify} step with the cal to get the WCS information for the
-files in the sequence. 
-
-Apply the WCS with \dhl{disport}. 
-
-% HEREHEREHERE
+\input{ReductionSpectra.tex}
 
 
 
 \section{IRAF ``at-files'' or ``@'' Tricks}
 
-The \dhl{at cost} \llbox{@} symbol has been co-opted by IRAF to indicate
+The \dhl{at-cost} \llbox{@} \index{"@} symbol has been co-opted by IRAF to indicate
 use a file where each line is a filename for the command to operate upon.
 It is a 'list-of-files' type file.
 
@@ -1296,7 +1240,7 @@ mkdir -p $(HOME)/Observations/{PreAnalysis,PreReduce,usw,RawData/usw,Reduce/Anal
 {\color{verbcolor}
 \begin{verbatim}
 # trim the apo files in the file l.l
-print "Trim overscan regions from all APO artic camera files.  [1:1368,1:1364]"
+print "Trim overscan regions from special camera files.  [1:1368,1:1364]"
 files *fits > l.l
 imcopy @l.l//[1:1368,1:1364] t_@l.l
 \end{verbatim}
@@ -1477,9 +1421,9 @@ cl < ./tmp.cl
 
 \input{Spectroscopy.tex}
 
-%\input{SPLOTQuestions.tex}
+\input{SPLOTQuestion.tex}
 
-%\input{ApallLPARS.tex}
+\input{ApallLPARS.tex}
 
 \input{IdentifyLPARS.tex}
 
@@ -1513,9 +1457,9 @@ cl < ./tmp.cl
 
 \input{PythonGUI.tex}
 
-\input{LoginScripts.tex}
+%%\input{LoginScripts.tex}
 
-\input{TOPCAT.tex}
+%%\input{TOPCAT.tex}
 
 \input{IrafOverview.tex}
 \renewcommand{\footerfilename}{BonMots.tex}
@@ -1679,9 +1623,6 @@ had actually done it. I have a shot foot or two to prove it.
 %% use a bibitem approach to the references publications etc.
 %% (wg-bibitem)
 
-\section{Glossary}
-
-\printglossaries
 
 \clearpage
 %%\addcontentsline{toc}{section}{References}
@@ -1696,6 +1637,19 @@ had actually done it. I have a shot foot or two to prove it.
 %%\usepackage{natbib}   %% bibitems
 %%\end{thebibliography}
 
+\clearpage
+\section*{Glossary}
+
+%%\printglossary
+%%\IfFileExists{BonMots.gls}{%
+%%   \input{BonMots.gls}
+%%}
+
+\clearpage
+%\printindex
+\IfFileExists{BonMots.ind} {%
+  \input{BonMots.ind}
+}
 
 %% (wg-texdoc-endnotes)
 
@@ -1712,8 +1666,8 @@ had actually done it. I have a shot foot or two to prove it.
 \endgroup
 \section*{~}  \label{sec:index}
 \addcontentsline{toc}{section}{Index}
-%\printindex
-\input{BonMots.ind}
+
+
 
 \end{document}
 %% 

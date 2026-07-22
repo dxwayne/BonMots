@@ -1,0 +1,20 @@
+\section{Latex Tricks}  \label{sec:LatexTricks}
+
+The tricks needed to reproduce this document.
+
+The \\makeindex entry makes a BonMots.idx raw file. It needs to be converted
+to BonMots.ind using the bash command makeindex (same name).
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   run pdflatex once to make an updated .idx file
+   \item   run makeindex BonMots.idx to make the new BonMots.ind
+   \item   rerun pdflatex again to include the recent file.
+\end{enumerate}
+
+The at cost character requires an actual double quote character just before
+the symbol in the \\index macro. To get that hit the double character twice
+in quick succession. First you see the usual double back-quotes; then it
+converts to the usual double-quote.
+
+
