@@ -1,0 +1,243 @@
+% HEREHEREHERE
+% Author: Izaak Neutelings (May 2020)
+% Inspiration: https://tex.stackexchange.com/questions/285578/how-to-draw-parallelepiped-and-cube-with-latex/288101#288101
+% \documentclass[border=3pt,tikz]{standalone}
+%%% HEREHEREHERE
+
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{fancyhdr}              %% headers/footers
+\usepackage{makeidx}             %% Make an index uncomment following line
+\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
+\usepackage{color}                %% colored letters {\color{red}{{text}}
+\usepackage{fancyhdr}              %% headers/footers
+\usepackage{fancybox}              %% headers/footers
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Setup Page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \usepackage[paperheight=7.31in,paperwidth=9.5in,
+%%   footskip=.05in,margin=.75in,
+%%   includehead,includefoot,heightrounded
+%% ]{geometry}
+
+\usepackage[footskip=.05in,margin=.75in,
+  includehead,includefoot,heightrounded
+]{geometry}
+
+\def\drafttest{DRAFT}
+\def\wgdocdate{06 Oct, 2018}
+\def\wgdocdatetime{\wgdocdate at \currenttime}
+\ifx\documentisdraft\drafttest
+\usepackage[left]{lineno}   %%%%%%%%%%%%% DRAFT
+\usepackage{draftwatermark}
+%%\SetWatermarkScale{5.0}
+%%\SetWatermarkColor[gray]{0.3}
+\fi
+
+\usepackage{makeidx}             %% Make an index uncomment following line
+\usepackage[bookmarks]{hyperref} %% Make huperlinks within a PDF
+\usepackage{glossaries}          %% make a glossary
+\renewcommand{\glossarypreamble}{"Glossary of Terms"}
+\makeglossaries
+\input{Glossary.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hypersetup{
+    colorlinks  = true,
+    linkcolor   = blue,
+    citecolor   = red,
+    urlcolor    = blue,
+    pdfauthor   = {Copyright(c) 2018-22. All rights reserved. Wayne Green},
+    pdftitle    = {PyRAF/IRAF/Unix 2.17.1 PyRAF 3 “Bon Mots”},
+    pdfsubject  = {Collection of Notes for IRAF},
+    pdfkeywords = {Phoptometry, Spectrography,IRAF},
+    pdfcreator  = {LaTeX with hyperref package},
+    pdfproducer = {dvips + ps2pdf}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usetikzlibrary{math}
+\usetikzlibrary{arrows,arrows.meta}
+\usetikzlibrary{calc,shapes, shapes.geometric}
+\usetikzlibrary{intersections}
+\usetikzlibrary{fadings}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{angles,quotes} % for pic (angle labels)
+\usetikzlibrary{backgrounds}
+
+%\usepackage{tkz-euclide} % for \tkzMarkRightAngle
+%\usetkzobj{all}
+
+\colorlet{myblue}{blue!80!black}
+\colorlet{mydarkblue}{blue!35!black}
+\colorlet{myred}{black!50!red}
+\colorlet{glasscol}{blue!10}
+\colorlet{Ecol}{orange!90!black}
+\tikzset{>=latex} % for LaTeX arrow head
+\tikzstyle{ray} = [line width = 0.85, color = red]
+\tikzstyle{vertical} = [line width = 0.85, dashed]
+\tikzstyle{myarr}=[-{Latex[length=3,width=2]}]
+\tikzstyle{Evec}=[Ecol,{Latex[length=2.8,width=2.5]}-{Latex[length=2.8,width=2.5]},line width=0.6]
+\tikzstyle{glass}=[top color=glasscol!88!black,bottom color=glasscol,shading angle=0]
+%\tikzstyle{glass}=[top color=glasscol!88!black,bottom color=glasscol,middle color=glasscol!98!black,shading angle=0]
+\tikzset{
+  light beam/.style={thick,myblue,decoration={markings,
+                     mark=at position #1 with {\arrow{latex}}},
+                     postaction={decorate}},
+  light beam/.default=0.5}
+
+\newcommand{\lline}[4]{\draw[vertical] (#1) -- ({#2*cos(#4)-#3*sin(#4)},{+#2*sin(#4)+#3*cos(#4)});}
+
+
+\newcommand\rightAngle[4]{
+  \pgfmathanglebetweenpoints{\pgfpointanchor{#2}{center}}{\pgfpointanchor{#3}{center}}
+  \coordinate (tmpRA) at ($(#2)+(\pgfmathresult+45:#4)$);
+  \draw[white,line width=0.6] ($(#2)!(tmpRA)!(#1)$) -- (tmpRA) -- ($(#2)!(tmpRA)!(#3)$);
+  \draw[blue!40!black] ($(#2)!(tmpRA)!(#1)$) -- (tmpRA) -- ($(#2)!(tmpRA)!(#3)$);
+}
+
+%-----------------------------------------------------------------------------
+% tikz/prisms2.tikz
+%% Incident Ray
+\tikzstyle{ray} = [%
+					line width = 0.85, 
+					color = red,
+					postaction = decorate, decoration={markings, mark=at position .52 with \arrow{stealth}}
+					]
+%% Refracted Ray
+\tikzstyle{ray1} = [%
+					line width = 0.85, 
+					color = red]
+%% Dashed
+\tikzstyle{vertical} = [%
+					line width = 0.85, 
+					dashed]
+
+%-----------------------------------------------------------------------------
+% Huygens.tikz -- WAVEFRONT
+% store in -- defines a special TeX macro
+\def\p{0.03}
+\def\r{0.25}
+\tikzset{
+  wavefront/.pic={
+     \tikzset{/wavefront/.cd,#1}
+     \fill (0,0) circle (\p);
+     \draw (\wang:\r) arc(\wang:-\wang:\r);
+  }
+  /wavefront/.search also={/tikz},
+  /wavefront/.cd,
+  ang/.store in=\wang, ang={60},
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Good source of pre-cooked tikz images.
+% https://github.com/Expander/tikz-images/tree/master/optics
+\pagestyle{fancy}
+\fancyhf{}
+\providecommand\footerfilename{}
+\renewcommand\footerfilename{BonMots.tex}
+\fancyfoot[LF,OLF]{Go to: \hyperref[sec:contents]{Contents}}
+\fancyfoot[RF,ORF]{Go to: \hyperref[sec:index]{Index~\footerfilename}}
+\fancyfoot[CF,OCF]{Page \thepage~~~ \footerfilename}
+
+
+\begin{document}
+\pagenumbering{gobble}   %ignore page numbers for a while
+\setlength{\footskip}{13.59999pt}
+
+\title{BonOptics}
+\author{\vspace{-0.2cm} Wayne Green}
+\date{\vspace{-0.2cm} \today}
+\maketitle
+
+\begin{abstract}
+Notes on Optics related to spectroscopy and optics in general.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% table of contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{roman}   % i,ii,etc
+\pagenumbering{gobble}   %ignore page numbers for a while
+\pdfbookmark[0]{Table of Contents}{MyTOC} % if usepackage{hyperref} in use.
+
+\section*{~} \label{sec:contents}
+\tableofcontents
+\listoffigures
+\listoftables
+
+\clearpage
+\pagenumbering{arabic}
+\providecommand\footerfilename{}
+\renewcommand\footerfilename{BonOptics.tex}
+\fancyfoot[LF,OLF]{Go to: \hyperref[sec:contents]{Contents}}
+\fancyfoot[RF,ORF]{Go to: \hyperref[sec:index]{Index~\footerfilename}}
+\fancyfoot[CF,OCF]{Page \thepage~~~ \footerfilename}
+
+\section{Overview}
+
+In this document, angles will follow the standard sign convention of
+positive angles with respect to (w.r.t.) their axis of rotation are considered
+to be counter-clockwise and negative angles are clockwise (follows the rignt
+hand rule).
+
+$n_{x}$ represents the index of refraction of a medium. Vacuum is = 1.0. Other common
+glass values appear in appendix \ref{sec:IndexRefractionTable}. Index of refraction
+is a function of wavelength.
+
+- maintain an injection f/ < NA of the fiber.
+
+
+Fermat's  Principal Light  does  not take  the  shortest path  through
+space, it  takes the fastest  path through time. Propagation  speed is
+expressed with the index of refraction $n$.
+
+\clearpage
+\section{Snell's Law}
+
+\include{tikz/snellslaw.tikz}
+
+% HEREHEREHERE
+
+\clearpage
+\include{BrewsterAngle.tex}
+
+\clearpage
+\section{Huygens' Principle}
+\input{tikz/huygens.tikz}
+
+
+\clearpage
+\include{ReflectionRefraction.tex}
+
+\clearpage
+\include{ReflectionRefractionBrewsterAngle.tex}
+
+\clearpage
+\section{Prisms}
+
+\input{tikz/prism.tikz}
+
+\input{tikz/prism90.tikz}
+
+\clearpage
+\section{Young's Two Slitc Interference}
+
+\input{tikz/interferrence.tikz}
+
+\clearpage
+\section{Echelle}
+
+\input{tikz/echelle3.tikz}
+
+\clearpage
+\section{Common Values}
+% https://refractiveindex.info/ai
+
+
+\end{document}

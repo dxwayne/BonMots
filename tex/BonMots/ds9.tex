@@ -1,7 +1,250 @@
 
 \renewcommand{\footerfilename}{ds9.tex}
 
-\section{ds9}
+\clearpage
+\section{SAOImage/ds9}
+
+Unix hides files by preceeding them with a '.' character. This makes
+them easy to forget. SAOImage/ds9 uses a hidden \dhl{directory}
+\textasciitilde{}/.ds9 where \dhl{\textasciitilde{}/ds9.<version>.prf}
+and \dhl{\textasciitilde{}/ds9.<version>.ini} reside. Additional
+files may exist at the current directory level. Avoid these, try
+to stick with one consistent set of custiomizations. \index{ds9!}
+ \index{ds9!\textasciitilde{}/ds9}  \index{ds9!\textasciitilde{}/ds9.XX.ini}
+\index{ds9!customization files}
+
+The main ds9 GUI window has several areas: Along the top are 
+``pulldown menus''. If used, in the middle are two rows of
+buttons. The top chooses the main topic, and the second line
+``optional options''. There is the main image area, where you
+can see one image a at a time, or 'tile' the image (more than
+one at a time). There is a optional colorbar along the bottom
+and optional row and column sums of image values along the lower
+and right hand sides. All of these are configurable preferences.
+
+The \dhl{ds9.<version>.prf} preferences \index{ds9!preferences} file
+is setup with the Edit \menu Preferences from the pull down menus.
+This pops us a ds9 tcl/Tk window:
+
+
+\begin{figure}[htbp]
+    \centering
+    % Left Subfigure
+    \begin{subfigure}[T]{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/ds9preferences.png}
+        \caption{ds9 preferences popup window.}
+        \label{fig:ds9popup}
+    \end{subfigure}% 
+~
+    \begin{subfigure}[T]{0.25\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/ds9MenusButtons.png}
+        \caption{Customize top pull down menu and button bar.}
+        \label{fig:ds9menusbuttons}
+    \end{subfigure}% 
+
+    \caption*{SAOImage/ds9 Customization. In \ref{fig:ds9popup} ``Menus and Buttons'' leads to figure \ref{fig:ds9menusbuttons}.}
+    \label{fig:saoimageds9-1}
+\end{figure}
+
+Initialization of ds9 shifts between releases. Currently, a file
+\dhl{\$HOME/.ds9/} contains a few directories. The \dhl{ds9.8.0.prf}
+file contains the preferences set when you Edit\menu Preferences
+and Save. 
+
+Initialize your preferences \index{ds9!preference}.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Under preferences (different paths to this on different operating
+systems):
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Menus and Buttons
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   General \menu GUI Font \menu Helvetica and again General \menu GUI Font \menu 14
+(font size) 
+   \item   Startup set Initialize XPA and Connect SAMP. (may turn this off in some cases)
+   \item   Edit \menu Menu set to None
+   \item   Hit the Region \menu Buttonbar and choose Shape \menu Projection; 
+Shape \menu Circle; Shape \menu Box; (Adds projection to the menu bar)
+   \item   Hit the Scale Menu \menu and choose log, 99.5 percent, use DATASEC
+(three trips into the Menu pulldown)
+   \item   WCS \menu ICRS -- the modern one.
+\end{enumerate}
+
+   \item   Zoom (click to center -- on Mac's the Option+click is middle-mouse event)
+\end{enumerate}
+
+   \item   Then the Save button. This writes a {\color{verbcolor}{\verb#~/.ds9/ds9.M.m.prf#}}
+where {\color{verbcolor}{\verb#M.m#}} is the Major.minor version number.
+\end{enumerate}
+
+\subsection{Using tcl/tk in ds9}
+
+There are two ways to do this. An important way is to enter wildcards
+in certain fields (catalog tool in particular) filter fields. The
+second is to compose/borrow procs (subroutines) from within the
+main body and create your own procs and buttons. You can add those
+features to ds9 via the menu/button system. Nice.
+
+Example scenario: You have 5 dithered images. You want to load
+all 5 into tiled frames. Then adjust one frame's colorbar. Now
+you can write a command that will
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Frame\menu Match \menu Frame \menu WCS
+   \item   Frame\menu Lock \menu Frame \menu WCS
+   \item   Frame\menu Match \menu colorbar
+   \item   Frame\menu Lock \menu colorbar
+\end{enumerate}
+
+
+That takes some time. So download the source. Find some handy
+text in the menu system.
+
+
+The SAOImage/ds9 program is written primarily in TCL/Tk -- the
+``Terminal Control Language with the Toolkit''. Certain filter/text
+fields within ds9 -- especially the Catalog Tool can make use of
+embedding TCL directly in the code. This is considered dangerous in
+the software engineering world for two reasons: one is it allows an
+attack for unfettered code and self-modifying code is considered a
+nightmare to document. Don't worry, were astronomers and therefore
+immune from any sanity remotely associated with coding.
+
+In general, If you see an ``Edit'' capability -- it will provide
+a little dialog to help with this.
+
+Some quick tcl programming tricks.
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+\item   SAOImage/ds9 is mostly written in tcl!. A tonne of examples
+  of coding in tcl in general and how to borrow the subroutines for
+  your own purposes can be obtained by simply downloading the source
+  code directly.
+
+   \item   Tcl variables names are ``addresses'' NOT ``values'':
+to get the value preceed the variable with dollar sign
+{\color{verbcolor}{\verb#$#}} sign. For example raj2000 is called
+{\color{verbcolor}{\verb#$raj2000#}}. If there is a space or offending
+characters in a catalog's header you can surround that text with
+curly-braces {\color{verbcolor}{\verb#{}#}} so ``ra j2000'' can become
+{\color{verbcolor}{\verb#${ra j2000}#}}. Handy trick to know.
+\end{enumerate}
+
+
+\subsection{Command line quicksteps}
+
+Tying a catalog to an image is one place where a one-liner is handy.
+
+A very common scenario:
+
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+   \item   Analysis \menu Catalogs \menu Optical \menu UCAC4
+\end{enumerate}
+
+
+Expressions are a bit of an issue: for inline code,
+use a ``form of'' {\color{verbcolor}{\verb#[eval .... ]#}}.
+
+With a catalog and basic symbol file:
+
+{\color{verbcolor}
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim}
+!ds9 field2.fits -catalog import tsv ../usw/GAIA.csv -catalog symbol load ../usw/GAIA.sym &
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+}
+
+\textbf{\emph{Scenario:}} You did some planning, and you went to the GAIA database
+and grabbed some information (Aladin for your field from GAIA, export
+to TOPCAT and produce the csv (which acts like as tsv as far as
+ds9 in concerned). This is saved in your {\color{verbcolor}{\verb#~/Observatons/YYYYmmDD/usw#}}
+planning directory.
+
+\textbf{\emph{Prose:}} Hey PyRAF send the ds9 command to the system;
+\textbf{\emph{hey}} ds9 open the file
+       {\color{verbcolor}{\verb#field2.fits#}} and with that frame,
+       import a {\color{verbcolor}{\verb#.tsv#}} catalog file called
+       {\color{verbcolor}{\verb#/tmp/tess.csv#}} then load the
+       previously saved {\color{verbcolor}{\verb#tess.sym#}} setup
+file. 
+\clearpage
+\subsection{The ds9 Catalog Tool} \label{sec:ds9tcl}
+
+There are a few areas within ds9 where you can filter, or prepare
+text labels. This is in the form of relating data from columns of
+a so-called ``tab-separated-variable'' or ``comma-separated-variable''
+file.
+
+\textbf{\emph{Exercise: -- Planning}} Observe the open cluster
+NGC 7218. Create a planning directory in the ~/Planning directory called
+NGC7218: {\color{verbcolor}{\verb#mkdir -p ~/Planning/NGC7218/usw#}}.
+then {\color{verbcolor}{\verb#cd ~/Planning/NGC7218/usw#}}
+or simply {\color{verbcolor}{\verb#cd !$#}}. Start ds9.
+
+\Gls{analysis} \menu Image Servers \menu DSS .... choose plates, fill in the
+dialog using {\color{verbcolor}{\verb#ngc 7281#}} and let SIMBAD look
+up the coordinates -- or enter the coordinates directly. Acquire (use
+a 45-arcminute field). Once the image loads, you verify it is
+what you asked for, then save the image:
+
+File \menu Save ... and name it something like
+{\color{verbcolor}{\verb#NGC7218_DSS_Red.fits#}}.
+
+Now you have a refrence field for that target.
+
+Ds9 can be used some basic magnitude data for that field:
+
+Analysis \menu Catalogs \menu Optical \menu USNO UCAC4
+
+for example -- will open a catalog tool centered on the image
+in a frame, and draw little circles.
+
+Save that: File \menu Export \menu Tab-Separated-Value...
+
+and name it {\color{verbcolor}{\verb#NGC7218_DSS_Red.csv#}}.
+
+(Use the csv).
+
+\textbf{\emph{Note:}} Catalog tool file want RA in the first column, and Dec
+in the second. After that, its you data. However, the catalogs
+always seem to return a lot of tedious information first.
+So if you open the ``.csv'' file in a spreadsheet -- move the
+columns around and resave as a ``.csv'' you can use the
+catalog file at the telescope and save a lot of time.
+
+Lets add the VBand magnitude and the E(B-V) to the image.  First: on
+the main page add a ``filter'' {\color{verbcolor}{\verb#$Vmag != 0#}}
+to only use rows where Vmag data exists! Then
+under Symbol \menu Advanced, enter
+
+{\color{verbcolor}{\verb#$Vmag ([format "%5.3f" [expr $Bmag - $Vmag]])#}}
+into the ``Text'' field, and hit the Apply Button. This will (should)
+cause things like 13.452 (0.823) to appear on the screen over each of
+the known stars. Handy huh!
+
+Now, in the Symbol \menu Advanced dialiog, under File \menu Save
+save the ``.sym'' file as {\color{verbcolor}{\verb#NGC7281_V_E_BmV.sym#}}
+
+(\textbf{\emph{Note:}} the ``m'' in the name to stand in for the minus sign -- a good
+IRAF habit to form).
+
+\textbf{\emph{Summary:}} Create a 'Planning' directory, then a director for each intended
+target. Into that basic directory's ``usw'' (etc) directory add the
+DSS target field, the UCAC catalog tool -- modified with a spreadsheet
+to have RA/Dec/Vmag/Bmag/Rmag in the first column for easy viewing;
+the special filter.
 
 The SAOImage/ds9 package is a powerful and extensible tool for image
 viewing.  It integrates well with a host of other programs via the

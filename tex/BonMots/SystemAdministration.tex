@@ -1,0 +1,51 @@
+\clearpage
+\renewcommand{\footerfilename}{SystemAdministration.tex}
+
+\section{System Administration} \label{sec:SystemAdministration}
+
+\subsection{Set up the machine}
+
+For Ubuntu, the packages ``iraf'' and ``python3-pyraf'' need to be installed and
+ready to go. It may be better to install the PyRAF from the github repository.
+
+This basic setup will be augmented.
+
+It is necessary to create a {\textasciitilde{}/.iraf} directory and
+add the git clone's loginuser.cl and your custom
+pyraflogin3.py\footnote{\url{https://github.com/The-SMTSci/SMTSCI-iraf.git}}
+programs. These are biased towards reducing longslit small-telescope
+spectra.
+
+Create a {\textasciitilde{}/bin} directory and populate with the bin
+files from the git clone.
+
+The {\textasciitilde{}/bin} directory has to be included with the path.
+
+When Unix starts a bash shell, it moves to the home directory you have
+registered when the account was created (/etc/passwd file). It looks
+for initialization files, like \dhl{.bashrc}. In that file, it tests to
+see if you created a \dhl{.bash.aliases} file -- and if found it will
+'source' that file. Sourcing the file means all the action, like
+exporting variables and declaring functions will in inserted into
+the current shell. In your .bash.aliases file, you can add your
+own tests for additional files (like \dhl{.pyraf.aliases}!) and it
+will source them as well.
+
+From the SMTSCI-iraf.git environment, copy the dot.bash\_aliases to
+{\textasciitilde{}/.bash\_aliases} and copy the dot.pyraf.aliases to
+{\textasciitilde{}/.pyraf.aliases}' (Git does not allow for hidden
+files to be saved).
+
+Reduction steps discussed here will use at least these scripts:
+
+\begingroup \fontsize{10pt}{10pt}
+\selectfont
+%%\begin{Verbatim} [commandchars=\\\{\}]
+\begin{verbatim} 
+fixnames
+fitserial
+trim
+\end{verbatim}
+\endgroup
+%% \end{Verbatim}
+fitsls

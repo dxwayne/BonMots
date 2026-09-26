@@ -1,4 +1,36 @@
-\section{Reduction of Spectra}
+\clearpage
+\renewcommand{\footerfilename}{ReductionSpectra.tex}
+
+\section{Reduction of Spectra} \label{sec:ReductionOfSpectra}
+
+The principle goal in reduction of data is to create and maintain a ``\dhl{closed
+framework of accountability}'' for each dataset such that \dhl{audits} of the
+reduction process can be completely duplicated at a later date. 
+
+Reduction of spectra merges general data (line lists of calibration gas
+lines), site and telescope specific information, a priori data about
+targets (magnitudes for A0V reference stars) and scripts/tricks pecular
+to the data. This information
+
+\subsection{Basic Reductions}
+
+The next real step when getting started with IRAF/PyRAF is to tune your
+environment to the instrument you are using.
+
+This means configuring all the parameter files for tasks with epar, or importing
+them from the observatory for your use.
+
+First is to install a \dhl{loginuser.cl} file, with \dhl{foreign tasks} and
+the packages you use on a routine basis. Simply starting PyRAF means you
+are ready to jump in/resume processing. \index{loginuser} \index{IRAF!foreign tasks}.
+
+\subsection{Your Own Handy Python Routines}
+
+The SMTSci-iraf git repo has a \dhl{pyraflogin3.py} file that has a bit
+of a frat house kitchen sink's worth of code. Mostly written in haste
+but saved for future use during the throws of reduction. There is an \dhl{``official''}
+way to turn a python defined bit of code into what appears as a PyRAF task.
+That is demonstrated in to pyraflogin3.py.
 
 With longslit spectroscopy, to reduce parallactic angle
 \index{slit!parallactic angle} \index{parallactic angle!slit}

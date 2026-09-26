@@ -52,6 +52,8 @@
 %%\usepackage{wrapfig}             %% permit wrapping figures.
 %%\usepackage{subfigure}           %% images side by side.
 %%\geometry{margin=1in}            %% Allow narrower margins etc.
+\usepackage{subcaption} % Required for side-by-side subfigures
+
 \usepackage[T1]{fontenc}           %% Better Verbatim Font.
 \usepackage{comment}             %% comment out large chunks
 \usepackage{tcolorbox}
@@ -100,8 +102,25 @@
 %% (wg-texdoc-insert-fancy-headers)
 
 
-%%
+%% From AdamsConstants  wglatex.sty
 
+\newcommand{\wgcc}[1]{\multicolumn{1}{| c |}{#1}}    %% usage \wgoc{centered text}
+\newcommand{\tct}[1]{\multicolumn{2}{| c |}{#1}}
+\newcommand{\tctd}[1]{\multicolumn{2}{| c ||}{#1}}   %% double column at right
+\newcommand{\wgoct}[1]{\multicolumn{1}{| c ||}{#1}}
+
+\newcommand{\Angstroms}{\ensuremath{\mbox{\capitalring{A}}}}  % {\AA} fixes warning...\r
+\newcommand{\wgsun}{\ensuremath{\odot}}
+\newcommand{\solarmass}{M\ensuremath{_\odot}}
+\newcommand{\solarradius}{R\ensuremath{_\odot}}
+\newcommand{\solarluminosity}{L\ensuremath{_\odot}}
+\newcommand{\wgearth}{\ensuremath{\oplus}}
+\newcommand{\wgcross}{\ensuremath{\boldsymbol\wedge}} % \boldsymbol\times
+\newcommand{\wgabs}[1]{\lvert#1\rvert}
+\newcommand{\wgnorm}[1]{\lVert#1\rVert}
+\newcommand{\wgdef}{\ensuremath{\stackrel{\text{\tiny def}}{=}}}
+
+\newcommand{\volitile}[2]{\marginpar{\textcolor{red}{Volitile: #1}\endnote{Volitile:  #2}}}
 
 \newcommand{\crreturn}{\raisebox{1.2pt}{\setlength{\fboxsep}{1.5pt}\ensuremath{\hookleftarrow}}}
 %\newcommand{\llbox}[1]{\color{verbcolor}{\ovalbox{#1}}}
@@ -110,7 +129,6 @@
 
 
 \newcommand{\mousebox}[1]{{\color{verbcolor}{\Ovalbox{#1}}}}
-
 
 
 \makeatletter
@@ -243,8 +261,6 @@ Quick Overview of the file system layout we recommend. This example is used thro
 \label{figure:basicpipeline}
 \end{figure}
 
-
-
 \clearpage
 
 \setcounter{section}{0}
@@ -267,6 +283,8 @@ Quick Overview of the file system layout we recommend. This example is used thro
 \fancyfoot[RF,ORF]{Go to: \hyperref[sec:index]{Index~\footerfilename}}
 \fancyfoot[CF,OCF]{Page \thepage~~~ \footerfilename}
 
+\input{Prolog.tex}
+
 \input{QuickCrib.tex}
 
 \clearpage
@@ -274,217 +292,11 @@ Quick Overview of the file system layout we recommend. This example is used thro
 \clearpage
 
 \renewcommand{\footerfilename}{BonMots.tex}
-\section{Set up the machine}
+\input{Overview.tex}
 
-For Ubuntu, the packages ``iraf'' and ``python3-pyraf'' need to be installed and
-ready to go. 
-
-This basic setup will be augmented.
-
-It is necessary to create a {\textasciitilde{}/.iraf} directory and
-add the git clone's loginuser.cl and your custom
-pyraflogin3.py\footnote{\url{https://github.com/The-SMTSci/SMTSCI-iraf.git}}
-programs. These are biased towards reducing longslit small-telescope
-spectra.
-
-Create a {\textasciitilde{}/bin} directory and populate with the bin
-files from the git clone.
-
-The {\textasciitilde{}/bin} directory has to be included with the path.
-
-When Unix starts a bash shell, it moves to the home directory you have
-registered when the account was created (/etc/passwd file). It looks
-for initialization files, like \dhl{.bashrc}. In that file, it tests to
-see if you created a \dhl{.bash.aliases} file -- and if found it will
-'source' that file. Sourcing the file means all the action, like
-exporting variables and declaring functions will in inserted into
-the current shell. In your .bash.aliases file, you can add your
-own tests for additional files (like \dhl{.pyraf.aliases}!) and it
-will source them as well.
-
-From the SMTSCI-iraf.git environment, copy the dot.bash\_aliases to
-{\textasciitilde{}/.bash\_aliases} and copy the dot.pyraf.aliases to
-{\textasciitilde{}/.pyraf.aliases}' (Git does not allow for hidden
-files to be saved).
-
-Reduction steps discussed here will use at least these scripts:
-
-\begingroup \fontsize{10pt}{10pt}
-\selectfont
-%%\begin{Verbatim} [commandchars=\\\{\}]
-\begin{verbatim} 
-fixnames
-fitserial
-trim
-\end{verbatim}
-\endgroup
-%% \end{Verbatim}
-fitsls
-
-\section*{Overview}
-
-I do not use IRAF/PyRAF for photometry. I use Sextractor instead, together
-with Astrometry.net and PostgreSQL. That said, this document focuses on
-spectroscopy.
-
-IRAF/PyRAF is in transition, with several packages showing variations in their
-installation. There is no easy way to identify an installation from its
-files. In all cases, iraf uses a \dhl{login.cl} file. The location of that
-file helps to determine the overall setup of the environment.
-
-Currently all the packaging is being handled with a Docker container. The
-container is built with \dhl{Ubuntu 24.04}, the container isolates all
-the libraries and other details in a consistent way.  Two main problems
-are seen with installations: 1) epar using TCL/Tk does not work right, and
-2) The X11 environment has issues where the graphics portion does not
-render. Note: Docker on Win11 together with XMing will support PyRAF
-quite easily.
-
-Currently, IRAF/PyRAF will also run on a Raspberry Pi. Beyond this, good luck.
-
-Once data is captured it is quickly copied to a more stable platform
-for backup and reduction. We have IRAF/PyRAF installed on the RPi to
-facilitate focus and quick tests of the images.
-
-\subsection{Directory Layout}
-
-Data is in two quintessential places: 1) The computer that collects the data
-from the instrument, and 2) the computer you are using to reduce the data.
-
-
-There are two quintessential things about data: 1) preserve the data
-and metadata and 2) be able to audit processing of the data.
-
-Peter Krogh, a photographer, came up with ... ``The 3-2-1 backup rule'',
-a data protection strategy that recommends keeping three copies of
-your data on two different types of media; where one copy is
-stored off-site. 
-
-Most CCD/CMOS cameras have a 16-bit Analog-to-Digital-Converter (ADC),
-cheaper cameras have smaller (10 or 12 bit) ADCs.  Therefore data
-consists of \dhl{16-bit unsigned ADU} values per pixel from the
-camera. It is not necessary to change and/or archive raw data with
-float values. The QHY600M images are 9600 x 6433 x 2 bytes of image,
-roughly 1.23e8 bytes. Therefore 5TB of disk space will hold roughly
-40,000 images. At 3 minute exposure per image, for an 8 hour night you may fit
-250 days of observations in 5TB of disk storage.
-
-% (iv (setq pximg (* 9600 6433 2)))   123513600
-% (iv (setq disk (/ 5e12 pximg )))   40481.37209181823
-% (iv (setq tmp (/ disk (* 8 (/ 60 3) ))))   253.00857557386394
-
-Create a \dhl{{\textasciitilde}/Desktop/Today} directory. Configure the 
-acquisition software to point to this location. In this manner all one
-has to do is to make sure the directory exists and is empty. At the
-end of the night rename the directory to the date of sunset at the
-observatory and archive.
-
-For local work, this document will use  \dhl{{\textasciitilde}/Observations},
-and sub-directories to manage the files.
-
-\begin{quote}
-\begin{figure}[h!]
-\dirtree{%
-.1 {/home/user}.
-.2 Observations.
-.3 usw  - target lists, cl, notes, other generic things.
-.3 ddMMMyyyy  - Date of sunset at Observatory.
-.4 usw  - target lists, cl, notes, other generic things.
-.4 RawData  - data: warts, blisters and all made read only.
-.4 PreReduce  - copy RawData, and work here.
-.4 PreAnalysis - pick up analysis for files.
-.4 Reduce - Major IRAF/NonIraf reduction.
-.4 Analysis - Major IRAF/NonIraf analysis.
-.2 Desktop.
-.3 Today - where all ``tonight's'' observations go.
-}
-\label{figure:dirlayout}
-\end{figure}
-\end{quote}
-
-
-The directory \dhl{usw} is used in lieu of the Unix \dhl{etc} like
-files. The phrase \dhl{usw} \dhl{und so wieder} ``and so again'' is a
-rough German language equivalent for et cetera. \index{usw}  In Unix \dhl{etc}
-contains loosely related information. For example peruse \dhl{/etc},
-where the system keeps configuration information of a global level. It
-is so overloaded that something unique to our purposes is desired.
-
-With this layout, the \dhl{{\textasciitilde}/Observations/usw}
-directory contains side files of importance your overall personal
-observing strategy. Files, like ds9 region files, special catalog
-files, general tools, (well,,,, etc) are stored here. Make
-sub-directories that hold common information for different sites or
-instruments. Copy similar data into a nightly structure as needed.
-
-Data is taken at night. Use \dhl{dates} that reflect the date of sunset
-at the site where the data were obtained.
-
-The \dhl{ddMMMyyyy} directory uses the 1 or 2 digit day of month,
-followed by the text abbreviation of the month, followed by a 4-digit
-year (lets don't play Y2K again). 
-
-This format allows the shell's text completion mechanism a quick way to move around.
-Text completion involves typing a few starter characters of the file/directory
-name then hit the \llbox{{tab}} key. It will advance to the next non-unique thing.
-
-Underneath \dhl{ddMMMyyyy} is the \dhl{usw} directory for tonight's work. The
-target list, special catalog file of reference stars etc, the scheduler's
-input. Here we store the \dhl{reduce.cl} or \dhl{reduce.py} script
-template to be developed for these particular data.
-
-The RawData/PreReduce/PreAnalysis/Reduce/Analysis directories are
-cascading stages of data. You may use an \dhl{attic} directory where
-to sideline unrelated or terrible images.
-
-You can automate file reduction by using sub-scripts/tasks within the
-melange of IRAF/PyRAF/bash/python/whatever language programs and then
-leveraging Python and cl into making a
-\dhl{OBSERVATION/usw/reduce.pyraf}\index{reduce.cl}
-script\index{reduce.pyraf} script for the data. Save this as a template in
-the general \dhl{usw} directory, and copy in to each observation's repository.
-Detailed example is in Appendix \ref{sec:ReducePyrafControlFile}.
-
-At this time PyRAF (a mix of ecl and Python) does not act well as a
-``script'' due to the hack that adds ecl syntax to the GNU runline command
-input. It uses the raw input directly and side-steps \dhl{stdin}. This
-violates the Unix philosophy of each program should take its input from
-stdin, process its results and put the results into stdout.  This
-allows one to pipe programs together to achieve an ultimate goal.
-
-Scripts may be written in the \dhl{.cl} language (really ecl or extended cl),
-actual PyRAF (\dhl{.pyraf}), or hacked into PyRAF with the \llbox{!}
-cl prefix as you go along.
-
-\textbf{\emph{Note}}: The \dhl{.pyraf} scripts blend python and PyRAF together.
-See the complicated example of how to deal with special camera
-images.
-
-\section{Basic Reductions}
-
-The next real step when getting started with IRAF/PyRAF is to tune your
-environment to the instrument you are using.
-
-This means configuring all the parameter files for tasks with epar, or importing
-them from the observatory for your use.
-
-First is to install a \dhl{loginuser.cl} file, with \dhl{foreign tasks} and
-the packages you use on a routine basis. Simply starting PyRAF means you
-are ready to jump in/resume processing. \index{loginuser} \index{IRAF!foreign tasks}.
-
-\subsection{Your Own Handy Python Routines}
-
-The SMTSci-iraf git repo has a \dhl{pyraflogin3.py} file that has a bit
-of a frat house kitchen sink's worth of code. Mostly written in haste
-but saved for future use during the throws of reduction. There is an \dhl{``official''}
-way to turn a python defined bit of code into what appears as a PyRAF task.
-That is demonstrated in to pyraflogin3.py.
-
-
+\input{SystemAdministration.tex}
 
 \input{ReductionSpectra.tex}
-
-
 
 \section{IRAF ``at-files'' or ``@'' Tricks}
 
@@ -729,452 +541,11 @@ with the {\color{verbcolor}{\verb#stdas/histogram#}} command.
 Then choose the best times for the flat based on peeking at the
 graph.
 
-\clearpage
-\section{SAOImage/ds9}
+\input{Spectroscopy.tex}
 
-Unix hides files by preceeding them with a '.' character. This makes
-them easy to forget. 
 
-Initialization of ds9 shifts between releases. Currently, a file
-\dhl{\$HOME/.ds9/} contains a few directories. The \dhl{ds9.8.0.prf}
-file contains the preferences set when you Edit\menu Preferences
-and Save. 
-
-Initialize your preferences \index{ds9!preference}.
-
-\vspace{-.15cm}
-\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
-   \item   Under preferences (different paths to this on different operating
-systems):
-\vspace{-.15cm}
-\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
-   \item   Menus and Buttons
-\vspace{-.15cm}
-\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
-   \item   General \menu GUI Font \menu Helvetica and again General \menu GUI Font \menu 14
-(font size) 
-   \item   Startup set Initialize XPA and Connect SAMP. (may turn this off in some cases)
-   \item   Edit \menu Menu set to None
-   \item   Hit the Region \menu Buttonbar and choose Shape \menu Projection; 
-Shape \menu Circle; Shape \menu Box; (Adds projection to the menu bar)
-   \item   Hit the Scale Menu \menu and choose log, 99.5 percent, use DATASEC
-(three trips into the Menu pulldown)
-   \item   WCS \menu ICRS -- the modern one.
-\end{enumerate}
-
-   \item   Zoom (click to center -- on Mac's the Option+click is middle-mouse event)
-\end{enumerate}
-
-   \item   Then the Save button. This writes a {\color{verbcolor}{\verb#~/.ds9/ds9.M.m.prf#}}
-where {\color{verbcolor}{\verb#M.m#}} is the Major.minor version number.
-\end{enumerate}
-
-\subsection{Using tcl/tk in ds9}
-
-There are two ways to do this. An important way is to enter wildcards
-in certain fields (catalog tool in particular) filter fields. The
-second is to compose/borrow procs (subroutines) from within the
-main body and create your own procs and buttons. You can add those
-features to ds9 via the menu/button system. Nice.
-
-Example scenario: You have 5 dithered images. You want to load
-all 5 into tiled frames. Then adjust one frame's colorbar. Now
-you can write a command that will
-
-\vspace{-.15cm}
-\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
-   \item   Frame\menu Match \menu Frame \menu WCS
-   \item   Frame\menu Lock \menu Frame \menu WCS
-   \item   Frame\menu Match \menu colorbar
-   \item   Frame\menu Lock \menu colorbar
-\end{enumerate}
-
-
-That takes some time. So download the source. Find some handy
-text in the menu system.
-
-
-The SAOImage/ds9 program is written primarily in TCL/Tk -- the
-``Terminal Control Language with the Toolkit''. Certain filter/text
-fields within ds9 -- especially the Catalog Tool can make use of
-embedding TCL directly in the code. This is considered dangerous in
-the software engineering world for two reasons: one is it allows an
-attack for unfettered code and self-modifying code is considered a
-nightmare to document. Don't worry, were astronomers and therefore
-immune from any sanity remotely associated with coding.
-
-In general, If you see an ``Edit'' capability -- it will provide
-a little dialog to help with this.
-
-Some quick tcl programming tricks.
-
-\vspace{-.15cm}
-\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
-\item   SAOImage/ds9 is mostly written in tcl!. A tonne of examples
-  of coding in tcl in general and how to borrow the subroutines for
-  your own purposes can be obtained by simply downloading the source
-  code directly.
-
-   \item   Tcl variables names are ``addresses'' NOT ``values'':
-to get the value preceed the variable with dollar sign
-{\color{verbcolor}{\verb#$#}} sign. For example raj2000 is called
-{\color{verbcolor}{\verb#$raj2000#}}. If there is a space or offending
-characters in a catalog's header you can surround that text with
-curly-braces {\color{verbcolor}{\verb#{}#}} so ``ra j2000'' can become
-{\color{verbcolor}{\verb#${ra j2000}#}}. Handy trick to know.
-\end{enumerate}
-
-
-\subsection{Command line quicksteps}
-
-Tying a catalog to an image is one place where a one-liner is handy.
-
-A very common scenario:
-
-\vspace{-.15cm}
-\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
-   \item   Analysis \menu Catalogs \menu Optical \menu UCAC4
-\end{enumerate}
-
-
-Expressions are a bit of an issue: for inline code,
-use a ``form of'' {\color{verbcolor}{\verb#[eval .... ]#}}.
-
-With a catalog and basic symbol file:
-
-{\color{verbcolor}
-\begingroup \fontsize{10pt}{10pt}
-\selectfont
-%%\begin{Verbatim} [commandchars=\\\{\}]
-\begin{verbatim}
-!ds9 field2.fits -catalog import tsv ../usw/GAIA.csv -catalog symbol load ../usw/GAIA.sym &
-\end{verbatim}
-\endgroup
-%% \end{Verbatim}
-}
-
-\textbf{\emph{Scenario:}} You did some planning, and you went to the GAIA database
-and grabbed some information (Aladin for your field from GAIA, export
-to TOPCAT and produce the csv (which acts like as tsv as far as
-ds9 in concerned). This is saved in your {\color{verbcolor}{\verb#~/Observatons/YYYYmmDD/usw#}}
-planning directory.
-
-\textbf{\emph{Prose:}} Hey PyRAF send the ds9 command to the system;
-\textbf{\emph{hey}} ds9 open the file
-       {\color{verbcolor}{\verb#field2.fits#}} and with that frame,
-       import a {\color{verbcolor}{\verb#.tsv#}} catalog file called
-       {\color{verbcolor}{\verb#/tmp/tess.csv#}} then load the
-       previously saved {\color{verbcolor}{\verb#tess.sym#}} setup
-file. 
-\clearpage
-\subsection{The ds9 Catalog Tool} \label{sec:ds9tcl}
-
-There are a few areas within ds9 where you can filter, or prepare
-text labels. This is in the form of relating data from columns of
-a so-called ``tab-separated-variable'' or ``comma-separated-variable''
-file.
-
-\textbf{\emph{Exercise: -- Planning}} Observe the open cluster
-NGC 7218. Create a planning directory in the ~/Planning directory called
-NGC7218: {\color{verbcolor}{\verb#mkdir -p ~/Planning/NGC7218/usw#}}.
-then {\color{verbcolor}{\verb#cd ~/Planning/NGC7218/usw#}}
-or simply {\color{verbcolor}{\verb#cd !$#}}. Start ds9.
-
-\Gls{analysis} \menu Image Servers \menu DSS .... choose plates, fill in the
-dialog using {\color{verbcolor}{\verb#ngc 7281#}} and let SIMBAD look
-up the coordinates -- or enter the coordinates directly. Acquire (use
-a 45-arcminute field). Once the image loads, you verify it is
-what you asked for, then save the image:
-
-File \menu Save ... and name it something like
-{\color{verbcolor}{\verb#NGC7218_DSS_Red.fits#}}.
-
-Now you have a refrence field for that target.
-
-Ds9 can be used some basic magnitude data for that field:
-
-Analysis \menu Catalogs \menu Optical \menu USNO UCAC4
-
-for example -- will open a catalog tool centered on the image
-in a frame, and draw little circles.
-
-Save that: File \menu Export \menu Tab-Separated-Value...
-
-and name it {\color{verbcolor}{\verb#NGC7218_DSS_Red.csv#}}.
-
-(Use the csv).
-
-\textbf{\emph{Note:}} Catalog tool file want RA in the first column, and Dec
-in the second. After that, its you data. However, the catalogs
-always seem to return a lot of tedious information first.
-So if you open the ``.csv'' file in a spreadsheet -- move the
-columns around and resave as a ``.csv'' you can use the
-catalog file at the telescope and save a lot of time.
-
-Lets add the VBand magnitude and the E(B-V) to the image.  First: on
-the main page add a ``filter'' {\color{verbcolor}{\verb#$Vmag != 0#}}
-to only use rows where Vmag data exists! Then
-under Symbol \menu Advanced, enter
-
-{\color{verbcolor}{\verb#$Vmag ([format "%5.3f" [expr $Bmag - $Vmag]])#}}
-into the ``Text'' field, and hit the Apply Button. This will (should)
-cause things like 13.452 (0.823) to appear on the screen over each of
-the known stars. Handy huh!
-
-Now, in the Symbol \menu Advanced dialiog, under File \menu Save
-save the ``.sym'' file as {\color{verbcolor}{\verb#NGC7281_V_E_BmV.sym#}}
-
-(\textbf{\emph{Note:}} the ``m'' in the name to stand in for the minus sign -- a good
-IRAF habit to form).
-
-\textbf{\emph{Summary:}} Create a 'Planning' directory, then a director for each intended
-target. Into that basic directory's ``usw'' (etc) directory add the
-DSS target field, the UCAC catalog tool -- modified with a spreadsheet
-to have RA/Dec/Vmag/Bmag/Rmag in the first column for easy viewing;
-the special filter.
-
-\section{PostgreSQL} \label{sec:PostgreSQL}
-
-The PostgreSQL language is taking over in the astronomy world.  It is
-more powerful than MySQL -- and offers a lot of features not found in
-MySQL. Sergey Koposov's Q3C \cite{2006ASPC..351..735K} package adds
-fast indexing to tables. \footnote{\url{https://github.com/segasai}}
-
-
-A scenario: You go to MAST and download a rather complete PanSTARRS
-DR1 field, centered on a location etc. You then platesolve each
-of your images to some degree of precision. Needless to say,
-the two floating points will be exactly different -- close
-but not exact. You need to match based on a radius -- and Q3C
-allows you do do this. For several hundreds of your stars against
-a catalog of several thousand stars becomes $\mathcal{O}(n!/2)$
-problem -- where Q3C converts it to a $\mathcal{O}(log(n))$
-order problem.
-
-To create a database for opencluster data, with several different
-openclusters say m29 and ngc7182:
-
-{\color{verbcolor}
-\begingroup \fontsize{10pt}{10pt}
-\selectfont
-%%\begin{Verbatim} [commandchars=\\\{\}]
-\begin{verbatim}
-CREATE DATABASE opencl;
-CREATE SCHEMA m29;
-CREATE SCHEMA ngc7182;
-SET SEARCH_PATH to ngc7182; -- choose to work in this/that level
-\end{verbatim}
-\endgroup
-%% \end{Verbatim}
-}
-
-Now you get data from PanSTARRS DR1 and GAIA DR2 for each cluster.
-Rather than have tables with different names (this quickly gets
-out of hand), the ``schema'' divides your database into parts:
-one for each cluster.
-
-Thus m29.panstarrs and ngc7182.panstarrs are tables with the
-same ``name'' and you decided to make them identical in structure
-with the same rows names. From the top level you refer to
-a table with the {\color{verbcolor}{\verb#schema.table#}} name.
-etc.
-
-{\color{verbcolor}
-\begingroup \fontsize{10pt}{10pt}
-\selectfont
-%%\begin{Verbatim} [commandchars=\\\{\}]
-\begin{verbatim}
-CREATE INDEX ON ngc7281.panstarrs   (q3c_ang2ipix(ora, odec));
-CLUSTER panstarrs_q3c_ang2ipix_idx   ON ngc7281.panstarrs;
-ANALYZE  ngc7281.panstarrs;
-\end{verbatim}
-\endgroup
-%% \end{Verbatim}
-}
-
-Some general commands that are handy:
-
-{\color{verbcolor}
-\vspace{-.15cm}
-\begin{enumerate}[resume]\addtolength{\itemsep}{-0.5\baselineskip}
-   \item  Change a table's name
-   \item  Add new column to a table
-   \item  Update (change) a value for a column on a specific row
-or set of rows
-\end{enumerate}
-}
-
-Loading tess data, TOPCAT complains about a varchar that
-has to be set (does not say what exactly). TOPCAT saved
-the file as a .csv ok. Thus, a rawtess.psql file was created
-by loading the .csv data into columns that were text files.
-A small python script was used for the conversion -- there
-are quite a few tedious details.
-
-At this time, what should be null's were blank text files.
-To change the double precision columns from text into sparse columns
-(values and nulls) the fields to convert were noted and an emacs
-snippit was used to create a series of alter commands:
-
-{\color{verbcolor}
-\begingroup \fontsize{10pt}{10pt}
-\selectfont
-%%\begin{Verbatim} [commandchars=\\\{\}]
-\begin{verbatim}
-(mapcar (lambda (a) (insert (format "ALTER TABLE tess
-  ALTER COLUMN %s TYPE double precision
-    USING (NULLIF(%s, '')::double precision);\n" a a)))
-'(ora odec bmag e_bmag vmag e_vmag umag e_umag gmag e_gmag rmag e_rmag
-     imag e_imag zmag e_zmag gaiamag e_gaiamag))
-
-ALTER TABLE tess
-  ALTER COLUMN ora TYPE double precision
-    USING (NULLIF(ora, '')::double precision);
-...
-ALTER TABLE tess
-  ALTER COLUMN e_gaiamag TYPE double precision
-    USING (NULLIF(e_gaiamag, '')::double precision);
-\end{verbatim}
-\endgroup
-%% \end{Verbatim}
-}
-
-A workable solution was obtained. This was followed by a query:
-
-{\color{verbcolor}
-\begingroup \fontsize{10pt}{10pt}
-\selectfont
-%%\begin{Verbatim} [commandchars=\\\{\}]
-\begin{verbatim}
-copy (select ora,odec,vmag,e_vmag from tess
-where
-   ora between  336.0 and 336.6 and
-   odec between 57.4 and  57.99 and
-   vmag is not null             and
-   e_vmag is not null           and
-   -- e_vmag < 0.010               and
-   vmag < 15
-) to '/tmp/tess.csv' CSV  header delimiter ','
-;
-\end{verbatim}
-\endgroup
-%% \end{Verbatim}
-}
-
-to make a ds9 tsv in the /tmp directory.
-
-
-
-\subsection{Higher Level Stategies}
-
-When you get a ``raw'' table, and you want to make
-a smaller more qualified table -- start with creating
-a rawxxx table. Then you can do a ``create select''
-to make the qualified table.
-
-
-
-{\color{verbcolor}
-\begingroup \fontsize{10pt}{10pt}
-\selectfont
-%%\begin{Verbatim} [commandchars=\\\{\}]
-\begin{verbatim}
-ALTER panstarrs rename to rawpanstarrs; -- (further) refine this table
-DROP SEQUENCE panstarrs_sequence CASCADE; -- make it a basic table
-
-CREATE TABLE panstarrs AS (SELECT * FROM rawpanstarrs
-WHERE gMeanPSFMagErr <= 0.005 AND
-gMeanPSFmagNpt > 9 aND
-gmeanpsfmag < 17);
-
-CREATE INDEX ON ngc7281.panstarrs   (q3c_ang2ipix(ora, odec));
-CLUSTER panstarrs_q3c_ang2ipix_idx   ON ngc7281.panstarrs;
-ANALYZE  ngc7281.panstarrs;
-COMMIT;
-
-\end{verbatim}
-\endgroup
-%% \end{Verbatim}
-}
-
-For stars brighter than 17 in the sloan's g band, the mean error
-was less than 5 milli-mags over at least 9 observations (good
-guess it's not variable and was peeked at a few times).
-
-This makes a smaller table. Then apply the Q3C indexing
-to this qualified table.
-
-
-
-\subsection{Formatting Output}
-
-\subsection{Create a CSV file}
-
-{\color{verbcolor}
-\begingroup \fontsize{10pt}{10pt}
-\selectfont
-%%\begin{Verbatim} [commandchars=\\\{\}]
-\begin{verbatim}
-\! sudo rm /tmp/ds9catalog.csv
-COPY (
-   SELECT ora,odec,gmeanpsfmag,gmeanpsfmagnpt,gmeanpsfmagerr
-   FROM panstarrs)
-to '/tmp/ds9catalog.csv' with CSV delimiter ',';
-\end{verbatim}
-\endgroup
-%% \end{Verbatim}
-}
-
-\section{PostgreSQL Installation} \label{sec:PostgreSQLInstallation}
-
-A convention and some rules helps with creating and using databases.
-
-There are a few field names in common databases that align
-with sql keywords. PostgreSQL is case-insensitive (Idiots!)
-so it may be necessary to filter some values using sed
-or awk.
-
-A good convention is to use:
-
-\begin{table}[h!]
-%\phantomsection
-%\addcontentsline{toc}{section}{ TOC CAPTION}
-% \setlength{\belowcaptionskip}{6pt} % adjust space under caption abovecaptionskip
-% \renewcommand{\arraystretch}{1.3} % adjust line spacing
-%\small{
-%\begin{minipage}{\textwidth}     % for footnotes in table.
-%\caption[TOC]{Field Name Convention}
-\centering
-\begin{tabular}{ l | l }
-%\MakeShortVerb{\|}
-%\multicolumn{n}{fmt}{text for merged cols}
-\hline
-Field  & Reason   \\
-\hline
-fname & filename's base (always add the extension, allows for .coo files.)    \\ 
-fqpname & fully qualified path name    \\ 
-oname & object name (OBJECT keyword)    \\ 
-ora &  right ascension in degrees    \\ 
-odec & DECREASING is sql declination in degrees    \\ 
-%% ones-based: \cline{a-b}
-\hline
-%%\DeleteShortVerb{|}
-\end{tabular}
-%%\end{minipage}    %% for footnotes  r@{.}l 
-\caption[Field Name Conventions]{Field Name Conventions}
-\label{table:FieldNameConvention}
-%%} % end small etc
-\end{table}
-
-ction{Python Scripting}
-
-When you write a IRAF helper \index{IRAF!Python Helper} import the
-print statement from ``future''. This allows 3x to run. Avoid those
-real nice extensions like f-strings.  Remember you are accelerating
-your work.
-
-\ltodo{Python}{Expand on the things to make helpers run in a 3.x
-environment.}
+\input{ds9.tex}
+\input{Postgresql.tex}
 
 \section{Conclusion}
 
@@ -1215,9 +586,11 @@ to disambiguate.}
 applet), Glue \cite{2012AN....333..505G,robitaille_thomas_2017_1237692}.
 
 
-
+\clearpage
 %% APPENDIX
 \appendix \renewcommand \thesection{\Alph{section}}
+\section*{Appendices}
+
 
 \section{Prepare for Observation}
 
@@ -1427,6 +800,7 @@ cl < ./tmp.cl
 
 \input{IdentifyLPARS.tex}
 
+\clearpage
 \input{Coordinates.tex}
 
 \input{Tasks.tex}
@@ -1617,7 +991,12 @@ had actually done it. I have a shot foot or two to prove it.
 
 \include{Community.tex}
 
+\input{Airmass.tex}
+\clearpage
+
 \include{SpectroStandards.tex}
+
+\include{PocketConstants.tex}
 
 %% APPENDIXEND
 %% use a bibitem approach to the references publications etc.

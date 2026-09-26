@@ -1,3 +1,4 @@
+\clearpage
 \renewcommand{\footerfilename}{QuickCrib.tex}
 
 \section{Quick Crib}  \label{sec:QuickCrib}
@@ -7,13 +8,16 @@ A collection of handy things to know right off the bat:
 \vspace{-.15cm}
 \begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
 %\setcounter{enumi}{N}
-   \item   IRAF stands for ``Image Reduction and Analysis Facility''.
+   \item   IRAF stands for ``Image Reduction and Analysis Facility''. It facilitates your ability work.
    \item   \dhl{AT NO TIME USE UNICODE CHARACTERS}. IRAF is strictly \dhl{ASCII}.
    \item   Three main tasks \textbf{\emph{cl}}, \textbf{\emph{ecl}} and \textbf{\emph{PyRAF}}.
    \item   \textbf{\emph{To exit}} \dhl{cl} or \dhl{ecl} type \dhl{logout} at the prompt.\index{exiting!cl/ecl}
-   \item   \textbf{\emph{To exit}} \dhl{PyRAF} use \dhl{.ex} at the prompt.\index{exiting!pyraf}
-   \item   \textbf{\emph{To exit}} \dhl{bash} use \dhl{exit} at the prompt.\index{exiting!bash}
-   \item   \textbf{\emph{IRAF uses WEST LONGITUDE}}.
+   \item   \textbf{\emph{To exit}} \dhl{PyRAF} type \dhl{.ex} at the prompt.\index{exiting!pyraf}
+   \item   \textbf{\emph{To exit}} \dhl{bash} type \dhl{exit} or \dhl{Ctrl-D} at the prompt.\index{exiting!bash}
+   \item   \textbf{\emph{To exit}} \dhl{vi} type \dhl{<ESC>:q!} to quit without save. Use \dhl{{ZZ}} or \dhl{<ESC>:wq!} to exit and save.
+   \item   \textbf{\emph{To exit}} \dhl{emacs} type \dhl{Ctrl-x Ctrl-c} to quit. Use \dhl{Ctrl-x Ctrl-w} to save. If using the
+           GUI, simply use the pull-down menus.
+   \item   \textbf{\emph{IRAF uses WEST LONGITUDE}}. New York City: +73.93524 longitude 40.73061 latitude in IRAF terms.
 \end{enumerate}
 
 \subsection{Commands}
@@ -23,10 +27,9 @@ A collection of handy things to know right off the bat:
    \item   IRAF consists of \textbf{\emph{Packages}} that use \textbf{\emph{tasks}} (not \dhl{commands} in usual sense).
 \vspace{-.15cm}
     \begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
-         \item   Tasks are in \dhl{packages}.
-         \item   Both \dhl{packages} and \dhl{tasks} have parameters.
+         \item   Tasks are in \dhl{packages} and both \dhl{packages} and \dhl{tasks} have parameters.
     \end{enumerate}
-   \item   IRAF parameters are \dhl{sticky}, the new values persist across sessions!
+   \item   IRAF parameters are \dhl{sticky}, sometimes new values persist across sessions!
 \vspace{-.15cm}
 \begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
 %\setcounter{enumi}{N}
@@ -34,12 +37,12 @@ A collection of handy things to know right off the bat:
 \end{enumerate}
 
    \item   IRAF tasks use switch characters '+' and '-' that appear at the \textbf{\emph{end of the word}}.
-   \item   IRAF's uses the \dhl{epar} GUI where you may set the myrid of variables for a task.
+   \item   IRAF's provides the \dhl{epar} GUI where you may set the myrid of \dhl{parameters} for a task.
    \item   IRAF uses Unix Commands (ls, mkdir etc):
 \vspace{-.15cm}
 \begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
 %\setcounter{enumi}{N}
-   \item   None are built in, but are declared as \dhl{foreign}. You can add to \gls{foreign} commands.
+   \item   None are built in, but are declared as \dhl{foreign}. You can add to \gls{foreign} commands to your loginuser.cl.
    \item   Non-foreign commands can be run by \dhl{escaping} to the shell. Use the exclamation point \llbox{!}
    to run plain Unix commands in a \dhl{sub-shell}. EG: string the commands \dhl{sed | sort | uniq} together
    for special results.
@@ -57,22 +60,26 @@ At a command prompt enter:\\
 You can use {\color{verbcolor}\verb/help help dev=ps/} to get a .ps file of the output. Convert this
 to PDF using traditional ways.
 
-\subsection{Programs are called Tasks}
+\subsection{Programs/Scripts are called Tasks}
 
 Tasks are grouped in a \gls{package}. Packages allow a small subset of
 tasks to be loaded into memory at a time. This comes from the days of
 small memory capacity on computers at the time IRAF was created.
 
-Each \gls{task} usually has a set of \gls{parameters} where variables
+Each \gls{task} usually has a set of \gls{parameters} (like variables)
 that define its operation are set and maintained.
 
-Tasks are ``\dhl{sticky}'' \index{sticky}. The parameters persist over class. This is a nuisance 
-when two instruments are reduced using the same package. To reset a task, use
-the unlearn command.
+Tasks parameters are ``\dhl{sticky}'' \index{sticky}. The parameters
+persist over time and may span tasks. This is a nuisance when two instruments are
+reduced using the same package. To reset a task, use the \dhl{unlearn} <task>
+command.
 
 \subsection{FITS Files}
 
 FITS stands for ``Flexible Image Transport System'' It is ``fits'' not ``fit''.
+
+The definition of ``.fit'' files comes from the amateur community \cite{SBFITSEXT}, where parameters
+will cause IRAF reductions to be wrong. Be careful using unprofessional software.
 
 Most files are a ``\dhl{single extension file}''. There is only one section with
 a data array. However! FITS permits ``\dhl{multiple extension files}'' or MEFs.
@@ -84,7 +91,16 @@ file as a MEF.
 Therefore, each time you \dhl{remake} a zero/dark/flat master, remember
 to \dhl{remove} the old one first.
 
+\clearpage
 \subsection{IRAF/PyRAF Graphics Window}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.5\textwidth]{images/pyraf1.png}
+\caption{Little ``+'' sign in bottom/left hand corner.} %% \caption{{\tiny{citation}}} 
+\label{figure:quickgraphicswindow}
+\end{figure}
+
 
 Exiting graphical tasks can be tricky: \index{exiting!tasks}
 
@@ -94,9 +110,8 @@ Exiting graphical tasks can be tricky: \index{exiting!tasks}
    \item   The \llbox{Q} or \llbox{q}  will usually get you back into a scripts normal way of doing
   things.
    \item   In theory the capital \llbox{I} will interrupt. Not all subtasks will see this.
-   \item If you are really stuck use \mousebox{Ctrl-Z} to pause the
-     task, dropping back into \dhl{bash}, then kill PyRAF session with
-     a:
+   \item If you are really stuck use \mousebox{Ctrl-Z} to pause pyraf,
+      dropping back into \dhl{bash}, then kill PyRAF session with a:
 \begingroup \fontsize{10pt}{10pt} \selectfont
 \begin{verbatim} 
     jobs            # list the current tasks for this window
@@ -111,10 +126,21 @@ or in a real pinch:
    \item   Bite the bullet and ``yes/no'' your way out of trouble.
 \end{enumerate}
 
+When the full-window red graphical cursor is active, use the \llbox{?} key to cause
+a breif crib/help/description to display over in the command window. The display uses
+the PyRAF fake ``less'' command. Hit the space bar to the end, then \llbox{q} to
+go back into the graphical mode. Now, scrolling the command window gives you access 
+to the crib info.
+
+A large white text-entry may be seen along the bottom of the window. Sometimes, the
+prompt for the expected entry appears over in the command-line terminal. This is
+painful, as carriage returns between the commands may be missing. This is essentially
+a PyRAF bug.
+
 \subsection{Output from IRAF/PyRAF Tasks}
 
-An optional \dhl{logfile} is associated with important tasks. You can set the name,
-or take the default.
+An optional \dhl{logfile} is associated with important tasks. You can name the logfile,
+or take the sticky default.
 
 When the spectrographic task \dhl{apall} is run, a directory called
 \dhl{database} is created. Each file records the details of the extraction
@@ -123,19 +149,10 @@ whose name is along the lines of ap<filename> (``ap'' prepended to the
 filename). The last file is duplicated with aplast.
 
 In the graphics window, a little plus sign at the bottom/left allows
-a small text display area to show details of tasks. This is handy in tasks
-like \dhl{splot}.
+a small text display area to show details or output of tasks. This is handy in tasks
+like \dhl{splot}. Things like the fwhm, pixel coordinates, other details appear in
+the window.
 
-\begin{figure}[h!]
-\centering
-%%\phantomsection
-%%\addcontentsline{toc}{section}{}
-%%\caption{} %% \caption{{\tiny{citation}}} 
-%%\includepdf[angle=90,width=.3\textwidth]{}); %% with package pdfpages
-\includegraphics[width=.3\textwidth]{images/pyraf1.png}
-\caption{Little ``+'' sign in bottom/left hand corner.} %% \caption{{\tiny{citation}}} 
-\label{figure:}
-\end{figure}
 
 \subsection{File Names}
 

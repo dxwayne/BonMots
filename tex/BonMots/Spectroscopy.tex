@@ -1,7 +1,43 @@
 \renewcommand{\footerfilename}{Spectroscopy.tex}
 
-%\subsection
+%\subsection 
 \section{Spectroscopy}
+
+A raw spectrographic FITS is a 2D image where the height of the slit is in
+one direction and the spectral dispersion (wavelengths) is along the
+other axis.
+
+There are several aspects of this spectrum that require attention:
+\vspace{-.15cm}
+\begin{enumerate}\addtolength{\itemsep}{-0.5\baselineskip}
+%\setcounter{enumi}{N}
+   \item   The Franhofer dispersion from the top/bottom of the slit will not
+produce a precise/clean boundary as one might expect and can not be
+use for focusing.
+   \item   A single star on a long-slit produces an obvious \dhl{trace} of the spectrum
+across the sensor.
+   \item   The orientation of the trace either roughly along a small set of rows (X),
+or columns (Y). The header DISPAXISn tells IRAF what to expect and is
+a \dhl{critical} parameter. A value of 1 follows rows, and is common with
+non-professional instruments; a value of 2 follows columns. 
+   \item   The mapping of $(X,Y)\;\rightarrow\;(\lambda,\textrm{sky})$ IS NOT LINEAR.
+   \item   The intensity along the slit VARIES, think the usual telescope vignetting.
+   \item   A combination of the grating efficency curve and the sensor QE causes the
+nominal ends of the spectrum to be essentially non-existant. This eventually
+means that those ordinal (X in an equation) position carry nothing but noise
+and contribution noise in strange and inconvient ways (Runge effect is a killer).
+So \dhl{TRIM} your data first. 
+\end{enumerate}
+
+There are many more effects, but these are critical to bear in mind as reduction
+moves along.
+
+A critical FITS header called \dhl{DISPAXISn} is required. When $n=1$, the
+trace follows rows, and $n=2$ the trace follows columns. This is hardwired
+into the extraction tasks.
+
+\subsection{Instrument Setup Tricks}
+
 
 The installation of the spectrograph requires focusing the instrument
 and adjusting the grating to cause the desired spectral range to fall 

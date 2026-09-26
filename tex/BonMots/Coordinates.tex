@@ -3,6 +3,60 @@
 
 \section{Coordinates}
 
+
+\subsection{Celestial and Geodetic}
+
+
+Coordinates and time are tied together. 
+
+
+IERS (International Earth Rotation and Reference Systems ) Service
+maintains precise values across the years to coordinate the dynamical
+nature of the position of objects.
+
+There are some critical sub-systems and sub-frameworks. One is the
+Earth Pointing model the other is the Celestial Coordinate System.
+
+IRAF was written in a time when telescopes were incapable of resolving
+to the degree we saw in the late 20th century. Previous systems were
+based on the Besselian (e.g.: B 1875, 1900, 1950), Julian (e.g.:
+J2000) Fr\:uhe/Fundamentalkatalog FK4 (1963) and FK5 (1988). Another
+factor is the accuracy in catalogs and charts sufficient to have a
+ship arrive safely at a harbor entrance , or to rendezvous at a point
+at sea with no visible reference points. With each passing year the
+ability to measure all the aspects related to these problems improved.
+
+With the advent of high resolution radio astronomical observations, it
+was possible to fix the location of extra-galactic sources with
+high precision sub-arc second positioning, best case within tens of microseconds
+and certainly milli-arcsecond accuracy. The GAIA mission made a catalog
+with 2 precise dimensions (RA and Declination) and a reasonably precise
+distance measurements to roughly 1.3 Billion stars. By visiting the
+stars multiple times, the peculiar (RA/Dec) and radial velocities
+of the stars were measured with decent accuracy. 
+
+The sky is churning, and data ages. Solar system dynamics play a factor
+in defining just where the Earth is located as well. The rotation
+of the Earth (length of any given day) is variable to small amounts.
+
+The IAU IERS and ICRS are tasked with keeping up with these variations
+and publishing frequent bulletins with current parameters to help
+correct things. 
+
+This whole philosophy differes from beliefs used when IRAF was written.
+
+For the most part, small telescope pointing does not depend on these
+accuracies. If/when they do -- The astropy,coordinates package has
+decent algorithms to use.
+
+\subsection{Time of Day}
+
+The time is a real train wreck. For the most part, using UTC in headers
+gives people a way of translating back to their time reference basis.
+Some use TT, some use TAI. All agree to within several/many seconds.
+
+A complete description is in the USNO circular 179. 
+
 \subsection{Image}
 
 Here an image is considered to be a raw or pre-reduced image from a sensor.
@@ -37,3 +91,10 @@ section are:
 \endgroup
 %% \end{Verbatim}
 
+\subsection{FITS Headers}
+
+Common use today uses the FITS definition of latitude, longitude and 
+altitude using OBSGEO-B, OBSGEO-L, and OBSGEO-H. Units are degrees
+and meters and are tied to the IERS reference geoid. These details
+are very important for astrometry, not so much for photometry/spectroscopy
+with small telescopes.
