@@ -1,3 +1,7 @@
+% /home/git/external/BonMots/tex/BonMots/tikz/prism90.tikz
+
+\begin{figure}[h!]
+\centering
 \begin{tikzpicture}[semic/.style args={#1,#2}{semicircle,minimum width=#1,draw,anchor=arc end,rotate=#2},outer sep=0pt,line width=.7pt]
 	
 	% Grid
@@ -44,3 +48,6 @@
 	\pic[draw, "$\theta_r$", angle eccentricity=1.3, angle radius=1cm] {angle={C--B--P'}};
 	\pic[draw, "$\theta$", angle eccentricity=1.15, angle radius=1.6cm] {angle={B'--B--P'}};
 \end{tikzpicture}
+\caption{Prism2.}
+\label{fig:Prism2}
+\end{figure}
