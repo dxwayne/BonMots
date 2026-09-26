@@ -1,0 +1,82 @@
+% /home/git/external/BonMots/tex/BonMots/tikz/echelle.tikz
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[scale=1.3, extended line/.style={shorten >=-2cm,shorten <=-2cm}]
+
+    % --- Colors ---
+    \definecolor{glass}{RGB}{230, 245, 255}
+    \definecolor{rayred}{RGB}{220, 50, 50}
+    \definecolor{rayblue}{RGB}{50, 100, 220}
+    \definecolor{raygreen}{RGB}{50, 180, 50}
+
+    % --- Grid / Helper (Optional, kept clean) ---
+    % \draw[gray!20] (-1,-1) grid (6,4);
+
+    % --- Echelle Grating Parameters ---
+    % We create a coarse, stepped sawtooth profile (blaze profile)
+    \begin{scope}[shift={(4,0)}, rotate=15]
+        % Grating Substrate Base
+        \draw[fill=glass, draw=gray!70, thick] 
+            (0,-0.5) -- (0,3.5) -- (-0.5,3.5) -- (-0.5,-0.5) -- cycle;
+        
+        % Facets (Sawtooth / Steps)
+        % Large steep facets (blaze facets), short shallow facets
+        \draw[fill=gray!30, draw=black, thick]
+            (0,0)   -- (0.6,0.2) -- (0,0.5)
+            -- (0.6,0.7) -- (0,1.0)
+            -- (0.6,1.2) -- (0,1.5)
+            -- (0.6,1.7) -- (0,2.0)
+            -- (0.6,2.2) -- (0,2.5)
+            -- (0.6,2.7) -- (0,3.0);
+            
+        % Label for Grating
+        \node[rotate=105, anchor=south] at (-0.5, 1.5) {\small Echelle Grating};
+        
+        % Normal to the blaze facet (for reference)
+        \draw[dashed, gray] (0.6, 1.2) -- ++(1.2, 0.4) node[right, black] {\tiny Facet Normal};
+        
+        % Coordinate anchor for reflection point
+        \coordinate (R) at (0.6, 1.2);
+    \end{scope}
+
+    % --- Incident Light Beam ---
+    \coordinate (Source) at (0, 3);
+    
+    % Draw Incident Polychromatic Beam (White/Gray thick line)
+    \draw[line width=1.5pt, gray!80, -latex] (Source) -- ($(Source)!0.6!(R)$);
+    \draw[line width=1.5pt, gray!80] ($(Source)!0.5!(R)$) -- (R);
+    \node[above left] at (Source) {\small Incident Beam};
+
+    % --- Diffracted Beams (High Orders, Overlapping/Dispersed) ---
+    % Echelle gratings disperse light into high orders (m, m+1, m+2) 
+    % We show diffraction into distinct wavelengths (Colors) at steep angles
+    
+    % Red Diffraction (Order m)
+    \draw[rayred, thick, -latex] (R) -- ++(-2.8, -0.2);
+    \draw[rayred, thick] (R) ++(-2.5, -0.18) -- ++(-1.0, -0.07) 
+        node[left, black] {\small Order $m$ ($\lambda_{\textrm{red}}$)};
+
+    % Green Diffraction (Order m+1)
+    \draw[raygreen, thick, -latex] (R) -- ++(-2.7, 0.3);
+    \draw[raygreen, thick] (R) ++(-2.4, 0.27) -- ++(-1.1, 0.13) 
+        node[left, black] {\small Order $m+1$ ($\lambda_{\textrm{green}}$)};
+
+    % Blue Diffraction (Order m+2)
+    \draw[rayblue, thick, -latex] (R) -- ++(-2.5, 0.8);
+    \draw[rayblue, thick] (R) ++(-2.2, 0.7) -- ++(-1.1, 0.35) 
+        node[left, black] {\small Order $m+2$ ($\lambda_{\textrm{blue}}$)};
+
+    % --- Geometric Annotations ---
+    % Blaze angle definition snippet near the bottom facet
+    \begin{scope}[shift={(4,0)}, rotate=15]
+        \draw[dotted] (0,0) -- (1,0);
+        \draw[thin, <-] (0.4,0.13) arc (18:0:0.4);
+        \node at (0.55,0.07) {\tiny $\theta_B$}; 
+    \end{scope}
+    \node[below, text width=2cm, align=center] at (4.5,-0.2) {\tiny $\theta_B = \textrm{Blaze Angle}$};
+
+\end{tikzpicture}
+\caption{Echelle Grating}
+\label{fig:EchelleGrating}
+
+\end{figure}

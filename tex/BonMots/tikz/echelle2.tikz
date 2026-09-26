@@ -1,0 +1,71 @@
+% /home/git/external/BonMots/tex/BonMots/tikz/echelle2.tikz
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[scale=1.2,>=Stealth]
+    % Define style for incoming and diffracted raysa
+    \tikzstyle{ray} = [thick,->]
+    
+    % Grating parameters
+    \def\blaze{63}                                      % Blaze angle in degrees (e.g., 63 or 75 for echelle)
+    \def\numsteps{5}
+    \def\stepsize{0.6}
+    
+    % Draw the echelle sawtooth profile (gross structure)
+    \coordinate (origin) at (0,0);
+    
+    % Draw the bulk substrate block
+    \draw[thick, fill=gray!15] (-0.2,0) rectangle (3.5, -1.0);
+    \node[font=\small, text=gray!60!black] at (1.65, -0.5) {Glass Substrate / Aluminum Coated};
+
+    % Draw the sawtooth grating surface
+    \draw[thick] (origin) 
+    \foreach \i in {1,...,\numsteps} {
+        -- ++(\stepsize, {-\stepsize*tan(\blaze-90)})   % steep face (shadow side) or adjust slope
+        -- ++(-\stepsize*0.15, {\stepsize*tan(\blaze)}) % blaze face
+    };
+    
+    % Correction for a cleaner sawtooth profile path:
+    % Let's do a clean explicit path for the echelle facets
+    \begin{scope}[shift={(5,0)}]
+        \draw[thick, fill=gray!10] (0,0) -- (3.5,0) -- (3.5,-1.2) -- (0,-1.2) -- cycle;
+        \node[font=\footnotesize] at (1.75,-0.6) {Echelle Grating Profile};
+        
+        % Zoomed steps
+        \draw[thick, blue!60!black, fill=blue!5] 
+            (0.5,0) 
+            -- (0.9, -1.0) -- (1.0, 0)
+            -- (1.4, -1.0) -- (1.5, 0)
+            -- (1.9, -1.0) -- (2.0, 0)
+            -- (2.4, -1.0) -- (2.5, 0);
+            
+        % Angle annotations for blaze angle
+        \draw[dashed] (1.0,0) -- (1.0,-1.2);
+        \draw[red,->] (1.0,-0.6) arc[start angle=-90, end angle=-112, radius=0.6];
+        \node[red, font=\footnotesize] at (0.6,-0.7) {$\theta_B$ (Blaze)};
+    \end{scope}
+
+    % Full optical configuration diagram (Littrow-like or general reflection)
+    \begin{scope}[shift={(0,-3.2)}]
+        % Base line / normal
+        \coordinate (G) at (2,0);
+        \draw[dashed, gray] (G) -- ++(0,2.5) node[above, font=\footnotesize] {Normal $N$};
+        
+        % Grating surface representation (flat angled line)
+        \draw[thick, fill=gray!30] (0.5,-0.2) -- (3.5,0.2) -- (3.2,-0.8) -- (0.2,-1.2) -- cycle;
+        
+        % Incident ray
+        \draw[ray, red] ($(G)+(-1.8, 2.0)$) -- (G) node[midway, above, sloped, font=\footnotesize] {Incident Light $\theta_i$};
+        
+        % Diffracted high-order rays (characteristic of echelle)
+        \draw[ray, blue] (G) -- ++(1.4, 2.2) node[midway, above, sloped, font=\footnotesize]    {Order $m_1$};
+        \draw[ray, blue!70] (G) -- ++(1.9, 1.8) node[midway, above, sloped, font=\footnotesize] {Order $m_2$};
+        \draw[ray, blue!40] (G) -- ++(2.3, 1.3) node[midway, above, sloped, font=\footnotesize] {Order $m_3$};
+        
+        \node[font=\footnotesize, align=center] at (2,-1.8) {High Blaze Angle ($63^\circ / 75^\circ$)(High-order, multi-order dispersion)};
+    \end{scope}
+
+\end{tikzpicture}
+\caption{Echelle2}
+\label{fig:Echelle2}
+
+\end{figure}
